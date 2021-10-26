@@ -1,6 +1,9 @@
+import { shortid } from 'shortid';
 import {
-  Entity,
+  BeforeInsert,
   Column,
+  Entity,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { PasswordTransformer } from './password.transformer';
@@ -11,12 +14,17 @@ import { PasswordTransformer } from './password.transformer';
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+  // @PrimaryGeneratedColumn("uuid")
+  // id: string;
 
-  @Column({ length: 255 })
+  @Column({ name: 'user_id', length: 255 })
   userId: string;
 
   @Column({ length: 255 })
   name: string;
+
+  @Column({ length: 255 })
+  firstName: string;
 
   @Column({
     name: 'password',
