@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { ConsumerModule } from 'modules/consumer/consumer.module';
 import { EventModule } from 'modules/event';
+import { EventLogModule } from 'modules/eventLog';
+import { ProviderModule } from 'modules/provider/provider.module';
 import { AuthModule } from './../auth';
 import { CommonModule } from './../common';
 import { ConfigModule, ConfigService } from './../config';
@@ -31,6 +33,8 @@ import { AppService } from './app.service';
     CommonModule,
     EventModule,
     ConsumerModule,
+    ProviderModule,
+    EventLogModule,
   ],
   controllers: [AppController],
   providers: [AppService],
