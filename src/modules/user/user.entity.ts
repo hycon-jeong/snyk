@@ -1,11 +1,4 @@
-import { shortid } from 'shortid';
-import {
-  BeforeInsert,
-  Column,
-  Entity,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { PasswordTransformer } from './password.transformer';
 
 @Entity({
