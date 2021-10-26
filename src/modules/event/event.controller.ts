@@ -15,8 +15,8 @@ import CrudsEventService from './event.service';
   },
 })
 @UseGuards(AuthGuard())
-@Controller('api/eventLog')
-@ApiTags('eventLog')
+@Controller('api/event')
+@ApiTags('event')
 export class CrudEventController implements CrudController<EventEntity> {
   constructor(public readonly service: CrudsEventService) {}
 }
