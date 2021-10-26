@@ -1,22 +1,18 @@
-import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
+import { Module, Type } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CommonModule } from 'modules/common';
-import { ConfigModule, ConfigService } from './../config';
-import { EventController } from './event.controller';
-import { Event } from './event.entity';
-import { EventService } from './event.service';
+import { User } from 'modules/user';
+import { CrudEventController } from './event.controller';
+import { EventEntity } from './event.entity';
+import CrudsEventService from './event.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Event]),
+    TypeOrmModule.forFeature([EventEntity, User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    ConfigModule,
-    CommonModule,
   ],
-  controllers: [EventController],
-  providers: [EventService],
-  exports: [],
+  providers: [CrudsEventService],
+  exports: [CrudsEventService],
+  controllers: [CrudEventController],
 })
-export class EventModule {}
+export class EventLogModule {}

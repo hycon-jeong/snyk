@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('event', { schema: 'mycar' })
-export class Event {
+export class EventEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
