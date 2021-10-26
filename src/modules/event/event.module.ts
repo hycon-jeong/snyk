@@ -15,4 +15,4 @@ import CrudsEventService from './event.service';
   exports: [CrudsEventService],
   controllers: [CrudEventController],
 })
-export class EventLogModule {}
+export class EventModule {}
