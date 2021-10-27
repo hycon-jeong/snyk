@@ -1,14 +1,21 @@
 import { Module, Type } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'modules/user';
+import { ConsumerEventType, ConsumerLog, UserMapping } from 'modules/entities';
+import { Consumer } from 'modules/entities/consumer.entity';
+import { User } from 'modules/entities/user.entity';
 import { CrudConsumerController } from './consumer.controller';
-import { ConsumerEntity } from './consumer.entity';
 import CrudsConsumerService from './consumer.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ConsumerEntity, User]),
+    TypeOrmModule.forFeature([
+      Consumer,
+      User,
+      ConsumerLog,
+      ConsumerEventType,
+      UserMapping,
+    ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   providers: [CrudsConsumerService],

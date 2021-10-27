@@ -6,18 +6,17 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ConsumerEntity } from './consumer.entity';
+import { Consumer } from './consumer.entity';
 
-@Index('fk_consumer_log_consumer1_idx', ['consumerCode'], {})
 @Entity('consumer_log', { schema: 'mycar' })
 export class ConsumerLog {
-  @PrimaryGeneratedColumn({ type: 'int', name: ' id' })
-  id: number;
+  @PrimaryGeneratedColumn({ type: 'int', name: ' consumer_log_id' })
+  consumerLogId: number;
 
-  @Column('varchar', { name: 'consumer_code', length: 45 })
+  @Column('varchar', { name: 'consumer_code', length: 255 })
   consumerCode: string;
 
-  @Column('varchar', { name: 'status', nullable: true, length: 45 })
+  @Column('varchar', { name: 'status', nullable: true, length: 255 })
   status: string | null;
 
   @Column('datetime', {
@@ -27,27 +26,27 @@ export class ConsumerLog {
   })
   dateAt: Date | null;
 
-  @Column('varchar', { name: 'consumer_domain', nullable: true, length: 45 })
+  @Column('varchar', { name: 'consumer_domain', nullable: true, length: 255 })
   consumerDomain: string | null;
 
   @Column('varchar', {
     name: 'consumer_mac_address',
     nullable: true,
-    length: 45,
+    length: 255,
   })
   consumerMacAddress: string | null;
 
   @Column('varchar', {
     name: 'consumer_server_type',
     nullable: true,
-    length: 45,
+    length: 255,
   })
   consumerServerType: string | null;
 
-  @ManyToOne(() => ConsumerEntity, (consumer) => consumer.consumerLogs, {
+  @ManyToOne(() => Consumer, (consumer) => consumer.consumerLogs, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
-  @JoinColumn([{ name: 'id', referencedColumnName: 'id' }])
-  consumerCode2: ConsumerEntity;
+  @JoinColumn([{ name: 'consumer_code', referencedColumnName: 'consumerCode' }])
+  consumerCode2: Consumer;
 }

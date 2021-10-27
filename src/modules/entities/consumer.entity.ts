@@ -1,22 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ConsumerLog } from './consumerLog.entity';
+import { UserMapping } from './userMapping.entity';
 
 @Entity('consumer', { schema: 'mycar' })
-export class ConsumerEntity {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
-  id: number;
-
+export class Consumer {
   @ApiProperty()
-  @Column('varchar', { unique: true, name: 'consumer_code', length: 45 })
+  @Column('varchar', { name: 'consumer_code', unique: true, length: 255 })
   consumerCode: string;
 
   @ApiProperty()
-  @Column('varchar', { name: 'consumer_type', nullable: true, length: 45 })
+  @Column('varchar', { name: 'consumer_type', nullable: true, length: 255 })
   consumerType: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'consumer_name', nullable: true, length: 45 })
+  @Column('varchar', { name: 'consumer_name', nullable: true, length: 255 })
   consumerName: string | null;
 
   @ApiProperty()
@@ -27,7 +31,7 @@ export class ConsumerEntity {
   @Column('varchar', {
     name: 'consumer_server_port',
     nullable: true,
-    length: 45,
+    length: 255,
   })
   consumerServerPort: string | null;
 
@@ -35,24 +39,24 @@ export class ConsumerEntity {
   @Column('varchar', {
     name: 'consumer_mac_address',
     nullable: true,
-    length: 45,
+    length: 255,
   })
   consumerMacAddress: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'api_entry', nullable: true, length: 45 })
+  @Column('varchar', { name: 'api_entry', nullable: true, length: 255 })
   apiEntry: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'auth', nullable: true, length: 45 })
+  @Column('varchar', { name: 'auth', nullable: true, length: 255 })
   auth: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'consumer_os', nullable: true, length: 45 })
+  @Column('varchar', { name: 'consumer_os', nullable: true, length: 255 })
   consumerOs: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'consumer_domain', nullable: true, length: 45 })
+  @Column('varchar', { name: 'consumer_domain', nullable: true, length: 255 })
   consumerDomain: string | null;
 
   @ApiProperty()
@@ -60,11 +64,16 @@ export class ConsumerEntity {
     name: 'consumer_server_type',
     nullable: true,
     comment: '온프레미스 \n클라우드\n AWS\n AZURE \n  etc',
-    length: 45,
+    length: 255,
   })
   consumerServerType: string | null;
 
-  @ApiProperty()
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id', comment: 'Db generic id' })
+  id: number;
+
   @OneToMany(() => ConsumerLog, (consumerLog) => consumerLog.consumerCode2)
   consumerLogs: ConsumerLog[];
+
+  @OneToMany(() => UserMapping, (userMapping) => userMapping.consumerCode2)
+  userMappings: UserMapping[];
 }

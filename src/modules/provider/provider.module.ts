@@ -1,14 +1,25 @@
 import { Module, Type } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'modules/user';
+import {
+  Provider,
+  ProviderEventType,
+  ProviderLog,
+  User,
+  UserMapping,
+} from 'modules/entities';
 import { CrudProviderController } from './provider.controller';
-import { ProviderEntity } from './provider.entity';
 import CrudsProviderService from './provider.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProviderEntity, User]),
+    TypeOrmModule.forFeature([
+      Provider,
+      User,
+      UserMapping,
+      ProviderLog,
+      ProviderEventType,
+    ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   providers: [CrudsProviderService],

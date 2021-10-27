@@ -1,4 +1,3 @@
-export * from './password.transformer';
-export * from './user.entity';
+export * from './user.interface';
 export * from './user.service';
 export * from './user.module';

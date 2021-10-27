@@ -2,13 +2,13 @@ import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudController } from '@nestjsx/crud';
-import { EventEntity } from './event.entity';
+import { Event } from 'modules/entities';
 import CrudsEventService from './event.service';
 
 @ApiBearerAuth()
 @Crud({
   model: {
-    type: EventEntity,
+    type: Event,
   },
   routes: {
     only: ['getOneBase', 'getManyBase', 'createOneBase'],
@@ -17,6 +17,6 @@ import CrudsEventService from './event.service';
 @UseGuards(AuthGuard())
 @Controller('api/event')
 @ApiTags('event')
-export class CrudEventController implements CrudController<EventEntity> {
+export class CrudEventController implements CrudController<Event> {
   constructor(public readonly service: CrudsEventService) {}
 }

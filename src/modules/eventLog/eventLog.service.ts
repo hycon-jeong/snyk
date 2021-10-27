@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { EventLog } from 'modules/entities';
 import { Repository } from 'typeorm';
-import { EventLogEntity } from './eventLog.entity';
 
 @Injectable()
-export default class CrudsEventLogService extends TypeOrmCrudService<EventLogEntity> {
+export default class CrudsEventLogService extends TypeOrmCrudService<EventLog> {
   constructor(
-    @InjectRepository(EventLogEntity)
-    eventLogRepository: Repository<EventLogEntity>,
+    @InjectRepository(EventLog)
+    eventLogRepository: Repository<EventLog>,
   ) {
     super(eventLogRepository);
   }
