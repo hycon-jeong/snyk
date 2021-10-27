@@ -1,10 +1,5 @@
-import {
-  Column,
-  Entity,
-  Index,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Event } from './event.entity';
 
 @Entity('message', { schema: 'mycar' })
@@ -12,12 +7,15 @@ export class Message {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
+  @ApiProperty()
   @Column('varchar', { name: 'message_id', length: 255 })
   messageId: string;
 
+  @ApiProperty()
   @Column('varchar', { name: 'icon', nullable: true, length: 255 })
   icon: string | null;
 
+  @ApiProperty()
   @Column('json', { name: 'message', nullable: true })
   message: object | null;
 

@@ -3,6 +3,7 @@ import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { ConsumerModule } from 'modules/consumer/consumer.module';
 import { EventModule } from 'modules/event';
 import { EventLogModule } from 'modules/eventLog';
+import { MessageModule } from 'modules/message/message.module';
 import { ProviderModule } from 'modules/provider/provider.module';
 import { UserModule } from 'modules/user';
 import { AuthModule } from './../auth';
@@ -37,6 +38,7 @@ import { AppService } from './app.service';
     EventLogModule,
     ConsumerModule,
     ProviderModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
