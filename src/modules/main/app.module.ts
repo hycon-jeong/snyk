@@ -4,6 +4,7 @@ import { ConsumerModule } from 'modules/consumer/consumer.module';
 import { EventModule } from 'modules/event';
 import { EventLogModule } from 'modules/eventLog';
 import { ProviderModule } from 'modules/provider/provider.module';
+import { UserModule } from 'modules/user';
 import { AuthModule } from './../auth';
 import { CommonModule } from './../common';
 import { ConfigModule, ConfigService } from './../config';
@@ -31,6 +32,7 @@ import { AppService } from './app.service';
     ConfigModule,
     AuthModule,
     CommonModule,
+    UserModule,
     EventModule,
     EventLogModule,
     ConsumerModule,
