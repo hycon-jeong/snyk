@@ -5,6 +5,7 @@ import { EventModule } from 'modules/event';
 import { EventLogModule } from 'modules/eventLog';
 import { MessageModule } from 'modules/message/message.module';
 import { ProviderModule } from 'modules/provider/provider.module';
+import { StatisticsModule } from 'modules/statistics/statistics.module';
 import { UserModule } from 'modules/user';
 import { AuthModule } from './../auth';
 import { CommonModule } from './../common';
@@ -39,6 +40,7 @@ import { AppService } from './app.service';
     ConsumerModule,
     ProviderModule,
     MessageModule,
+    StatisticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
