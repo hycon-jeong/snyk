@@ -1,0 +1,8 @@
+{
+  "apps": [
+    {
+      "name": "mycar_BE",
+      "script": "yarn start"
+    }
+  ]
+}
