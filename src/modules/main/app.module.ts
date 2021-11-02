@@ -3,6 +3,7 @@ import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { ConsumerModule } from 'modules/consumer/consumer.module';
 import { EventModule } from 'modules/event';
 import { EventLogModule } from 'modules/eventLog';
+import { HealthModule } from 'modules/health/health.module';
 import { MessageModule } from 'modules/message/message.module';
 import { ProviderModule } from 'modules/provider/provider.module';
 import { StatisticsModule } from 'modules/statistics/statistics.module';
@@ -32,6 +33,7 @@ import { AppService } from './app.service';
       },
     }),
     ConfigModule,
+    HealthModule,
     AuthModule,
     CommonModule,
     UserModule,
