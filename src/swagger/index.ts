@@ -1,5 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+const YAML = require('yaml');
+import * as fs from 'fs';
 import {
   SWAGGER_API_ROOT,
   SWAGGER_API_NAME,
@@ -15,5 +17,8 @@ export const setupSwagger = (app: INestApplication) => {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
+  const yamlString: string = YAML.stringify(document);
+  fs.writeFileSync('./swagger.yaml', yamlString);
+
   SwaggerModule.setup(SWAGGER_API_ROOT, app, document);
 };

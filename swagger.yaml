@@ -1,0 +1,1684 @@
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      operationId: AppController_root
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      security:
+        - bearer: []
+  /health:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        "200":
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      &a1
+                      database:
+                        &a2
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example: *a1
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        "503":
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example: *a1
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        &a3
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database: *a2
+                      redis: *a3
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /api/auth/login:
+    post:
+      operationId: AuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginPayload"
+      responses:
+        "201":
+          description: Successful Login
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+      tags:
+        &a4
+        - authentication
+  /api/auth/register:
+    post:
+      operationId: AuthController_register
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterPayload"
+      responses:
+        "201":
+          description: Successful Registration
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+      tags: *a4
+  /api/auth/me:
+    get:
+      operationId: AuthController_getLoggedInUser
+      parameters: []
+      responses:
+        "200":
+          description: Successful Response
+        "401":
+          description: Unauthorized
+      tags: *a4
+      security:
+        - bearer: []
+  "/api/user/{id}":
+    get:
+      operationId: getOneBaseCrudUserControllerUser
+      summary: Retrieve a single User
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+      tags:
+        &a5
+        - user
+      security:
+        &a6
+        - bearer: []
+  /api/user:
+    get:
+      operationId: getManyBaseCrudUserControllerUser
+      summary: Retrieve multiple Users
+      parameters:
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: s
+          description: Adds search condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#search"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: filter
+          description: Adds filter condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#filter"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: or
+          description: Adds OR condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#or"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: sort
+          description: Adds sort by field. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#sort"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: limit
+          description: Limit amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#limit"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          description: Offset amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#offset"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: page
+          description: Page portion of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#page"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get many base response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/GetManyUserResponseDto"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+      tags: *a5
+      security: *a6
+    post:
+      operationId: createOneBaseCrudUserControllerUser
+      summary: Create a single User
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: Get create one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+      tags: *a5
+      security: *a6
+  "/api/event/{id}":
+    get:
+      operationId: getOneBaseCrudEventControllerEvent
+      summary: Retrieve a single Event
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+      tags:
+        &a7
+        - event
+      security:
+        &a8
+        - bearer: []
+  /api/event:
+    get:
+      operationId: getManyBaseCrudEventControllerEvent
+      summary: Retrieve multiple Events
+      parameters:
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: s
+          description: Adds search condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#search"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: filter
+          description: Adds filter condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#filter"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: or
+          description: Adds OR condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#or"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: sort
+          description: Adds sort by field. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#sort"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: limit
+          description: Limit amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#limit"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          description: Offset amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#offset"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: page
+          description: Page portion of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#page"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get many base response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/GetManyEventResponseDto"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/Event"
+      tags: *a7
+      security: *a8
+    post:
+      operationId: createOneBaseCrudEventControllerEvent
+      summary: Create a single Event
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "201":
+          description: Get create one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+      tags: *a7
+      security: *a8
+  "/api/eventLog/{id}":
+    get:
+      operationId: getOneBaseCrudEventLogControllerEventLog
+      summary: Retrieve a single EventLog
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventLog"
+      tags:
+        &a9
+        - eventLog
+      security:
+        &a10
+        - bearer: []
+  /api/eventLog:
+    get:
+      operationId: getManyBaseCrudEventLogControllerEventLog
+      summary: Retrieve multiple EventLogs
+      parameters:
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: s
+          description: Adds search condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#search"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: filter
+          description: Adds filter condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#filter"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: or
+          description: Adds OR condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#or"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: sort
+          description: Adds sort by field. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#sort"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: limit
+          description: Limit amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#limit"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          description: Offset amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#offset"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: page
+          description: Page portion of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#page"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get many base response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/GetManyEventLogResponseDto"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/EventLog"
+      tags: *a9
+      security: *a10
+    post:
+      operationId: createOneBaseCrudEventLogControllerEventLog
+      summary: Create a single EventLog
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventLog"
+      responses:
+        "201":
+          description: Get create one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventLog"
+      tags: *a9
+      security: *a10
+  "/api/consumer/{id}":
+    get:
+      operationId: getOneBaseCrudConsumerControllerConsumer
+      summary: Retrieve a single Consumer
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Consumer"
+      tags:
+        &a11
+        - consumer
+      security:
+        &a12
+        - bearer: []
+  /api/consumer:
+    get:
+      operationId: getManyBaseCrudConsumerControllerConsumer
+      summary: Retrieve multiple Consumers
+      parameters:
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: s
+          description: Adds search condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#search"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: filter
+          description: Adds filter condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#filter"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: or
+          description: Adds OR condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#or"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: sort
+          description: Adds sort by field. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#sort"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: limit
+          description: Limit amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#limit"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          description: Offset amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#offset"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: page
+          description: Page portion of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#page"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get many base response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/GetManyConsumerResponseDto"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/Consumer"
+      tags: *a11
+      security: *a12
+    post:
+      operationId: createOneBaseCrudConsumerControllerConsumer
+      summary: Create a single Consumer
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Consumer"
+      responses:
+        "201":
+          description: Get create one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Consumer"
+      tags: *a11
+      security: *a12
+  "/api/provider/{id}":
+    get:
+      operationId: getOneBaseCrudProviderControllerProvider
+      summary: Retrieve a single Provider
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Provider"
+      tags:
+        &a13
+        - provider
+      security:
+        &a14
+        - bearer: []
+  /api/provider:
+    get:
+      operationId: getManyBaseCrudProviderControllerProvider
+      summary: Retrieve multiple Providers
+      parameters:
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: s
+          description: Adds search condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#search"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: filter
+          description: Adds filter condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#filter"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: or
+          description: Adds OR condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#or"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: sort
+          description: Adds sort by field. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#sort"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: limit
+          description: Limit amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#limit"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          description: Offset amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#offset"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: page
+          description: Page portion of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#page"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get many base response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/GetManyProviderResponseDto"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/Provider"
+      tags: *a13
+      security: *a14
+    post:
+      operationId: createOneBaseCrudProviderControllerProvider
+      summary: Create a single Provider
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Provider"
+      responses:
+        "201":
+          description: Get create one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Provider"
+      tags: *a13
+      security: *a14
+  "/api/message/{id}":
+    get:
+      operationId: getOneBaseMessageControllerMessage
+      summary: Retrieve a single Message
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+      tags:
+        &a15
+        - message
+      security:
+        &a16
+        - bearer: []
+  /api/message:
+    get:
+      operationId: getManyBaseMessageControllerMessage
+      summary: Retrieve multiple Messages
+      parameters:
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: s
+          description: Adds search condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#search"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: filter
+          description: Adds filter condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#filter"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: or
+          description: Adds OR condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#or"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: sort
+          description: Adds sort by field. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#sort"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: limit
+          description: Limit amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#limit"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          description: Offset amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#offset"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: page
+          description: Page portion of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#page"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get many base response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/GetManyMessageResponseDto"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/Message"
+      tags: *a15
+      security: *a16
+    post:
+      operationId: createOneBaseMessageControllerMessage
+      summary: Create a single Message
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        "201":
+          description: Get create one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+      tags: *a15
+      security: *a16
+  /api/statistics/total:
+    get:
+      operationId: StatisticsController_getTotal
+      parameters: []
+      responses:
+        "200":
+          description: Fetch Profile Request Received
+        "400":
+          description: Fetch Profile Request Failed
+      tags:
+        - statistics
+      security:
+        - bearer: []
+info:
+  title: MyCarService API
+  description: MyCarService API Description
+  version: 1.0.0
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    LoginPayload:
+      type: object
+      properties:
+        userId:
+          type: string
+        password:
+          type: string
+      required:
+        - userId
+        - password
+    RegisterPayload:
+      type: object
+      properties:
+        userId:
+          type: string
+        name:
+          type: string
+        password:
+          type: string
+        passwordConfirmation:
+          type: string
+      required:
+        - userId
+        - name
+        - password
+        - passwordConfirmation
+    GetManyUserResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        count:
+          type: number
+        total:
+          type: number
+        page:
+          type: number
+        pageCount:
+          type: number
+      required:
+        - data
+        - count
+        - total
+        - page
+        - pageCount
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
+      required:
+        - name
+        - role
+        - status
+    GetManyEventResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+        count:
+          type: number
+        total:
+          type: number
+        page:
+          type: number
+        pageCount:
+          type: number
+      required:
+        - data
+        - count
+        - total
+        - page
+        - pageCount
+    Event:
+      type: object
+      properties:
+        messageId:
+          type: string
+        userId:
+          type: string
+        providerId:
+          type: string
+        providerKey:
+          type: string
+        providerCode:
+          type: string
+        eventType:
+          type: string
+        categroy:
+          type: string
+        issuedAt:
+          format: date-time
+          type: string
+        userMappingId:
+          type: number
+      required:
+        - messageId
+        - userId
+        - providerId
+        - providerKey
+        - providerCode
+        - eventType
+        - categroy
+        - issuedAt
+        - userMappingId
+    GetManyEventLogResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventLog"
+        count:
+          type: number
+        total:
+          type: number
+        page:
+          type: number
+        pageCount:
+          type: number
+      required:
+        - data
+        - count
+        - total
+        - page
+        - pageCount
+    EventLog:
+      type: object
+      properties:
+        eventType:
+          type: string
+        status:
+          type: string
+        dateAt:
+          format: date-time
+          type: string
+        userId:
+          type: string
+        categroy:
+          type: string
+        consumerCode:
+          type: string
+        providerKey:
+          type: string
+        message:
+          type: object
+        transmissionAt:
+          format: date-time
+          type: string
+        receptionAt:
+          format: date-time
+          type: string
+        eventId:
+          type: number
+      required:
+        - eventType
+        - status
+        - dateAt
+        - userId
+        - categroy
+        - consumerCode
+        - providerKey
+        - message
+        - transmissionAt
+        - receptionAt
+        - eventId
+    GetManyConsumerResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Consumer"
+        count:
+          type: number
+        total:
+          type: number
+        page:
+          type: number
+        pageCount:
+          type: number
+      required:
+        - data
+        - count
+        - total
+        - page
+        - pageCount
+    Consumer:
+      type: object
+      properties:
+        consumerCode:
+          type: string
+        consumerType:
+          type: string
+        consumerName:
+          type: string
+        consumerServerIp:
+          type: number
+        consumerServerPort:
+          type: string
+        consumerMacAddress:
+          type: string
+        apiEntry:
+          type: string
+        auth:
+          type: string
+        consumerOs:
+          type: string
+        consumerDomain:
+          type: string
+        consumerServerType:
+          type: string
+      required:
+        - consumerCode
+        - consumerType
+        - consumerName
+        - consumerServerIp
+        - consumerServerPort
+        - consumerMacAddress
+        - apiEntry
+        - auth
+        - consumerOs
+        - consumerDomain
+        - consumerServerType
+    GetManyProviderResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Provider"
+        count:
+          type: number
+        total:
+          type: number
+        page:
+          type: number
+        pageCount:
+          type: number
+      required:
+        - data
+        - count
+        - total
+        - page
+        - pageCount
+    Provider:
+      type: object
+      properties:
+        providerCode:
+          type: string
+        providerName:
+          type: string
+        providerServerIp:
+          type: string
+        providerServerPort:
+          type: string
+        providerMacAddress:
+          type: string
+        apiEntry:
+          type: string
+        auth:
+          type: string
+        providerOs:
+          type: string
+        providerDomain:
+          type: string
+        providerServerType:
+          type: string
+      required:
+        - providerCode
+        - providerName
+        - providerServerIp
+        - providerServerPort
+        - providerMacAddress
+        - apiEntry
+        - auth
+        - providerOs
+        - providerDomain
+        - providerServerType
+    GetManyMessageResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Message"
+        count:
+          type: number
+        total:
+          type: number
+        page:
+          type: number
+        pageCount:
+          type: number
+      required:
+        - data
+        - count
+        - total
+        - page
+        - pageCount
+    Message:
+      type: object
+      properties:
+        messageId:
+          type: string
+        icon:
+          type: string
+        message:
+          type: object
+      required:
+        - messageId
+        - icon
+        - message
