@@ -11,6 +11,7 @@ import { UserMapping } from './userMapping.entity';
 import { UserLog } from './userLog.entity';
 import { PasswordTransformer } from './password.transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Roles } from 'modules/common/constants/roles';
 
 @Entity('users', { schema: 'mycar' })
 export class User {
@@ -24,8 +25,13 @@ export class User {
   name: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'role', nullable: true, length: 255 })
-  role: string | null;
+  @Column({
+    type: 'enum',
+    name: 'role',
+    enum: Roles,
+    default: Roles.USER,
+  })
+  role: Roles;
 
   @ApiProperty()
   @Column('varchar', { name: 'status', nullable: true, length: 255 })
