@@ -6,6 +6,7 @@ import { EventLogModule } from 'modules/eventLog';
 import { HealthModule } from 'modules/health/health.module';
 import { MessageModule } from 'modules/message/message.module';
 import { ProviderModule } from 'modules/provider/provider.module';
+import { SentryModule } from 'modules/sentry/sentry.module';
 import { StatisticsModule } from 'modules/statistics/statistics.module';
 import { UserModule } from 'modules/user';
 import { AuthModule } from './../auth';
@@ -13,7 +14,8 @@ import { CommonModule } from './../common';
 import { ConfigModule, ConfigService } from './../config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
+import { config } from 'dotenv';
+config();
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -33,6 +35,11 @@ import { AppService } from './app.service';
       },
     }),
     ConfigModule,
+    SentryModule.forRoot({
+      dsn:  process.env.SENTRY_DNS,
+      tracesSampleRate: 1.0,
+      debug: true,
+    }),
     HealthModule,
     AuthModule,
     CommonModule,
