@@ -13,3 +13,4 @@ export * from './userLog.entity';
 export * from './userMapping.entity';
 export * from './userMappingLog.entity';
 export * from './user.entity';
+export * from './fcmToken.entity';

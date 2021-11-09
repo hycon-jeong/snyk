@@ -17,6 +17,11 @@ import { AppService } from './app.service';
 import { config } from 'dotenv';
 import { winstonOptions } from './app-logging';
 import { WinstonModule } from 'nest-winston';
+import * as admin from 'firebase-admin';
+import { FirebaseAdminModule } from 'modules/firebase';
+import { FcmTokenModule } from 'modules/fcmToken';
+var serviceAccount = require('../../../firebase.json');
+
 config();
 @Module({
   imports: [
@@ -37,12 +42,24 @@ config();
       },
     }),
     ConfigModule,
-    SentryModule.forRoot({
-      dsn: process.env.SENTRY_DNS,
-      tracesSampleRate: 1.0,
-      debug: true,
-    }),
+    // SentryModule.forRoot({
+    //   dsn: process.env.SENTRY_DNS,
+    //   tracesSampleRate: 1.0,
+    //   debug: true,
+    // }),
     WinstonModule.forRoot(winstonOptions),
+    FirebaseAdminModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        console.log('configService.get(client_email)');
+        console.log(configService.get('project_id'));
+        return {
+          credential: admin.credential.cert(serviceAccount),
+          // databaseURL: `https://${configService.get('project_id')}.firebaseio.com`
+        };
+      },
+    }),
     HealthModule,
     AuthModule,
     CommonModule,
@@ -53,6 +70,7 @@ config();
     ProviderModule,
     MessageModule,
     StatisticsModule,
+    FcmTokenModule,
   ],
   controllers: [AppController],
   providers: [AppService],

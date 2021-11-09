@@ -16,15 +16,18 @@ export class Message {
   icon: string | null;
 
   @ApiProperty()
-  @Column('json', { name: 'message', nullable: true })
-  message: object | null;
+  @Column('varchar', { name: 'message', nullable: true })
+  message: string | null;
 
+  @ApiProperty()
   @Column('datetime', { name: 'transmission_at', nullable: true })
   transmissionAt: Date | null;
 
+  @ApiProperty()
   @Column('datetime', { name: 'reception_at', nullable: true })
   receptionAt: Date | null;
 
+  @ApiProperty()
   @Column('tinyint', { name: 'transmission_flag', nullable: true, width: 1 })
   transmissionFlag: boolean | null;
 
