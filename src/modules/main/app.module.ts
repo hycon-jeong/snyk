@@ -15,6 +15,8 @@ import { ConfigModule, ConfigService } from './../config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { config } from 'dotenv';
+import { winstonOptions } from './app-logging';
+import { WinstonModule } from 'nest-winston';
 config();
 @Module({
   imports: [
@@ -36,10 +38,11 @@ config();
     }),
     ConfigModule,
     SentryModule.forRoot({
-      dsn:  process.env.SENTRY_DNS,
+      dsn: process.env.SENTRY_DNS,
       tracesSampleRate: 1.0,
       debug: true,
     }),
+    WinstonModule.forRoot(winstonOptions),
     HealthModule,
     AuthModule,
     CommonModule,

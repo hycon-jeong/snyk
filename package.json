@@ -38,8 +38,12 @@
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "compression": "^1.7.4",
     "dotenv": "^10.0.0",
+    "express-rate-limit": "^5.5.1",
+    "helmet": "^4.6.0",
     "mysql": "^2.18.1",
+    "nest-winston": "^1.6.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
@@ -47,6 +51,8 @@
     "swagger-ui-express": "^4.1.6",
     "typeorm": "^0.2.30",
     "typescript": "^4.4.2",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
