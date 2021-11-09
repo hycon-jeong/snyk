@@ -11,7 +11,7 @@ import { MessageService } from './message.service';
     type: Message,
   },
   routes: {
-    only: ['getOneBase', 'getManyBase', 'createOneBase'],
+    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
   },
 })
 @UseGuards(AuthGuard())

@@ -11,7 +11,7 @@ import CrudsConsumerService from './consumer.service';
     type: Consumer,
   },
   routes: {
-    only: ['getOneBase', 'getManyBase', 'createOneBase'],
+    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
   },
 })
 @UseGuards(AuthGuard())

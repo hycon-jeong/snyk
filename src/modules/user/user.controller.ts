@@ -14,7 +14,7 @@ import { UsersService } from './user.service';
     type: User,
   },
   routes: {
-    only: ['getOneBase', 'getManyBase', 'createOneBase'],
+    only: ['getOneBase', 'getManyBase', 'updateOneBase'],
   },
 })
 @Controller('api/user')

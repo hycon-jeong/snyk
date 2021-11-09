@@ -215,6 +215,30 @@ paths:
       security:
         &a6
         - bearer: []
+    patch:
+      operationId: updateOneBaseCrudUserControllerUser
+      summary: Update a single User
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+      tags: *a5
+      security: *a6
   /api/user:
     get:
       operationId: getManyBaseCrudUserControllerUser
@@ -335,25 +359,6 @@ paths:
                       $ref: "#/components/schemas/User"
       tags: *a5
       security: *a6
-    post:
-      operationId: createOneBaseCrudUserControllerUser
-      summary: Create a single User
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/User"
-      responses:
-        "201":
-          description: Get create one base response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-      tags: *a5
-      security: *a6
   "/api/event/{id}":
     get:
       operationId: getOneBaseCrudEventControllerEvent
@@ -411,6 +416,44 @@ paths:
       security:
         &a8
         - bearer: []
+    patch:
+      operationId: updateOneBaseCrudEventControllerEvent
+      summary: Update a single Event
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+      tags: *a7
+      security: *a8
+    delete:
+      operationId: deleteOneBaseCrudEventControllerEvent
+      summary: Delete a single Event
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Delete one base response
+      tags: *a7
+      security: *a8
   /api/event:
     get:
       operationId: getManyBaseCrudEventControllerEvent
@@ -607,6 +650,44 @@ paths:
       security:
         &a10
         - bearer: []
+    patch:
+      operationId: updateOneBaseCrudEventLogControllerEventLog
+      summary: Update a single EventLog
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventLog"
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventLog"
+      tags: *a9
+      security: *a10
+    delete:
+      operationId: deleteOneBaseCrudEventLogControllerEventLog
+      summary: Delete a single EventLog
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Delete one base response
+      tags: *a9
+      security: *a10
   /api/eventLog:
     get:
       operationId: getManyBaseCrudEventLogControllerEventLog
@@ -803,6 +884,44 @@ paths:
       security:
         &a12
         - bearer: []
+    patch:
+      operationId: updateOneBaseCrudConsumerControllerConsumer
+      summary: Update a single Consumer
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Consumer"
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Consumer"
+      tags: *a11
+      security: *a12
+    delete:
+      operationId: deleteOneBaseCrudConsumerControllerConsumer
+      summary: Delete a single Consumer
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Delete one base response
+      tags: *a11
+      security: *a12
   /api/consumer:
     get:
       operationId: getManyBaseCrudConsumerControllerConsumer
@@ -999,6 +1118,44 @@ paths:
       security:
         &a14
         - bearer: []
+    patch:
+      operationId: updateOneBaseCrudProviderControllerProvider
+      summary: Update a single Provider
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Provider"
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Provider"
+      tags: *a13
+      security: *a14
+    delete:
+      operationId: deleteOneBaseCrudProviderControllerProvider
+      summary: Delete a single Provider
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Delete one base response
+      tags: *a13
+      security: *a14
   /api/provider:
     get:
       operationId: getManyBaseCrudProviderControllerProvider
@@ -1195,6 +1352,44 @@ paths:
       security:
         &a16
         - bearer: []
+    patch:
+      operationId: updateOneBaseMessageControllerMessage
+      summary: Update a single Message
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+      tags: *a15
+      security: *a16
+    delete:
+      operationId: deleteOneBaseMessageControllerMessage
+      summary: Delete a single Message
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Delete one base response
+      tags: *a15
+      security: *a16
   /api/message:
     get:
       operationId: getManyBaseMessageControllerMessage

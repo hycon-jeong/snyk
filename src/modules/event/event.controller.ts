@@ -11,7 +11,7 @@ import CrudsEventService from './event.service';
     type: Event,
   },
   routes: {
-    only: ['getOneBase', 'getManyBase', 'createOneBase'],
+    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
   },
 })
 @UseGuards(AuthGuard())

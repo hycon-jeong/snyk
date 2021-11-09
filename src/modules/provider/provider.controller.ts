@@ -11,7 +11,7 @@ import CrudsProviderService from './provider.service';
     type: Provider,
   },
   routes: {
-    only: ['getOneBase', 'getManyBase', 'createOneBase'],
+    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
   },
 })
 @UseGuards(AuthGuard())
