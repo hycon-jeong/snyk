@@ -146,6 +146,24 @@ paths:
         "401":
           description: Unauthorized
       tags: *a4
+  /api/auth/register/mo:
+    post:
+      operationId: AuthController_moRegister
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MoRegisterPayload"
+      responses:
+        "201":
+          description: Successful Registration
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+      tags: *a4
   /api/auth/me:
     get:
       operationId: AuthController_getLoggedInUser
@@ -359,53 +377,20 @@ paths:
                       $ref: "#/components/schemas/User"
       tags: *a5
       security: *a6
-  "/api/event/{id}":
-    get:
-      operationId: getOneBaseCrudEventControllerEvent
-      summary: Retrieve a single Event
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: number
-        - name: fields
-          description: Selects resource fields. <a
-            href="https://github.com/nestjsx/crud/wiki/Requests#select"
-            target="_blank">Docs</a>
-          required: false
-          in: query
-          schema:
-            type: array
-            items:
-              type: string
-          style: form
-          explode: false
-        - name: join
-          description: Adds relational resources. <a
-            href="https://github.com/nestjsx/crud/wiki/Requests#join"
-            target="_blank">Docs</a>
-          required: false
-          in: query
-          schema:
-            type: array
-            items:
-              type: string
-          style: form
-          explode: true
-        - name: cache
-          description: Reset cache (if was enabled). <a
-            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
-            target="_blank">Docs</a>
-          required: false
-          in: query
-          schema:
-            type: integer
-            minimum: 0
-            maximum: 1
+  /api/event:
+    post:
+      operationId: createOneBaseCrudEventControllerEvent
+      summary: Create a single Event
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
       responses:
-        "200":
-          description: Get one base response
+        "201":
+          description: Get create one base response
           content:
             application/json:
               schema:
@@ -416,45 +401,6 @@ paths:
       security:
         &a8
         - bearer: []
-    patch:
-      operationId: updateOneBaseCrudEventControllerEvent
-      summary: Update a single Event
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: number
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Event"
-      responses:
-        "200":
-          description: Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Event"
-      tags: *a7
-      security: *a8
-    delete:
-      operationId: deleteOneBaseCrudEventControllerEvent
-      summary: Delete a single Event
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: number
-      responses:
-        "200":
-          description: Delete one base response
-      tags: *a7
-      security: *a8
-  /api/event:
     get:
       operationId: getManyBaseCrudEventControllerEvent
       summary: Retrieve multiple Events
@@ -574,10 +520,68 @@ paths:
                       $ref: "#/components/schemas/Event"
       tags: *a7
       security: *a8
-    post:
-      operationId: createOneBaseCrudEventControllerEvent
-      summary: Create a single Event
-      parameters: []
+  "/api/event/{id}":
+    get:
+      operationId: getOneBaseCrudEventControllerEvent
+      summary: Retrieve a single Event
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+      tags: *a7
+      security: *a8
+    patch:
+      operationId: updateOneBaseCrudEventControllerEvent
+      summary: Update a single Event
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
       requestBody:
         required: true
         content:
@@ -585,12 +589,26 @@ paths:
             schema:
               $ref: "#/components/schemas/Event"
       responses:
-        "201":
-          description: Get create one base response
+        "200":
+          description: Response
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Event"
+      tags: *a7
+      security: *a8
+    delete:
+      operationId: deleteOneBaseCrudEventControllerEvent
+      summary: Delete a single Event
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Delete one base response
       tags: *a7
       security: *a8
   "/api/eventLog/{id}":
@@ -1542,6 +1560,240 @@ paths:
         - statistics
       security:
         - bearer: []
+  /api/fcm-token:
+    post:
+      operationId: createOneBaseCrudFcmTokenControllerFcmToken
+      summary: Create a single FcmToken
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FcmToken"
+      responses:
+        "201":
+          description: Get create one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FcmToken"
+      tags:
+        &a17
+        - fcmToken
+      security:
+        &a18
+        - bearer: []
+    get:
+      operationId: getManyBaseCrudFcmTokenControllerFcmToken
+      summary: Retrieve multiple FcmTokens
+      parameters:
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: s
+          description: Adds search condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#search"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: filter
+          description: Adds filter condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#filter"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: or
+          description: Adds OR condition. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#or"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: sort
+          description: Adds sort by field. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#sort"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: limit
+          description: Limit amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#limit"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          description: Offset amount of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#offset"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: page
+          description: Page portion of resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#page"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get many base response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/GetManyFcmTokenResponseDto"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/FcmToken"
+      tags: *a17
+      security: *a18
+  "/api/fcm-token/{id}":
+    get:
+      operationId: getOneBaseCrudFcmTokenControllerFcmToken
+      summary: Retrieve a single FcmToken
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: fields
+          description: Selects resource fields. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#select"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: join
+          description: Adds relational resources. <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#join"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: cache
+          description: Reset cache (if was enabled). <a
+            href="https://github.com/nestjsx/crud/wiki/Requests#cache"
+            target="_blank">Docs</a>
+          required: false
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          description: Get one base response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FcmToken"
+      tags: *a17
+      security: *a18
+    patch:
+      operationId: updateOneBaseCrudFcmTokenControllerFcmToken
+      summary: Update a single FcmToken
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FcmToken"
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FcmToken"
+      tags: *a17
+      security: *a18
+    delete:
+      operationId: deleteOneBaseCrudFcmTokenControllerFcmToken
+      summary: Delete a single FcmToken
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Delete one base response
+      tags: *a17
+      security: *a18
 info:
   title: MyCarService API
   description: MyCarService API Description
@@ -1576,6 +1828,7 @@ components:
         role:
           type: string
           enum:
+            &a19
             - USER
             - ADMIN
         password:
@@ -1588,6 +1841,32 @@ components:
         - role
         - password
         - passwordConfirmation
+    MoRegisterPayload:
+      type: object
+      properties:
+        userId:
+          type: string
+        role:
+          type: string
+          enum: *a19
+        password:
+          type: string
+        verificationCode:
+          type: string
+          description: verification code
+        providerCode:
+          type: string
+          description: provider code
+        consumerCode:
+          type: string
+          description: consumer code
+      required:
+        - userId
+        - role
+        - password
+        - verificationCode
+        - providerCode
+        - consumerCode
     GetManyUserResponseDto:
       type: object
       properties:
@@ -1878,8 +2157,50 @@ components:
         icon:
           type: string
         message:
-          type: object
+          type: string
+        transmissionAt:
+          format: date-time
+          type: string
+        receptionAt:
+          format: date-time
+          type: string
+        transmissionFlag:
+          type: boolean
       required:
         - messageId
         - icon
         - message
+        - transmissionAt
+        - receptionAt
+        - transmissionFlag
+    GetManyFcmTokenResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/FcmToken"
+        count:
+          type: number
+        total:
+          type: number
+        page:
+          type: number
+        pageCount:
+          type: number
+      required:
+        - data
+        - count
+        - total
+        - page
+        - pageCount
+    FcmToken:
+      type: object
+      properties:
+        token:
+          type: string
+        client_id:
+          type: string
+      required:
+        - token
+        - client_id

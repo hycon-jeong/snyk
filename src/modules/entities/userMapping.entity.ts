@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Event } from './event.entity';
 import { Consumer } from './consumer.entity';
@@ -14,8 +15,8 @@ import { UserMappingLog } from './userMappingLog.entity';
 
 @Entity('user-mapping', { schema: 'mycar' })
 export class UserMapping {
-  @Column('int', { primary: true, name: 'user_mapping_id' })
-  userMappingId: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column('varchar', { name: 'user_id', length: 255 })
   userId: string;
@@ -25,9 +26,6 @@ export class UserMapping {
 
   @Column('varchar', { name: 'consumer_code', nullable: true, length: 255 })
   consumerCode: string | null;
-
-  @Column('varchar', { name: 'id', length: 255 })
-  id: string;
 
   @Column('varchar', { name: 'key', length: 255 })
   key: string;
