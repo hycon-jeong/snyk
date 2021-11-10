@@ -36,10 +36,12 @@ import CrudsEventService from './event.service';
   query: {
     join: {
       message: {
+        alias: 'message_owner',
         eager: true,
       },
       user: {
         eager: true,
+        alias: 'user_owner',
         exclude: ['password'],
       },
     },
