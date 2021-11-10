@@ -39,7 +39,7 @@ export class UserMappingLog {
   @JoinColumn([
     {
       name: 'user_mapping_id',
-      referencedColumnName: 'userMappingId',
+      referencedColumnName: 'id',
     },
   ])
   userMapping: UserMapping;
