@@ -50,12 +50,14 @@ export class CrudEventController implements CrudController<Event> {
     const fcmTokens = await this.fcmTokenService.find({});
     const tokensArray = fcmTokens.map((item) => item.token);
     console.log(tokensArray);
-    this.firebaseMessage.sendToDevice(tokensArray, {
-      notification: {
-        title: 'My car service event title',
-        body: dto.messageId || 'notificaiton message',
-      },
-    });
+    if (tokensArray && tokensArray.length > 0) {
+      this.firebaseMessage.sendToDevice(tokensArray, {
+        notification: {
+          title: 'My car service event title',
+          body: dto.messageId || 'notificaiton message',
+        },
+      });
+    }
     // console.log(" dto.message ==========")
     // console.log( dto)
     // this.firebaseMessage.sendToDevice(
