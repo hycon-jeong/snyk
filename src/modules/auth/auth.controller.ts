@@ -6,7 +6,7 @@ import { User } from 'modules/entities/user.entity';
 import { AuthService, LoginPayload, RegisterPayload } from './';
 import { CurrentUser } from './../common/decorator/current-user.decorator';
 import { UsersService } from './../user';
-import { MoRegisterPayload } from './Moregister.payload';
+import { MoRegisterPayload } from './moRegister.payload';
 
 @Controller('api/auth')
 @ApiTags('authentication')
