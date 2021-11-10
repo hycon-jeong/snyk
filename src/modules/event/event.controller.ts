@@ -18,7 +18,6 @@ import { FirebaseMessagingService } from 'modules/firebase';
 import { MessageService } from 'modules/message/message.service';
 import { UsersService } from 'modules/user';
 import { CreateEventDto } from './dto/create-event.dto';
-import { UpdateEventDto } from './dto/update-event.dto';
 import CrudsEventService from './event.service';
 
 @ApiBearerAuth()
