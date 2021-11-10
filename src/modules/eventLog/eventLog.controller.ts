@@ -11,7 +11,13 @@ import CrudsEventLogService from './eventLog.service';
     type: EventLog,
   },
   routes: {
-    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    only: [
+      'getOneBase',
+      'getManyBase',
+      'createOneBase',
+      'updateOneBase',
+      'deleteOneBase',
+    ],
   },
 })
 @UseGuards(AuthGuard())
