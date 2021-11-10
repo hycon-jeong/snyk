@@ -11,6 +11,7 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
+import { EventStatus } from 'modules/common/constants/eventStatus';
 import { Event, User } from 'modules/entities';
 import CrudsFcmTokenService from 'modules/fcmToken/fcmToken.service';
 import { FirebaseMessagingService } from 'modules/firebase';
@@ -110,7 +111,7 @@ export class CrudEventController implements CrudController<Event> {
       message: messageData,
       categroy: dto.category,
       eventType: dto.event_type,
-      status: dto.status,
+      status: EventStatus.COMPLETE,
       providerId: dto.provider_id,
       providerCode: dto.provider_code,
       providerKey: '',
