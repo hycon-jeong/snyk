@@ -32,17 +32,20 @@ export class StatisticsController {
     const totalProvider = this.statisticsService.getTotalProvider();
     const totalEvent = this.statisticsService.getTotalEvent();
     const totalMessage = this.statisticsService.getTotalMessage();
+    const totalUser = this.statisticsService.getTotalUser();
     const allPromise = await Promise.all([
       totalConsumer,
       totalProvider,
       totalEvent,
       totalMessage,
+      totalUser,
     ]);
     return {
       consumer: allPromise[0] || 0,
       provider: allPromise[1] || 0,
       event: allPromise[2] || 0,
       message: allPromise[3] || 0,
+      user: allPromise[4] || 0,
     };
   }
 }

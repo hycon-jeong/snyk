@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from 'modules/config';
-import { Consumer, Event, Message, Provider } from 'modules/entities';
+import { Consumer, Event, Message, Provider, User } from 'modules/entities';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -16,6 +16,8 @@ export class StatisticsService {
     private readonly eventRepository: Repository<Event>,
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
   async getTotalConsumer() {
     const totalConsumer = this.consumerRepository.count();
@@ -34,5 +36,9 @@ export class StatisticsService {
   async getTotalMessage() {
     const totalMessage = this.messageRepository.count();
     return totalMessage;
+  }
+
+  async getTotalUser() {
+    return this.userRepository.count({ where: { status: null } });
   }
 }
