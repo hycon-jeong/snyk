@@ -42,11 +42,11 @@ config();
       },
     }),
     ConfigModule,
-    // SentryModule.forRoot({
-    //   dsn: process.env.SENTRY_DNS,
-    //   tracesSampleRate: 1.0,
-    //   debug: true,
-    // }),
+    SentryModule.forRoot({
+      dsn: process.env.SENTRY_DNS,
+      tracesSampleRate: 1.0,
+      debug: true,
+    }),
     WinstonModule.forRoot(winstonOptions),
     FirebaseAdminModule.forRootAsync({
       imports: [ConfigModule],
