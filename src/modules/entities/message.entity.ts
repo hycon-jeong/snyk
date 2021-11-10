@@ -8,10 +8,6 @@ export class Message {
   id: number;
 
   @ApiProperty()
-  @Column('varchar', { name: 'message_id', length: 255 })
-  messageId: string;
-
-  @ApiProperty()
   @Column('varchar', { name: 'icon', nullable: true, length: 255 })
   icon: string | null;
 

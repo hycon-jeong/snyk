@@ -13,19 +13,20 @@ import { UserMapping } from './userMapping.entity';
 import { EventLog } from './eventLog.entity';
 import { Eventitemresult } from './eventitemresult.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from './user.entity';
+import { EventStatus } from 'modules/common/constants/eventStatus';
 
 @Entity('event', { schema: 'mycar' })
 export class Event {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @ApiProperty()
-  @Column('varchar', { name: 'message_id', length: 255 })
-  messageId: string;
-
-  @ApiProperty()
-  @Column('varchar', { name: 'user_id', nullable: true, length: 255 })
-  userId: string | null;
+  @ManyToOne(() => User, (users) => users.id, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @ApiProperty()
   @Column('varchar', { name: 'provider_id', nullable: true, length: 255 })
@@ -51,10 +52,6 @@ export class Event {
   @Column('datetime', { name: 'issued_at', nullable: true })
   issuedAt: Date | null;
 
-  @ApiProperty()
-  @Column('int', { name: 'user_mapping_id' })
-  userMappingId: number;
-
   @ManyToOne(() => EventType, (eventType) => eventType.events, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
@@ -62,23 +59,36 @@ export class Event {
   @JoinColumn([{ name: 'event_type', referencedColumnName: 'eventType' }])
   eventType2: EventType;
 
-  @ManyToOne(() => Message, (message) => message.events, {
+  @ManyToOne(() => Message, (message) => message.id, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
-  @JoinColumn([{ name: 'message_id', referencedColumnName: 'messageId' }])
+  @JoinColumn({ name: 'message_id' })
   message: Message;
 
-  @ManyToOne(() => UserMapping, (userMapping) => userMapping.events, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
+  @ApiProperty()
+  @Column({
+    type: 'enum',
+    name: 'status',
+    enum: EventStatus,
+    default: EventStatus.SENDING,
   })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'userId' }])
-  user: UserMapping;
+  status: EventStatus;
+
+  // @ApiProperty()
+  // @ManyToOne(() => UserMapping, (userMapping) => userMapping.id, {
+  //   onDelete: 'NO ACTION',
+  //   onUpdate: 'NO ACTION',
+  // })
+  // @JoinColumn({ name: 'user_mapping_id' })
+  // userMapping: UserMapping;
 
   @OneToMany(() => EventLog, (eventLog) => eventLog.event)
   eventLogs: EventLog[];
 
   @OneToMany(() => Eventitemresult, (eventitemresult) => eventitemresult.event)
   eventitemresults: Eventitemresult[];
+}
+function ApiModelProperty(arg0: { type: typeof User }) {
+  throw new Error('Function not implemented.');
 }
