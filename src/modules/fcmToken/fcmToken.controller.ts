@@ -11,6 +11,7 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud';
 import { FcmToken, User } from 'modules/entities';
+import { FirebaseMessagingService } from 'modules/firebase';
 import CrudsFcmTokenService from './fcmToken.service';
 
 @ApiBearerAuth()
@@ -42,7 +43,10 @@ import CrudsFcmTokenService from './fcmToken.service';
   },
 })
 export class CrudFcmTokenController implements CrudController<FcmToken> {
-  constructor(public readonly service: CrudsFcmTokenService) {}
+  constructor(
+    public readonly service: CrudsFcmTokenService,
+    private firebaseMessage: FirebaseMessagingService,
+  ) {}
 
   get base(): CrudController<FcmToken> {
     return this;
@@ -54,9 +58,12 @@ export class CrudFcmTokenController implements CrudController<FcmToken> {
     @ParsedBody() dto: FcmToken,
   ) {
     const existsFcmToken = await this.service.getExistsToken({
-      user: req.parsed.authPersist.user,
-      client_id: dto.client_id,
+      // user: req.parsed.authPersist.user,
+      // client_id: dto.client_id,
+      token: dto.token,
     });
+
+    // this.firebaseMessage.subscribeToTopic([dto.token], '/topics/all')
     if (existsFcmToken && existsFcmToken.id) {
       return this.base.updateOneBase(req, { ...existsFcmToken, ...dto });
     } else {

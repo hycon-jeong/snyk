@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { RequestQueryBuilder } from '@nestjsx/crud-request';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { FcmToken } from 'modules/entities';
@@ -14,7 +15,24 @@ export default class CrudsFcmTokenService extends TypeOrmCrudService<FcmToken> {
   }
 
   async getExistsToken(payload: Partial<FcmToken>): Promise<FcmToken> {
-    const token = await this.findOne({ ...payload });
+    // const token = await this.findOne({ user: payload.user, client_id: payload.client_id });
+    const token = await this.findOne({ token: payload.token });
+    // const token = await (await this.createBuilder({search: {token: payload.token}}, {})).getOne();
+
+    const queryString = await RequestQueryBuilder.create({
+      search: {
+        $or: [
+          {
+            client_id: payload.client_id,
+          },
+          {
+            token: payload.token,
+          },
+        ],
+      },
+    }).query();
+    console.log('queryString 11111');
+    console.log(queryString);
     return token;
   }
 }
