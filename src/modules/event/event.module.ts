@@ -25,6 +25,7 @@ import CrudsEventService from './event.service';
       Eventitemresult,
       FcmToken,
       Message,
+      UserMapping,
     ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
