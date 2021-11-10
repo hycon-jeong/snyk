@@ -49,6 +49,10 @@ export class Event {
   categroy: string | null;
 
   @ApiProperty()
+  @Column('varchar', { name: 'image_url', nullable: true})
+  imageUrl: string | null;
+
+  @ApiProperty()
   @Column('datetime', { name: 'issued_at', nullable: true })
   issuedAt: Date | null;
 

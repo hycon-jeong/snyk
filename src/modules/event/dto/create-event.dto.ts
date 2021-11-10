@@ -21,6 +21,9 @@ export class CreateEventDto {
   readonly category: string;
 
   @ApiProperty()
+  readonly imageUrl: string;
+
+  @ApiProperty()
   readonly event_type: string;
 
   @ApiProperty()
