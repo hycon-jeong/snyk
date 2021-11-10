@@ -18,6 +18,7 @@ import { FirebaseMessagingService } from 'modules/firebase';
 import { MessageService } from 'modules/message/message.service';
 import { UsersService } from 'modules/user';
 import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 import CrudsEventService from './event.service';
 
 @ApiBearerAuth()
@@ -114,6 +115,7 @@ export class CrudEventController implements CrudController<Event> {
       status: EventStatus.COMPLETE,
       providerId: dto.provider_id,
       providerCode: dto.provider_code,
+      imageUrl: dto.imageUrl,
       providerKey: '',
       issuedAt: dto.issued_at ? dto.issued_at : new Date(),
     } as Event);
