@@ -11,6 +11,9 @@ import { UserMapping } from './userMapping.entity';
 
 @Entity('consumer', { schema: 'mycar' })
 export class Consumer {
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id', comment: 'Db generic id' })
+  id: number;
+
   @ApiProperty()
   @Column('varchar', { name: 'consumer_code', unique: true, length: 255 })
   consumerCode: string;
@@ -68,12 +71,9 @@ export class Consumer {
   })
   consumerServerType: string | null;
 
-  @PrimaryGeneratedColumn({ type: 'int', name: 'id', comment: 'Db generic id' })
-  id: number;
-
-  @OneToMany(() => ConsumerLog, (consumerLog) => consumerLog.consumerCode2)
+  @OneToMany(() => ConsumerLog, (consumerLog) => consumerLog.consumer)
   consumerLogs: ConsumerLog[];
 
-  @OneToMany(() => UserMapping, (userMapping) => userMapping.consumerCode2)
+  @OneToMany(() => UserMapping, (userMapping) => userMapping.consumer)
   userMappings: UserMapping[];
 }

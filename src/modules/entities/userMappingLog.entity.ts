@@ -10,8 +10,8 @@ import { UserMapping } from './userMapping.entity';
 
 @Entity('user_mapping_log', { schema: 'mycar' })
 export class UserMappingLog {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'iduser_mapping_log_id' })
-  iduserMappingLogId: number;
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
+  id: number;
 
   @Column('int', { primary: true, name: 'user_mapping_id' })
   userMappingId: number;
@@ -32,15 +32,15 @@ export class UserMappingLog {
   })
   dateAt: Date | null;
 
-  @ManyToOne(() => UserMapping, (userMapping) => userMapping.userMappingLogs, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([
-    {
-      name: 'user_mapping_id',
-      referencedColumnName: 'id',
-    },
-  ])
-  userMapping: UserMapping;
+  // @ManyToOne(() => UserMapping, (userMapping) => userMapping.userMappingLogs, {
+  //   onDelete: 'NO ACTION',
+  //   onUpdate: 'NO ACTION',
+  // })
+  // @JoinColumn([
+  //   {
+  //     name: 'user_mapping_id',
+  //     referencedColumnName: 'id',
+  //   },
+  // ])
+  // userMapping: UserMapping;
 }

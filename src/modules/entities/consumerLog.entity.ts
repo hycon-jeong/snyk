@@ -10,8 +10,8 @@ import { Consumer } from './consumer.entity';
 
 @Entity('consumer_log', { schema: 'mycar' })
 export class ConsumerLog {
-  @PrimaryGeneratedColumn({ type: 'int', name: ' consumer_log_id' })
-  consumerLogId: number;
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
+  id: number;
 
   @Column('varchar', { name: 'consumer_code', length: 255 })
   consumerCode: string;
@@ -43,10 +43,7 @@ export class ConsumerLog {
   })
   consumerServerType: string | null;
 
-  @ManyToOne(() => Consumer, (consumer) => consumer.consumerLogs, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'consumer_code', referencedColumnName: 'consumerCode' }])
-  consumerCode2: Consumer;
+  @ManyToOne(() => Consumer, (consumer) => consumer.consumerLogs)
+  @JoinColumn({ name: 'consumer_id' })
+  public consumer: Consumer;
 }

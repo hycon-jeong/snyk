@@ -52,7 +52,7 @@ export class AuthController {
         userId: user.userId,
         key: 'dummy',
         ...rest,
-      } as UserMapping);
+      });
     } catch (err) {
       console.log('4444');
       console.log(err);
