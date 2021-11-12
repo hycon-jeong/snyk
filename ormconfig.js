@@ -20,4 +20,9 @@ module.exports = {
   database: DB_DATABASE,
   migrations: [__dirname + '/src/migrations/*{.ts,.js}'],
   entities: [__dirname + '/src/**/*.entity.{ts,js}'],
+  cli: {
+    migrationsDir: 'src/migration'
+  },
+  migrationsTableName: "migrations_typeorm",
+  migrationsRun: true
 };

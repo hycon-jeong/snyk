@@ -17,6 +17,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "webpack": "webpack --config webpack.config.js",
     "ts-typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm",
+    "migration:generate": "yarn ts-typeorm migration:generate  -d src/migrations -n",
     "migration:create": "typeorm migration:create -d src/migrations",
     "migration:run": "yarn ts-typeorm migration:run",
     "migration:revert": "yarn ts-typeorm migration:revert",
