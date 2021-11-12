@@ -47,19 +47,14 @@ export class AuthController {
       verificationCode,
     });
     try {
-      console.log('2222');
       await this.userService.createUserMapping({
-        userId: user.userId,
+        user_id: user.id,
         key: 'dummy',
         ...rest,
       });
     } catch (err) {
-      console.log('4444');
       console.log(err);
-
-      // console.log(err);
     }
-    console.log('3333');
 
     return await this.authService.createToken(user);
   }
