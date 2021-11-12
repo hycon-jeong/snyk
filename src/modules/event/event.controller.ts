@@ -1,7 +1,8 @@
-import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Logger, UnauthorizedException } from '@nestjs/common';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
   Crud,
   CrudAuth,
@@ -12,12 +13,13 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud';
 import { EventStatus } from 'modules/common/constants/eventStatus';
-import { Event, User } from 'modules/entities';
+import { Event, EventType, User } from 'modules/entities';
 import CrudsFcmTokenService from 'modules/fcmToken/fcmToken.service';
 import { FirebaseMessagingService } from 'modules/firebase';
 import { MessageService } from 'modules/message/message.service';
 import CrudsProviderService from 'modules/provider/provider.service';
 import { UsersService } from 'modules/user';
+import { Repository } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import CrudsEventService from './event.service';
@@ -74,6 +76,7 @@ import CrudsEventService from './event.service';
   },
 })
 export class CrudEventController implements CrudController<Event> {
+  private logger = new Logger('EventController');
   constructor(
     private firebaseMessage: FirebaseMessagingService,
     public readonly service: CrudsEventService,
@@ -81,6 +84,8 @@ export class CrudEventController implements CrudController<Event> {
     public readonly messageService: MessageService,
     public readonly usersService: UsersService,
     public readonly providerService: CrudsProviderService,
+    @InjectRepository(EventType)
+    private readonly eventTypeRepository: Repository<EventType>,
   ) {}
   get base(): CrudController<Event> {
     return this;
@@ -129,10 +134,19 @@ export class CrudEventController implements CrudController<Event> {
   }
 
   @Override('updateOneBase')
-  updateFunction(
+  async updateFunction(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: UpdateEventDto,
   ) {
-    return this.service.updateOne(req, dto);
+    const event: Partial<Event> = dto;
+    if (dto.eventTypeId) {
+      const eventTypeData = await this.eventTypeRepository.findOne({id: dto.eventTypeId});
+      if (!eventTypeData || !eventTypeData.id) {
+        throw new BadRequestException('Event Type not found');
+      }
+      event.eventType = eventTypeData
+    }
+    this.logger.log(event);
+    return this.service.updateOne(req, event);
   }
 }

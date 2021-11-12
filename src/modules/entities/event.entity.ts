@@ -73,27 +73,13 @@ export class Event {
   @JoinColumn({ name: 'user_mapping_id' })
   userMapping: UserMapping;
 
-  // @ApiProperty()
-  // @Column({ name: 'message_id'})
-  // messageId: number;
-
   @ManyToOne(() => Message, (message) => message.events, {})
   @JoinColumn({ name: 'message_id' })
   message: Message;
 
-  // @ApiProperty()
-  // @Column({ name: 'event_type_id', nullable: false })
-  // eventTypeId: number;
-
-  @ManyToOne(() => EventType, (eventType) => eventType.events, {
-    cascade: true,
-  })
+  @ManyToOne(() => EventType, (eventType) => eventType.events, { cascade: ['insert', 'update'] })
   @JoinColumn({ name: 'event_type_id' })
   eventType: EventType;
-
-  // @ApiProperty()
-  // @Column({ name: 'provider_id'})
-  // providerId: number;
 
   @ManyToOne(() => Provider, (provider) => provider.events, {})
   @JoinColumn({ name: 'provider_id' })

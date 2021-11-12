@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { CreateEventDto } from './create-event.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty } from 'class-validator';
@@ -7,19 +7,19 @@ import { EventType } from 'modules/entities';
 
 // export class UpdateEventDto extends PartialType(CreateEventDto) {}
 export class UpdateEventDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsEnum(EventStatus)
   readonly status: EventStatus;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   readonly category: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   readonly imageUrl: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   readonly eventTypeId: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   readonly issuedAt: Date;
 }
