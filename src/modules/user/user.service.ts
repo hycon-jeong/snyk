@@ -8,6 +8,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { UserFillableFields } from './user.interface';
 import { UserMappingFillableFields } from '.';
 import { Roles } from 'modules/common/constants/roles';
+import { Consumer, Provider } from 'modules/entities';
 
 @Injectable()
 export class UsersService extends TypeOrmCrudService<User> {
@@ -58,11 +59,17 @@ export class UsersService extends TypeOrmCrudService<User> {
   }
 
   async createUserMapping(payload: UserMappingFillableFields) {
-    return this.userMappingRepository
-      .createQueryBuilder()
-      .insert()
-      .into(UserMapping)
-      .values(payload)
-      .execute();
+    const user = new User();
+    const consumer = new Consumer();
+    const provider = new Provider();
+    user.id = payload.user_id;
+    consumer.id = payload.consumer_id;
+    provider.id = payload.provider_id;
+    return await this.userMappingRepository.save({
+      ...payload,
+      user: user,
+      consumer,
+      provider,
+    });
   }
 }

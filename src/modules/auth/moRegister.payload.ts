@@ -17,17 +17,17 @@ export class MoRegisterPayload extends PickType(RegisterPayload, [
 
   @ApiProperty({
     required: true,
-    type: String,
-    description: 'provider code',
+    type: Number,
+    description: 'provider id',
   })
   @IsNotEmpty()
-  providerCode: string;
+  provider_id: number;
 
   @ApiProperty({
     required: true,
-    type: String,
-    description: 'consumer code',
+    type: Number,
+    description: 'consumer id',
   })
   @IsNotEmpty()
-  consumerCode: string;
+  consumer_id: number;
 }

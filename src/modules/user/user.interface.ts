@@ -5,8 +5,8 @@ export class UserFillableFields {
 }
 
 export class UserMappingFillableFields {
-  userId: string;
-  providerCode: string;
-  consumerCode: string;
+  user_id: number;
+  provider_id: number;
+  consumer_id: number;
   key: string;
 }
