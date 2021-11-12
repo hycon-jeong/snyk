@@ -39,8 +39,8 @@ export class EventLog {
   userId: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'categroy', nullable: true, length: 255 })
-  categroy: string | null;
+  @Column('varchar', { name: 'category', nullable: true, length: 255 })
+  category: string | null;
 
   @ApiProperty()
   @Column('varchar', { name: 'consumer_code', nullable: true, length: 255 })
@@ -62,14 +62,7 @@ export class EventLog {
   @Column('datetime', { name: 'reception_at', nullable: true })
   receptionAt: Date | null;
 
-  @ApiProperty()
-  @Column('int', { primary: true, name: 'event_id' })
-  eventId: number;
-
-  @ManyToOne(() => Event, (event) => event.eventLogs, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'event_id', referencedColumnName: 'id' }])
+  @ManyToOne(() => Event, (event) => event.eventLogs, {})
+  @JoinColumn({ name: 'event_id' })
   event: Event;
 }

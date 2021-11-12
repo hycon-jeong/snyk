@@ -1,16 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  Column,
-  Entity,
-  Index,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Event } from '.';
 import { ProviderLog } from './providerLog.entity';
 import { UserMapping } from './userMapping.entity';
 
 @Entity('provider', { schema: 'mycar' })
 export class Provider {
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
+  id: number;
+
   @ApiProperty()
   @Column('varchar', { name: 'provider_code', length: 255 })
   providerCode: string;
@@ -68,12 +66,12 @@ export class Provider {
   })
   providerServerType: string | null;
 
-  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
-  id: number;
-
-  @OneToMany(() => ProviderLog, (providerLog) => providerLog.providerCode2)
+  @OneToMany(() => ProviderLog, (providerLog) => providerLog.provider)
   providerLogs: ProviderLog[];
 
-  @OneToMany(() => UserMapping, (userMapping) => userMapping.providerCode2)
+  @OneToMany(() => UserMapping, (userMapping) => userMapping.provider)
   userMappings: UserMapping[];
+
+  @OneToMany(() => Event, (event) => event.provider)
+  events: Event[];
 }

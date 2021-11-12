@@ -18,15 +18,6 @@ export class UserMapping {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { name: 'user_id', length: 255 })
-  userId: string;
-
-  @Column('varchar', { name: 'provider_code', nullable: true, length: 255 })
-  providerCode: string | null;
-
-  @Column('varchar', { name: 'consumer_code', nullable: true, length: 255 })
-  consumerCode: string | null;
-
   @Column('varchar', { name: 'key', length: 255 })
   key: string;
 
@@ -46,33 +37,18 @@ export class UserMapping {
   @Column('datetime', { name: 'mapping_updateat', nullable: true })
   mappingUpdateat: Date | null;
 
-  @OneToMany(() => Event, (event) => event.user)
+  @OneToMany(() => Event, (event) => event.userMapping)
   events: Event[];
 
-  @ManyToOne(() => Consumer, (consumer) => consumer.userMappings, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'consumer_code', referencedColumnName: 'consumerCode' }])
-  consumerCode2: Consumer;
+  @ManyToOne(() => User, (user) => user.userMappings)
+  @JoinColumn({ name: 'user_id' })
+  public user: User;
 
-  @ManyToOne(() => Provider, (provider) => provider.userMappings, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'provider_code', referencedColumnName: 'providerCode' }])
-  providerCode2: Provider;
+  @ManyToOne(() => Consumer, (consumer) => consumer.userMappings)
+  @JoinColumn({ name: 'consumer_id' })
+  public consumer: Consumer;
 
-  @ManyToOne(() => User, (users) => users.userMappings, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'userId' }])
-  user: User;
-
-  @OneToMany(
-    () => UserMappingLog,
-    (userMappingLog) => userMappingLog.userMapping,
-  )
-  userMappingLogs: UserMappingLog[];
+  @ManyToOne(() => Provider, (provider) => provider.userMappings)
+  @JoinColumn({ name: 'provider_id' })
+  public provider: Provider;
 }

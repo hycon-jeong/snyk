@@ -9,9 +9,11 @@ import {
   FcmToken,
   UserMapping,
   Message,
+  Provider,
 } from 'modules/entities';
 import CrudsFcmTokenService from 'modules/fcmToken/fcmToken.service';
 import { MessageService } from 'modules/message/message.service';
+import CrudsProviderService from 'modules/provider/provider.service';
 import { UsersService } from 'modules/user';
 import { CrudEventController } from './event.controller';
 import CrudsEventService from './event.service';
@@ -26,6 +28,7 @@ import CrudsEventService from './event.service';
       FcmToken,
       Message,
       UserMapping,
+      Provider,
     ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
@@ -34,6 +37,7 @@ import CrudsEventService from './event.service';
     CrudsFcmTokenService,
     UsersService,
     MessageService,
+    CrudsProviderService,
   ],
   exports: [CrudsEventService],
   controllers: [CrudEventController],

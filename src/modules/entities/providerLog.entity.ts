@@ -1,13 +1,17 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Provider } from './provider.entity';
 
 @Entity('provider_log', { schema: 'mycar' })
 export class ProviderLog {
-  @Column('int', { primary: true, name: 'provider_log_id' })
-  providerLogId: number;
-
-  @Column('varchar', { name: 'provider_code', length: 255 })
-  providerCode: string;
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
+  id: number;
 
   @Column('datetime', { name: 'date_at', nullable: true })
   dateAt: Date | null;
@@ -32,10 +36,7 @@ export class ProviderLog {
   })
   providerServerType: string | null;
 
-  @ManyToOne(() => Provider, (provider) => provider.providerLogs, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'provider_code', referencedColumnName: 'providerCode' }])
-  providerCode2: Provider;
+  @ManyToOne(() => Provider, (provider) => provider.providerLogs)
+  @JoinColumn({ name: 'provider_id' })
+  public provider: Provider;
 }

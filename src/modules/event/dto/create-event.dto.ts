@@ -1,21 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { EventStatus } from 'modules/common/constants/eventStatus';
+import { EventType } from 'modules/entities';
 
 export class CreateEventDto {
   @IsNotEmpty()
   @ApiProperty()
-  readonly mesage_id: number;
+  readonly mesage: number;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly provider: number;
 
   @ApiProperty()
   @IsEnum(EventStatus)
   readonly status: EventStatus;
-
-  @ApiProperty()
-  readonly provider_id: string;
-
-  @ApiProperty()
-  readonly provider_code: string;
 
   @ApiProperty()
   readonly category: string;
@@ -24,8 +23,8 @@ export class CreateEventDto {
   readonly imageUrl: string;
 
   @ApiProperty()
-  readonly event_type: string;
+  readonly eventType: EventType;
 
   @ApiProperty()
-  readonly issued_at: Date;
+  readonly issuedAt: Date;
 }

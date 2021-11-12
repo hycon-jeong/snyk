@@ -38,6 +38,11 @@ config();
           database: configService.get('DB_DATABASE'),
           entities: [__dirname + './../**/**.entity{.ts,.js}'],
           synchronize: configService.get('DB_SYNC') === 'true',
+          cli: {
+            migrationsDir: 'src/migration'
+          },
+          migrationsTableName: "migrations_typeorm",
+          migrationsRun: true
         } as TypeOrmModuleAsyncOptions;
       },
     }),
