@@ -1,6 +1,7 @@
 import { Module, Type } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CategoryService } from 'modules/category/category.service';
 import {
   Event,
   User,
@@ -10,6 +11,7 @@ import {
   UserMapping,
   Message,
   Provider,
+  Category,
 } from 'modules/entities';
 import CrudsFcmTokenService from 'modules/fcmToken/fcmToken.service';
 import { MessageService } from 'modules/message/message.service';
@@ -29,6 +31,7 @@ import CrudsEventService from './event.service';
       Message,
       UserMapping,
       Provider,
+      Category
     ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
@@ -38,6 +41,7 @@ import CrudsEventService from './event.service';
     UsersService,
     MessageService,
     CrudsProviderService,
+    CategoryService
   ],
   exports: [CrudsEventService],
   controllers: [CrudEventController],

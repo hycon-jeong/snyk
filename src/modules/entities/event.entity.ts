@@ -16,6 +16,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from './user.entity';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import { Provider } from '.';
+import { Category } from './category.entity';
 
 @Entity('event', { schema: 'mycar' })
 export class Event {
@@ -33,10 +34,6 @@ export class Event {
   @ApiProperty()
   @Column('varchar', { name: 'provider_code', nullable: true, length: 255 })
   providerCode: string | null;
-
-  @ApiProperty()
-  @Column('varchar', { name: 'category', nullable: true, length: 255 })
-  category: string | null;
 
   @ApiProperty()
   @Column('varchar', { name: 'image_url', nullable: true })
@@ -69,9 +66,9 @@ export class Event {
   @OneToMany(() => Eventitemresult, (eventitemresult) => eventitemresult.event)
   eventitemresults: Eventitemresult[];
 
-  @ManyToOne(() => UserMapping, (userMapping) => userMapping.events)
-  @JoinColumn({ name: 'user_mapping_id' })
-  userMapping: UserMapping;
+  // @ManyToOne(() => UserMapping, (userMapping) => userMapping.events)
+  // @JoinColumn({ name: 'user_mapping_id' })
+  // userMapping: UserMapping;
 
   @ManyToOne(() => Message, (message) => message.events, {})
   @JoinColumn({ name: 'message_id' })
@@ -85,14 +82,20 @@ export class Event {
   @JoinColumn({ name: 'provider_id' })
   provider: Provider;
 
+  @ManyToOne(() => Category, (category) => category.events, {})
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
+  @Column({ name: 'category_id' })
+  category_id: number;
+
   @Column({ name: 'provider_id' })
   provider_id: number;
   @Column({ name: 'event_type_id' })
   event_type_id: number;
   @Column({ name: 'message_id' })
   message_id: number;
-  @Column({ name: 'user_mapping_id' })
-  user_mapping_id: number;
+  // @Column({ name: 'user_mapping_id' })
+  // user_mapping_id: number;
   @Column({ name: 'user_id' })
   user_id: number;
 }

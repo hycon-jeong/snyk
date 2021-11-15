@@ -17,7 +17,7 @@ export class CreateEventDto {
   readonly status: EventStatus;
 
   @ApiProperty()
-  readonly category: string;
+  readonly category: number;
 
   @ApiProperty()
   readonly imageUrl: string;

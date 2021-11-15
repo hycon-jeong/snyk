@@ -12,6 +12,7 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
+import { CategoryService } from 'modules/category/category.service';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import { Event, EventType, User } from 'modules/entities';
 import CrudsFcmTokenService from 'modules/fcmToken/fcmToken.service';
@@ -41,24 +42,28 @@ import CrudsEventService from './event.service';
   query: {
     join: {
       message: {
-        alias: 'message_owner',
+        alias: 'message_query',
+        eager: true,
+      },
+      category: {
+        alias: 'category_query',
         eager: true,
       },
       provider: {
-        alias: 'provider_owner',
+        alias: 'provider_query',
         eager: true,
       },
       userMapping: {
-        alias: 'userMapping_owner',
+        alias: 'userMapping_query',
         eager: true,
       },
       eventType: {
-        alias: 'eventType_owner',
+        alias: 'eventType_query',
         eager: true,
       },
       user: {
         eager: true,
-        alias: 'user_owner',
+        alias: 'user_query',
         exclude: ['password'],
       },
     },
@@ -84,6 +89,7 @@ export class CrudEventController implements CrudController<Event> {
     public readonly messageService: MessageService,
     public readonly usersService: UsersService,
     public readonly providerService: CrudsProviderService,
+    public readonly categoryService: CategoryService,
     @InjectRepository(EventType)
     private readonly eventTypeRepository: Repository<EventType>,
   ) {}
@@ -110,6 +116,12 @@ export class CrudEventController implements CrudController<Event> {
     if (!providerData || !providerData.id) {
       throw new BadRequestException('Provider not found');
     }
+    const categoryData = await this.categoryService.findOne({
+      id: dto.category,
+    });
+    if (!categoryData || !categoryData.id) {
+      throw new BadRequestException('cagetory not found');
+    }
     let user: User = req.parsed?.authPersist?.user;
 
     if (tokensArray && tokensArray.length > 0) {
@@ -123,7 +135,7 @@ export class CrudEventController implements CrudController<Event> {
     return this.base.createOneBase(req, {
       user: user,
       message: messageData,
-      category: dto.category,
+      category: categoryData,
       status: EventStatus.COMPLETE,
       imageUrl: dto.imageUrl,
       providerKey: '',
@@ -145,6 +157,13 @@ export class CrudEventController implements CrudController<Event> {
         throw new BadRequestException('Event Type not found');
       }
       event.eventType = eventTypeData
+    }
+    if (dto.categoryId) {
+      const categoryData = await this.categoryService.findOne({id: dto.categoryId});
+      if (!categoryData || !categoryData.id) {
+        throw new BadRequestException('category Type not found');
+      }
+      event.category = categoryData
     }
     this.logger.log(event);
     return this.service.updateOne(req, event);

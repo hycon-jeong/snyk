@@ -37,8 +37,8 @@ export class UserMapping {
   @Column('datetime', { name: 'mapping_updateat', nullable: true })
   mappingUpdateat: Date | null;
 
-  @OneToMany(() => Event, (event) => event.userMapping)
-  events: Event[];
+  // @OneToMany(() => Event, (event) => event.userMapping)
+  // events: Event[];
 
   @ManyToOne(() => User, (user) => user.userMappings)
   @JoinColumn({ name: 'user_id' })

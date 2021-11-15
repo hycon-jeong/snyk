@@ -12,7 +12,7 @@ export class UpdateEventDto {
   readonly status: EventStatus;
 
   @ApiPropertyOptional()
-  readonly category: string;
+  readonly categoryId: number;
 
   @ApiPropertyOptional()
   readonly imageUrl: string;
