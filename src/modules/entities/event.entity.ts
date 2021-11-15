@@ -93,4 +93,6 @@ export class Event {
   message_id: number;
   @Column({ name: 'user_mapping_id' })
   user_mapping_id: number;
+  @Column({ name: 'user_id' })
+  user_id: number;
 }
