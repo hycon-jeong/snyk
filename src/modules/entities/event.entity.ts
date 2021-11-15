@@ -84,4 +84,13 @@ export class Event {
   @ManyToOne(() => Provider, (provider) => provider.events, {})
   @JoinColumn({ name: 'provider_id' })
   provider: Provider;
+
+  @Column({ name: 'provider_id' })
+  provider_id: number;
+  @Column({ name: 'event_type_id' })
+  event_type_id: number;
+  @Column({ name: 'message_id' })
+  message_id: number;
+  @Column({ name: 'user_mapping_id' })
+  user_mapping_id: number;
 }
