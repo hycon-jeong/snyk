@@ -50,7 +50,7 @@ import { UserMappingService } from './userMapping.service';
     },
   },
 })
-@UseGuards(AuthGuard())
+// @UseGuards(AuthGuard())
 @Controller('api/user-mapping')
 @ApiTags('userMapping')
 @CrudAuth({
