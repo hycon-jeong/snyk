@@ -8,10 +8,10 @@ import {
   CrudRequest,
   Override,
   ParsedBody,
-  ParsedRequest,
+  ParsedRequest
 } from '@nestjsx/crud';
 import CrudsConsumerService from 'modules/consumer/consumer.service';
-import { UserMapping, User } from 'modules/entities';
+import { User, UserMapping } from 'modules/entities';
 import CrudsProviderService from 'modules/provider/provider.service';
 import { UsersService } from 'modules/user';
 import { UserMappingService } from './userMapping.service';
@@ -136,8 +136,6 @@ export class UserMappingController implements CrudController<UserMapping> {
         dto.user = userData;
       }
     }
-    console.log("dto ===============================")
-    console.log(dto)
     return this.base.updateOneBase(req, dto);
   }
 }

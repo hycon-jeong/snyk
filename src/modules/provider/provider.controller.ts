@@ -20,7 +20,7 @@ import CrudsProviderService from './provider.service';
     ],
   },
 })
-@UseGuards(AuthGuard())
+// @UseGuards(AuthGuard())
 @Controller('api/provider')
 @ApiTags('provider')
 export class CrudProviderController implements CrudController<Provider> {
