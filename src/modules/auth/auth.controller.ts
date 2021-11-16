@@ -49,7 +49,7 @@ export class AuthController {
     try {
       await this.userService.createUserMapping({
         user_id: user.id,
-        key: 'dummy',
+        mappingStatus: 'active',
         ...rest,
       });
     } catch (err) {

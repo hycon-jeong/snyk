@@ -38,10 +38,19 @@ export class Category {
   @Column('varchar', { name: 'image_url', nullable: true })
   imageUrl: string | null;
 
-  @CreateDateColumn({ type: "timestamp", name: 'created_at',default: () => "CURRENT_TIMESTAMP(6)" })
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   public createdAt: Date;
 
-  @UpdateDateColumn({ type: "timestamp", name: 'updated_at',default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
+  @UpdateDateColumn({
+    type: 'timestamp',
+    name: 'updated_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
   public updatedAt: Date;
 
   @OneToMany(() => Event, (event) => event.category)

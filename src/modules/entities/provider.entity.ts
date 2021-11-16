@@ -42,6 +42,22 @@ export class Provider {
   providerMacAddress: string | null;
 
   @ApiProperty()
+  @Column('varchar', {
+    name: 'provider_background_url',
+    nullable: true,
+    length: 255,
+  })
+  providerBackgroundUrl: string | null;
+
+  @ApiProperty()
+  @Column('varchar', {
+    name: 'provider_logo_url',
+    nullable: true,
+    length: 255,
+  })
+  providerLogoUrl: string | null;
+
+  @ApiProperty()
   @Column('varchar', { name: 'api_entry', nullable: true, length: 255 })
   apiEntry: string | null;
 

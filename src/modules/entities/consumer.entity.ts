@@ -64,6 +64,14 @@ export class Consumer {
 
   @ApiProperty()
   @Column('varchar', {
+    name: 'consumer_image_url',
+    nullable: true,
+    length: 255,
+  })
+  consumerImageUrl: string | null;
+
+  @ApiProperty()
+  @Column('varchar', {
     name: 'consumer_server_type',
     nullable: true,
     comment: '온프레미스 \n클라우드\n AWS\n AZURE \n  etc',

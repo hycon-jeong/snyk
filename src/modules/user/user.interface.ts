@@ -9,4 +9,5 @@ export class UserMappingFillableFields {
   provider_id: number;
   consumer_id: number;
   key: string;
+  mappingStatus: string;
 }
