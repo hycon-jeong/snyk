@@ -21,6 +21,7 @@ import * as admin from 'firebase-admin';
 import { FirebaseAdminModule } from 'modules/firebase';
 import { FcmTokenModule } from 'modules/fcmToken';
 import { CategoryModule } from 'modules/category/category.module';
+import { UserMappingModule } from 'modules/userMapping/userMapping.module';
 var serviceAccount = require('../../../firebase.json');
 
 config();
@@ -79,6 +80,7 @@ config();
     StatisticsModule,
     FcmTokenModule,
     CategoryModule,
+    UserMappingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

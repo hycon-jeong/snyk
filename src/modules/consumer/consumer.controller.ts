@@ -20,7 +20,7 @@ import CrudsConsumerService from './consumer.service';
     ],
   },
 })
-@UseGuards(AuthGuard())
+// @UseGuards(AuthGuard())
 @Controller('api/consumer')
 @ApiTags('consumer')
 export class CrudConsumerController implements CrudController<Consumer> {
