@@ -35,8 +35,8 @@ async function bootstrap() {
   // protect app from brute-force attacks
   app.use(
     rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
+      windowMs: 1 * 60 * 1000, // 1 minutes
+      max: 300, // limit each IP to 100 requests per windowMs
     }),
   );
   app.enableCors();
