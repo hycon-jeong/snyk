@@ -74,7 +74,9 @@ export class Event {
   @JoinColumn({ name: 'message_id' })
   message: Message;
 
-  @ManyToOne(() => EventType, (eventType) => eventType.events, { cascade: ['insert', 'update'] })
+  @ManyToOne(() => EventType, (eventType) => eventType.events, {
+    cascade: ['insert', 'update'],
+  })
   @JoinColumn({ name: 'event_type_id' })
   eventType: EventType;
 

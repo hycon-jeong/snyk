@@ -14,6 +14,11 @@ import { UserMappingService } from './userMapping.service';
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [UserMappingController],
-  providers: [UserMappingService, CrudsProviderService, CrudsConsumerService, UsersService],
+  providers: [
+    UserMappingService,
+    CrudsProviderService,
+    CrudsConsumerService,
+    UsersService,
+  ],
 })
 export class UserMappingModule {}

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserMapping } from 'modules/entities';
@@ -32,7 +40,7 @@ export class AuthController {
   async register(@Body() payload: RegisterPayload): Promise<any> {
     if (payload.email) {
       const checkEmailUser = await this.userService.findOne({
-        email: payload.email
+        email: payload.email,
       });
       if (checkEmailUser && checkEmailUser.id) {
         throw new HttpException(
@@ -43,9 +51,7 @@ export class AuthController {
           HttpStatus.BAD_REQUEST,
         );
       }
-      
     }
-    
 
     const user = await this.userService.create(payload);
     return await this.authService.createToken(user);

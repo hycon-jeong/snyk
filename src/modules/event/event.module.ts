@@ -31,7 +31,7 @@ import CrudsEventService from './event.service';
       Message,
       UserMapping,
       Provider,
-      Category
+      Category,
     ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
@@ -41,7 +41,7 @@ import CrudsEventService from './event.service';
     UsersService,
     MessageService,
     CrudsProviderService,
-    CategoryService
+    CategoryService,
   ],
   exports: [CrudsEventService],
   controllers: [CrudEventController],
