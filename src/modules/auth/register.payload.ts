@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, MinLength } from 'class-validator';
 import { Roles } from 'modules/common/constants/roles';
 import { User } from 'modules/entities/user.entity';
 import { Unique } from './../common';
@@ -11,6 +11,12 @@ export class RegisterPayload {
   })
   @Unique([User])
   userId: string;
+
+  @ApiProperty({
+    required: true,
+  })
+  @IsEmail()
+  email: string;
 
   @ApiProperty({
     required: true,

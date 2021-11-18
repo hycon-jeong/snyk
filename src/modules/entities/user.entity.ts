@@ -21,6 +21,11 @@ export class User {
   userId: string;
 
   @ApiProperty()
+  @Column({ name: 'email', nullable: true})
+  @Index({ unique: true, where: "email IS NOT NULL" })
+  email: string;
+
+  @ApiProperty()
   @Column('varchar', { name: 'name', nullable: true, length: 255 })
   name: string | null;
 
