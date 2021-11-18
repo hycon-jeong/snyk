@@ -7,6 +7,7 @@ import { HealthModule } from 'modules/health/health.module';
 import { MessageModule } from 'modules/message/message.module';
 import { ProviderModule } from 'modules/provider/provider.module';
 import { SentryModule } from 'modules/sentry/sentry.module';
+import * as path from 'path';
 import { StatisticsModule } from 'modules/statistics/statistics.module';
 import { UserModule } from 'modules/user';
 import { AuthModule } from './../auth';
@@ -22,6 +23,17 @@ import { FirebaseAdminModule } from 'modules/firebase';
 import { FcmTokenModule } from 'modules/fcmToken';
 import { CategoryModule } from 'modules/category/category.module';
 import { UserMappingModule } from 'modules/userMapping/userMapping.module';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { SentryInterceptor } from 'modules/sentry/sentry.interceptor';
+import {
+  AcceptLanguageResolver,
+  CookieResolver,
+  HeaderResolver,
+  I18nJsonParser,
+  I18nModule,
+  QueryResolver,
+} from 'nestjs-i18n';
+import { AllExceptionsFilter } from 'modules/common/HttpExeption';
 var serviceAccount = require('../../../firebase.json');
 
 config();
@@ -41,9 +53,9 @@ config();
           entities: [__dirname + './../**/**.entity{.ts,.js}'],
           synchronize: configService.get('DB_SYNC') === 'true',
           cli: {
-            migrationsDir: 'src/migration'
+            migrationsDir: 'src/migration',
           },
-          migrationsTableName: "migrations_typeorm",
+          migrationsTableName: 'migrations_typeorm',
           migrationsRun: true,
           keepConnectionAlive: configService.get('DB_CONNECTION_ALIVE'),
         } as TypeOrmModuleAsyncOptions;
@@ -68,6 +80,23 @@ config();
         };
       },
     }),
+    I18nModule.forRootAsync({
+      useFactory: () => ({
+        fallbackLanguage: 'en',
+        parserOptions: {
+          path: path.join(__dirname, '../../i18n/'),
+          watch: false,
+        },
+      }),
+      parser: I18nJsonParser,
+      inject: [],
+      resolvers: [
+        { use: QueryResolver, options: ['lang', 'locale', 'l'] },
+        new HeaderResolver(['x-custom-lang']),
+        AcceptLanguageResolver,
+        new CookieResolver(['lang', 'locale', 'l']),
+      ],
+    }),
     HealthModule,
     AuthModule,
     CommonModule,
@@ -83,6 +112,12 @@ config();
     UserMappingModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}
