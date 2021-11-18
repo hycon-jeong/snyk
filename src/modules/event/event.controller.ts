@@ -1,7 +1,12 @@
-import { BadRequestException, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Get,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Crud,
@@ -152,20 +157,42 @@ export class CrudEventController implements CrudController<Event> {
   ) {
     const event: Partial<Event> = dto;
     if (dto.eventTypeId) {
-      const eventTypeData = await this.eventTypeRepository.findOne({id: dto.eventTypeId});
+      const eventTypeData = await this.eventTypeRepository.findOne({
+        id: dto.eventTypeId,
+      });
       if (!eventTypeData || !eventTypeData.id) {
         throw new BadRequestException('Event Type not found');
       }
-      event.eventType = eventTypeData
+      event.eventType = eventTypeData;
     }
     if (dto.categoryId) {
-      const categoryData = await this.categoryService.findOne({id: dto.categoryId});
+      const categoryData = await this.categoryService.findOne({
+        id: dto.categoryId,
+      });
       if (!categoryData || !categoryData.id) {
         throw new BadRequestException('category Type not found');
       }
-      event.category = categoryData
+      event.category = categoryData;
     }
     this.logger.log(event);
     return this.service.updateOne(req, event);
+  }
+
+  @Get('provider/manage')
+  @ApiResponse({ status: 201, description: 'Successful Login' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getProviderApiCalls(): Promise<any> {
+    const providerList = await this.service.getProviderApiCalls();
+    const newProviderList = await Promise.all(
+      providerList.map(async (provider) => {
+        const events = await this.service.getEventByProvider(
+          provider.provider_id,
+        );
+        provider.events = events;
+        return provider;
+      }),
+    );
+    return newProviderList;
   }
 }
