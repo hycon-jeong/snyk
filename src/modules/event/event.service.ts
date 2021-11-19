@@ -14,22 +14,42 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
   }
 
   async getProviderApiCalls(): Promise<any> {
-    return this.eventRepository
-      .createQueryBuilder()
-      .select('count(*) as provider_count, provider.provider_name, provider_id')
-      .leftJoin('provider', 'provider', 'provider.id = provider_id')
-      .groupBy('provider_id')
-      .getRawMany();
+    const query = this.eventRepository
+      .createQueryBuilder('event')
+      .select(
+        'count(*) as provider_count, provider.provider_name, event.provider_id as provider_id',
+      )
+      .leftJoin('provider', 'provider', 'provider.id = event.provider_id');
+    return query.groupBy('event.provider_id').getRawMany();
   }
   async getEventByProvider(provider_id) {
-    return this.eventRepository
-      .createQueryBuilder()
+    const query = this.eventRepository
+      .createQueryBuilder('event')
       .select('count(*) as event_count,category.name')
-      .leftJoin('categories', 'category', 'category.id = category_id')
-      .where('provider_id = :provider_id', {
+      .leftJoin('categories', 'category', 'category.id = event.category_id')
+      .where('event.provider_id = :provider_id', {
         provider_id: provider_id,
-      })
-      .groupBy('category_id')
+      });
+
+    return query.groupBy('event.category_id').getRawMany();
+  }
+
+  async getProviderApiCallsByMonthly(start_date?, end_date?): Promise<any> {
+    const query = this.eventRepository
+      .createQueryBuilder('event')
+      .select(
+        'count(*) as provider_count, provider.provider_name, event.provider_id as provider_id, date_format(event.issued_at,"%Y-%m") as issued_at',
+      )
+      .leftJoin('provider', 'provider', 'provider.id = event.provider_id');
+    if (start_date) {
+      query.andWhere('event.issued_at >= :start_date', { start_date });
+    }
+    if (end_date) {
+      query.andWhere('event.issued_at < :end_date', { end_date });
+    }
+    return query
+      .groupBy('date_format(event.issued_at,"%Y-%m")')
+      .addGroupBy('event.provider_id')
       .getRawMany();
   }
 
