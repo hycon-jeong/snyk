@@ -66,7 +66,7 @@ import CrudsEventService from './event.service';
         alias: 'eventType_query',
         eager: true,
       },
-      user: {
+      'userMapping.user': {
         eager: true,
         alias: 'user_query',
         exclude: ['password'],
@@ -127,7 +127,7 @@ export class CrudEventController implements CrudController<Event> {
     if (!categoryData || !categoryData.id) {
       throw new BadRequestException('cagetory not found');
     }
-    let user: User = req.parsed?.authPersist?.user;
+    // let user: User = req.parsed?.authPersist?.user;
 
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
@@ -138,7 +138,7 @@ export class CrudEventController implements CrudController<Event> {
       });
     }
     return this.base.createOneBase(req, {
-      user: user,
+      user_mapping_id: dto.userMappingId,
       message: messageData,
       category: categoryData,
       status: EventStatus.COMPLETE,
@@ -194,5 +194,23 @@ export class CrudEventController implements CrudController<Event> {
       }),
     );
     return newProviderList;
+  }
+
+  @Get('consumer/manage')
+  @ApiResponse({ status: 201, description: 'Successful Login' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getConsumerApiCalls(): Promise<any> {
+    const consumerList = await this.service.getqConsumerApiCalls();
+    const newConsumerList = await Promise.all(
+      consumerList.map(async (consumer) => {
+        const events = await this.service.getEventByConsumer(
+          consumer.consumer_id,
+        );
+        consumer.events = events;
+        return consumer;
+      }),
+    );
+    return newConsumerList;
   }
 }

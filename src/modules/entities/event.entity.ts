@@ -23,9 +23,9 @@ export class Event {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @ManyToOne(() => User, (users) => users.id, {})
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  // @ManyToOne(() => User, (users) => users.id, {})
+  // @JoinColumn({ name: 'user_id' })
+  // user: User;
 
   @ApiProperty()
   @Column('varchar', { name: 'provider_key', nullable: true, length: 255 })
@@ -66,15 +66,17 @@ export class Event {
   @OneToMany(() => Eventitemresult, (eventitemresult) => eventitemresult.event)
   eventitemresults: Eventitemresult[];
 
-  // @ManyToOne(() => UserMapping, (userMapping) => userMapping.events)
-  // @JoinColumn({ name: 'user_mapping_id' })
-  // userMapping: UserMapping;
+  @ManyToOne(() => UserMapping, (userMapping) => userMapping.events)
+  @JoinColumn({ name: 'user_mapping_id' })
+  userMapping: UserMapping;
 
   @ManyToOne(() => Message, (message) => message.events, {})
   @JoinColumn({ name: 'message_id' })
   message: Message;
 
-  @ManyToOne(() => EventType, (eventType) => eventType.events, { cascade: ['insert', 'update'] })
+  @ManyToOne(() => EventType, (eventType) => eventType.events, {
+    cascade: ['insert', 'update'],
+  })
   @JoinColumn({ name: 'event_type_id' })
   eventType: EventType;
 
@@ -94,8 +96,8 @@ export class Event {
   event_type_id: number;
   @Column({ name: 'message_id' })
   message_id: number;
-  // @Column({ name: 'user_mapping_id' })
-  // user_mapping_id: number;
-  @Column({ name: 'user_id' })
-  user_id: number;
+  @Column({ name: 'user_mapping_id' })
+  user_mapping_id: number;
+  // @Column({ name: 'user_id' })
+  // user_id: number;
 }

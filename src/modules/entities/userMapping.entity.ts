@@ -30,14 +30,23 @@ export class UserMapping {
   @Column('varchar', { name: 'mapping_status', nullable: true, length: 255 })
   mappingStatus: string | null;
 
-  @CreateDateColumn({ type: "timestamp", name: 'created_at',default: () => "CURRENT_TIMESTAMP(6)" })
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   public createdAt: Date;
 
-  @UpdateDateColumn({ type: "timestamp", name: 'updated_at',default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
+  @UpdateDateColumn({
+    type: 'timestamp',
+    name: 'updated_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
   public updatedAt: Date;
 
-  // @OneToMany(() => Event, (event) => event.userMapping)
-  // events: Event[];
+  @OneToMany(() => Event, (event) => event.userMapping)
+  events: Event[];
 
   @ManyToOne(() => User, (user) => user.userMappings)
   @JoinColumn({ name: 'user_id' })
