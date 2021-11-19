@@ -45,8 +45,8 @@ export class UserMapping {
   })
   public updatedAt: Date;
 
-  // @OneToMany(() => Event, (event) => event.userMapping)
-  // events: Event[];
+  @OneToMany(() => Event, (event) => event.userMapping)
+  events: Event[];
 
   @ManyToOne(() => User, (user) => user.userMappings)
   @JoinColumn({ name: 'user_id' })

@@ -27,4 +27,7 @@ export class CreateEventDto {
 
   @ApiProperty()
   readonly issuedAt: Date;
+
+  @ApiProperty()
+  readonly userMappingId: number;
 }
