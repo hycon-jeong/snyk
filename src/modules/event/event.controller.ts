@@ -2,11 +2,12 @@ import {
   BadRequestException,
   Get,
   Logger,
+  Query,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Crud,
@@ -194,6 +195,31 @@ export class CrudEventController implements CrudController<Event> {
       }),
     );
     return newProviderList;
+  }
+
+  @Get('provider/monthly/manage')
+  @ApiResponse({ status: 201, description: 'Successful Login' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiQuery({
+    description: '시작날짜',
+    name: 'start_date',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    description: '마지막 날짜',
+    name: 'end_date',
+    type: String,
+    required: false,
+  })
+  async getProviderApiCallsByMonthly(@Query() query): Promise<any> {
+    const { start_date, end_date } = query;
+    const providerList = await this.service.getProviderApiCallsByMonthly(
+      start_date,
+      end_date,
+    );
+    return providerList;
   }
 
   @Get('consumer/manage')
