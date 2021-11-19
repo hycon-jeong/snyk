@@ -21,8 +21,8 @@ export class User {
   userId: string;
 
   @ApiProperty()
-  @Column({ name: 'email', nullable: true})
-  @Index({ unique: true, where: "email IS NOT NULL" })
+  @Column({ name: 'email', nullable: true })
+  @Index({ unique: true, where: 'email IS NOT NULL' })
   email: string;
 
   @ApiProperty()
