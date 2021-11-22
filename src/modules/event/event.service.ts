@@ -34,7 +34,17 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
     return query.groupBy('event.category_id').getRawMany();
   }
 
-  async getProviderApiCallsByMonthly(start_date?, end_date?): Promise<any> {
+  async getProviderApiCallsByMonthly({
+    start_date,
+    end_date,
+    oem,
+    csm,
+  }: {
+    start_date?: string;
+    end_date?: string;
+    oem?: number;
+    csm?: number;
+  }): Promise<any> {
     const query = this.eventRepository
       .createQueryBuilder('event')
       .select(
@@ -47,13 +57,19 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
     if (end_date) {
       query.andWhere('event.issued_at < :end_date', { end_date });
     }
+    if (oem) {
+      query.andWhere('event.provider_id = :oem', { oem });
+    }
+    // if (csm) {
+    //   query.andWhere('');
+    // }
     return query
       .groupBy('date_format(event.issued_at,"%Y-%m")')
       .addGroupBy('event.provider_id')
       .getRawMany();
   }
 
-  async getqConsumerApiCalls(): Promise<any> {
+  async getConsumerApiCalls(): Promise<any> {
     return this.eventRepository
       .createQueryBuilder()
       .select(

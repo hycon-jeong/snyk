@@ -63,12 +63,17 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async moRegister(@Body() payload: MoRegisterPayload): Promise<any> {
     const { userId, role, password, verificationCode, ...rest } = payload;
-    const user = await this.userService.moCreate({
-      userId,
-      role,
-      password,
-      verificationCode,
+    let user = await this.userService.findOne({
+      where: { userId: userId },
     });
+    if (!user) {
+      user = await this.userService.moCreate({
+        userId,
+        role,
+        password,
+        verificationCode,
+      });
+    }
     try {
       await this.userService.createUserMapping({
         user_id: user.id,
