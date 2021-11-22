@@ -1,12 +1,19 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { RegisterPayload } from '.';
 
 export class MoRegisterPayload extends PickType(RegisterPayload, [
-  'userId',
   'role',
   'password',
 ]) {
+  @ApiProperty({
+    required: true,
+    description: 'user id',
+    type: String,
+  })
+  @IsString()
+  userId: string;
+
   @ApiProperty({
     required: true,
     type: String,

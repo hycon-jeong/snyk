@@ -72,6 +72,10 @@ import CrudsEventService from './event.service';
         alias: 'user_query',
         exclude: ['password'],
       },
+      'userMapping.consumer': {
+        eager: true,
+        alias: 'consumer_query',
+      },
     },
   },
 })
@@ -213,12 +217,26 @@ export class CrudEventController implements CrudController<Event> {
     type: String,
     required: false,
   })
+  @ApiQuery({
+    description: 'provider id',
+    name: 'oem',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    description: 'consumer id',
+    name: 'csm',
+    type: String,
+    required: false,
+  })
   async getProviderApiCallsByMonthly(@Query() query): Promise<any> {
-    const { start_date, end_date } = query;
-    const providerList = await this.service.getProviderApiCallsByMonthly(
+    const { start_date, end_date, oem, csm } = query;
+    const providerList = await this.service.getProviderApiCallsByMonthly({
       start_date,
       end_date,
-    );
+      oem,
+      csm,
+    });
     return providerList;
   }
 
@@ -227,7 +245,7 @@ export class CrudEventController implements CrudController<Event> {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getConsumerApiCalls(): Promise<any> {
-    const consumerList = await this.service.getqConsumerApiCalls();
+    const consumerList = await this.service.getConsumerApiCalls();
     const newConsumerList = await Promise.all(
       consumerList.map(async (consumer) => {
         const events = await this.service.getEventByConsumer(

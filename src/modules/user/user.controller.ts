@@ -16,6 +16,28 @@ import { UsersService } from './user.service';
   routes: {
     only: ['getOneBase', 'getManyBase', 'updateOneBase'],
   },
+  query: {
+    join: {
+      userMappings: {
+        alias: 'userMapping_query',
+        eager: true,
+      },
+      'userMappings.provider': {
+        eager: true,
+        alias: 'provider_query',
+      },
+      'userMappings.consumer': {
+        alias: 'consumer_query',
+        eager: true,
+      },
+    },
+    // filter: {
+    //   'userMapping_query.mapping_status': {
+    //     $eq: 'active',
+    //   },
+    // },
+    exclude: ['password'],
+  },
 })
 @Controller('api/user')
 @ApiTags('user')
