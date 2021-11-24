@@ -65,11 +65,18 @@ export class UsersService extends TypeOrmCrudService<User> {
     user.id = payload.user_id;
     consumer.id = payload.consumer_id;
     provider.id = payload.provider_id;
-    return await this.userMappingRepository.save({
+    const _map = await this.userMappingRepository.findOne({
+      userId: user.id,
+      consumerId: consumer.id,
+      providerId: provider.id,
+    });
+    const obj = {
       ...payload,
       user: user,
       consumer,
       provider,
-    });
+    };
+    _map && (obj['id'] = _map.id);
+    return await this.userMappingRepository.save(obj);
   }
 }

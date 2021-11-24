@@ -1,6 +1,13 @@
-import { BadRequestException, Controller, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   Crud,
   CrudAuth,
@@ -8,7 +15,7 @@ import {
   CrudRequest,
   Override,
   ParsedBody,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud';
 import CrudsConsumerService from 'modules/consumer/consumer.service';
 import { User, UserMapping } from 'modules/entities';
@@ -99,6 +106,16 @@ export class UserMappingController implements CrudController<UserMapping> {
     return this.base.createOneBase(req, {
       ...dto,
     } as UserMapping);
+  }
+  @Patch('multi')
+  @ApiResponse({ status: 201, description: 'Successful Registration' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async updateUserMappingsByUserId(
+    @Body() payload: Partial<UserMapping>,
+    @Query('user_id') user_id,
+  ): Promise<any> {
+    return this.service.updateUserMappings(payload, { userId: user_id });
   }
 
   @Override()

@@ -33,7 +33,7 @@ import { UsersService } from './user.service';
     },
     // filter: {
     //   'userMapping_query.mapping_status': {
-    //     $eq: 'active',
+    //     $eq: 'ACTIVE',
     //   },
     // },
     exclude: ['password'],

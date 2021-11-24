@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { timeStamp } from 'console';
 import { UserMapping } from 'modules/entities';
 import { Repository } from 'typeorm';
 
@@ -11,5 +12,14 @@ export class UserMappingService extends TypeOrmCrudService<UserMapping> {
     private readonly userMappingRepository: Repository<UserMapping>,
   ) {
     super(userMappingRepository);
+  }
+
+  updateUserMappings(value, condition) {
+    return this.userMappingRepository
+      .createQueryBuilder()
+      .update(UserMapping)
+      .set(value)
+      .where(condition)
+      .execute();
   }
 }
