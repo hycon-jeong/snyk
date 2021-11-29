@@ -23,11 +23,11 @@ export class Consumer {
   consumerType: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'consumer_name', nullable: true, length: 255 })
+  @Column('varchar', { name: 'consumer_name', length: 255 })
   consumerName: string | null;
 
   @ApiProperty()
-  @Column('int', { name: 'consumer_server_ip' })
+  @Column('int', { name: 'consumer_server_ip', nullable: true })
   consumerServerIp: number;
 
   @ApiProperty()
@@ -65,7 +65,6 @@ export class Consumer {
   @ApiProperty()
   @Column('varchar', {
     name: 'consumer_image_url',
-    nullable: true,
     length: 255,
   })
   consumerImageUrl: string | null;
@@ -78,6 +77,10 @@ export class Consumer {
     length: 255,
   })
   consumerServerType: string | null;
+
+  @ApiProperty()
+  @Column('varchar', { name: 'status', length: 255 })
+  status: string | null;
 
   @OneToMany(() => ConsumerLog, (consumerLog) => consumerLog.consumer)
   consumerLogs: ConsumerLog[];

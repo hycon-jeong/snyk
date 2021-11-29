@@ -14,7 +14,7 @@ export class Provider {
   providerCode: string;
 
   @ApiProperty()
-  @Column('varchar', { name: 'provider_name', nullable: true, length: 255 })
+  @Column('varchar', { name: 'provider_name', length: 255 })
   providerName: string | null;
 
   @ApiProperty()
@@ -44,7 +44,6 @@ export class Provider {
   @ApiProperty()
   @Column('varchar', {
     name: 'provider_background_url',
-    nullable: true,
     length: 255,
   })
   providerBackgroundUrl: string | null;
@@ -52,7 +51,6 @@ export class Provider {
   @ApiProperty()
   @Column('varchar', {
     name: 'provider_logo_url',
-    nullable: true,
     length: 255,
   })
   providerLogoUrl: string | null;
@@ -81,6 +79,10 @@ export class Provider {
     length: 255,
   })
   providerServerType: string | null;
+
+  @ApiProperty()
+  @Column('varchar', { name: 'status', length: 255 })
+  status: string | null;
 
   @OneToMany(() => ProviderLog, (providerLog) => providerLog.provider)
   providerLogs: ProviderLog[];
