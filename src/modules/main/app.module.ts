@@ -34,6 +34,9 @@ import {
   QueryResolver,
 } from 'nestjs-i18n';
 import { AllExceptionsFilter } from 'modules/common/HttpExeption';
+import { ProviderLogModule } from 'modules/providerLog';
+import { ConsumerLogModule } from 'modules/consumerLog';
+import { UserMappingLogModule } from 'modules/userMappingLog';
 var serviceAccount = require('../../../firebase.json');
 
 config();
@@ -104,12 +107,15 @@ config();
     EventModule,
     EventLogModule,
     ConsumerModule,
+    ConsumerLogModule,
     ProviderModule,
+    ProviderLogModule,
     MessageModule,
     StatisticsModule,
     FcmTokenModule,
     CategoryModule,
     UserMappingModule,
+    UserMappingLogModule,
   ],
   controllers: [AppController],
   providers: [
