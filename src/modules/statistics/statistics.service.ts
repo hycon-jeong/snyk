@@ -39,6 +39,6 @@ export class StatisticsService {
   }
 
   async getTotalUser() {
-    return this.userRepository.count({ where: { status: null } });
+    return this.userRepository.count();
   }
 }
