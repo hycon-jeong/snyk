@@ -65,7 +65,7 @@ import CrudsEventService from './event.service';
       },
       eventType: {
         alias: 'eventType_query',
-        eager: true,
+        // eager: true,
       },
       'userMapping.user': {
         eager: true,

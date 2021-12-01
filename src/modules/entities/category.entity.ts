@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Event } from '.';
+import { Event, EventLog } from '.';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from './user.entity';
 import { Provider } from '.';

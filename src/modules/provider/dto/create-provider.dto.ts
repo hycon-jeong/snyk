@@ -42,9 +42,8 @@ export class CreateProviderDto {
   readonly providerOs: string;
 
   @ApiProperty()
-  @IsNumber()
   @IsOptional()
-  readonly providerServerIp: number;
+  readonly providerServerIp: string;
 
   @ApiProperty()
   @IsOptional()

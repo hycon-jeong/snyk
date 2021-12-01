@@ -27,8 +27,12 @@ export class Consumer {
   consumerName: string | null;
 
   @ApiProperty()
-  @Column('int', { name: 'consumer_server_ip', nullable: true })
-  consumerServerIp: number;
+  @Column('varchar', {
+    name: 'consumer_server_ip',
+    nullable: true,
+    length: 255,
+  })
+  consumerServerIp: string | null;
 
   @ApiProperty()
   @Column('varchar', {

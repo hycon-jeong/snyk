@@ -39,8 +39,7 @@ export class CreateConsumerDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  readonly consumerServerIp: number;
+  readonly consumerServerIp: string;
 
   @ApiProperty()
   @IsOptional()

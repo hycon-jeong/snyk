@@ -46,6 +46,7 @@ export class UsersService extends TypeOrmCrudService<User> {
     payload: Partial<UserFillableFields> & {
       verificationCode: string;
       role: Roles;
+      status: string;
     },
   ) {
     const user = await this.getByUserId(payload.userId);
