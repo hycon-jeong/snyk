@@ -64,7 +64,7 @@ export class AuthController {
   async moRegister(@Body() payload: MoRegisterPayload): Promise<any> {
     const { userId, role, password, verificationCode, ...rest } = payload;
     let user = await this.userService.findOne({
-      where: { userId: userId, status: 'ACTIVE' },
+      where: { userId: userId },
     });
     if (!user) {
       user = await this.userService.moCreate({
@@ -72,6 +72,7 @@ export class AuthController {
         role,
         password,
         verificationCode,
+        status: 'ACTIVE',
       });
     }
     try {

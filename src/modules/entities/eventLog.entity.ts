@@ -10,6 +10,7 @@ import { Event } from './event.entity';
 import { CrudValidationGroups } from '@nestjsx/crud';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Category } from '.';
 
 const { CREATE, UPDATE } = CrudValidationGroups;
 
@@ -39,16 +40,16 @@ export class EventLog {
   userId: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'category', nullable: true, length: 255 })
-  category: string | null;
+  @Column('varchar', { name: 'category_id', nullable: true, length: 255 })
+  categoryId: string | null;
 
   @ApiProperty()
   @Column('varchar', { name: 'consumer_code', nullable: true, length: 255 })
   consumerCode: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'provider_key', nullable: true, length: 255 })
-  providerKey: string | null;
+  @Column('varchar', { name: 'provider_code', nullable: true, length: 255 })
+  providerCode: string | null;
 
   @ApiProperty()
   @Column('json', { name: 'message', nullable: true })

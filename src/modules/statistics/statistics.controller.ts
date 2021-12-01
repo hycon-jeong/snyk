@@ -3,12 +3,20 @@ import {
   Controller,
   Get,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ConsumerStatistics, TotalStatistics } from './statistics.interface';
 import { StatisticsService } from './statistics.service';
+import * as moment from 'moment';
+
+enum RankType {
+  'user' = 'user',
+  'provider' = 'provider',
+  'consumer' = 'consumer',
+}
 
 /**
  * statistics Controller
@@ -47,5 +55,74 @@ export class StatisticsController {
       message: allPromise[3] || 0,
       user: allPromise[4] || 0,
     };
+  }
+
+  @Get('today/rank')
+  @ApiQuery({ name: 'today', description: 'today', type: String })
+  @ApiQuery({
+    name: 'type',
+    description: 'rank type in [user,provider,consumer]',
+    enum: RankType,
+  })
+  @ApiResponse({ status: 200, description: 'Fetch Profile Request Received' })
+  @ApiResponse({ status: 400, description: 'Fetch Profile Request Failed' })
+  async getTodayRank(@Query() query): Promise<any> {
+    const { today, type } = query;
+    const startDate = moment(today).subtract(1, 'day').format('YYYY-MM-DD');
+    const endDate = moment(today).add(1, 'day').format('YYYY-MM-DD');
+    let data = [];
+    switch (type) {
+      case 'user':
+        data = await this.statisticsService.getUserRank(
+          startDate,
+          today,
+          endDate,
+        );
+        break;
+      case 'provider':
+        data = await this.statisticsService.getProviderRank(
+          startDate,
+          today,
+          endDate,
+        );
+        break;
+      case 'consumer':
+        data = await this.statisticsService.getConsumerRank(
+          startDate,
+          today,
+          endDate,
+        );
+        break;
+      default:
+        break;
+    }
+    return data;
+  }
+
+  @Get('total/rank')
+  @ApiQuery({
+    name: 'type',
+    description: 'rank type in [user,provider,consumer]',
+    enum: RankType,
+  })
+  @ApiResponse({ status: 200, description: 'Fetch Profile Request Received' })
+  @ApiResponse({ status: 400, description: 'Fetch Profile Request Failed' })
+  async getTotalRank(@Query() query): Promise<any> {
+    const { type } = query;
+    let data = [];
+    switch (type) {
+      case 'user':
+        data = await this.statisticsService.getUserTotalRank();
+        break;
+      case 'provider':
+        data = await this.statisticsService.getProviderTotalRank();
+        break;
+      case 'consumer':
+        data = await this.statisticsService.getConsumerTotalRank();
+        break;
+      default:
+        break;
+    }
+    return data;
   }
 }
