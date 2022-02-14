@@ -15,8 +15,8 @@ import * as compression from 'compression';
 import * as rateLimit from 'express-rate-limit';
 import { winstonOptions } from 'modules/main/app-logging';
 import { UserModule } from 'modules/user';
-import { TvAppModule } from 'modules/tvapp/tvapp.module';
-import { TvAuthModule } from 'modules/tvapp/auth/tv.auth.module';
+import { TvAppModule } from 'modules/api.tvapp/tvapp.module';
+import { TvAuthModule } from 'modules/api.tvapp/auth/tv.auth.module';
 
 dotenv.config();
 
