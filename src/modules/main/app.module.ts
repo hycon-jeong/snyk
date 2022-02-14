@@ -37,6 +37,7 @@ import { AllExceptionsFilter } from 'modules/common/HttpExeption';
 import { ProviderLogModule } from 'modules/providerLog';
 import { ConsumerLogModule } from 'modules/consumerLog';
 import { UserMappingLogModule } from 'modules/userMappingLog';
+import { TvAppModule } from 'modules/tvapp/tvapp.module';
 var serviceAccount = require('../../../firebase.json');
 
 config();
@@ -116,6 +117,7 @@ config();
     CategoryModule,
     UserMappingModule,
     UserMappingLogModule,
+    TvAppModule,
   ],
   controllers: [AppController],
   providers: [

@@ -3,13 +3,20 @@ import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 import { TrimStringsPipe } from './modules/common/transformer/trim-strings.pipe';
 import { AppModule } from './modules/main/app.module';
-import { setupSwagger } from './swagger';
+import {
+  setupProviderSwagger,
+  setupSwagger,
+  setupTvAppSwagger,
+} from './swagger';
 import * as dotenv from 'dotenv';
 import { WinstonModule } from 'nest-winston';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
 import * as rateLimit from 'express-rate-limit';
 import { winstonOptions } from 'modules/main/app-logging';
+import { UserModule } from 'modules/user';
+import { TvAppModule } from 'modules/tvapp/tvapp.module';
+import { TvAuthModule } from 'modules/tvapp/auth/tv.auth.module';
 
 dotenv.config();
 
@@ -25,6 +32,10 @@ async function bootstrap() {
   };
   const app = await NestFactory.create(AppModule, nestAppOptions);
   setupSwagger(app);
+  // provider api docs
+  setupProviderSwagger(app, { include: [TvAppModule] });
+  // tvapp api docs
+  setupTvAppSwagger(app, { include: [TvAuthModule] });
 
   // secure app by setting various HTTP headers.
   app.use(helmet());
