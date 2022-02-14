@@ -11,7 +11,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import * as crypto from 'crypto';
 import { TvAuthService } from './tv.auth.service';
+import 'moment-timezone';
 import * as moment from 'moment';
+moment.tz.setDefault('Asia/Seoul');
+
 import { Between } from 'typeorm';
 
 export interface IResponse {
