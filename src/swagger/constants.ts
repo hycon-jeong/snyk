@@ -6,7 +6,7 @@ export const SWAGGER_API_CURRENT_VERSION = '1.0.0';
 export const SWAGGER_PROVIDER_API_ROOT = 'api/provider/docs';
 export const SWAGGER_PROVIDER_API_NAME = 'MyCarService Provider API';
 export const SWAGGER_PROVIDER_API_DESCRIPTION =
-  'MyCarService Provider API Description';
+  'MyCarService Provider API Description  모든 API 호출에 userKey, providerId를 파라미터로 함께 요청 부탁드립니다.';
 export const SWAGGER_PROVIDER_API_CURRENT_VERSION = '1.0.0';
 
 export const SWAGGER_TVAPP_API_ROOT = 'api/tvapp/docs';

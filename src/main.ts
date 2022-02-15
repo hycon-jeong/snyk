@@ -14,9 +14,11 @@ import * as helmet from 'helmet';
 import * as compression from 'compression';
 import * as rateLimit from 'express-rate-limit';
 import { winstonOptions } from 'modules/main/app-logging';
-import { UserModule } from 'modules/user';
-import { TvAppModule } from 'modules/api.tvapp/tvapp.module';
 import { TvAuthModule } from 'modules/api.tvapp/auth/tv.auth.module';
+import { ProviderApiModule } from 'modules/api.provider/provider.module';
+import { ProviderEventModule } from 'modules/api.provider/event/provider.event.module';
+import { TvDeviceModule } from 'modules/api.tvapp/device/tv.device.module';
+import { TvTestModule } from 'modules/api.tvapp/test/tv.test.module';
 
 dotenv.config();
 
@@ -33,9 +35,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, nestAppOptions);
   setupSwagger(app);
   // provider api docs
-  setupProviderSwagger(app, { include: [TvAppModule] });
+  setupProviderSwagger(app, { include: [ProviderEventModule] });
   // tvapp api docs
-  setupTvAppSwagger(app, { include: [TvAuthModule] });
+  setupTvAppSwagger(app, {
+    include: [TvAuthModule, TvDeviceModule, TvTestModule],
+  });
 
   // secure app by setting various HTTP headers.
   app.use(helmet());

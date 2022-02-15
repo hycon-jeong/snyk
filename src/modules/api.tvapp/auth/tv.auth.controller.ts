@@ -8,7 +8,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import * as crypto from 'crypto';
 import { TvAuthService } from './tv.auth.service';
 import 'moment-timezone';
@@ -16,6 +22,7 @@ import * as moment from 'moment';
 moment.tz.setDefault('Asia/Seoul');
 
 import { Between } from 'typeorm';
+import { TvDeviceService } from '../device/tv.device.service';
 
 export interface IResponse {
   statusCode: number;
@@ -29,9 +36,15 @@ export interface IResponse {
 @Controller('api/tvapp/auth')
 @ApiTags('Auth')
 export class TvAuthController {
-  constructor(private readonly service: TvAuthService) {}
+  constructor(
+    private readonly service: TvAuthService,
+    private readonly tvDeviceService: TvDeviceService,
+  ) {}
 
   @Get('certCode')
+  @ApiOperation({
+    summary: '인증코드 가져오기',
+  })
   @ApiQuery({ type: String, name: 'deviceToken', required: true })
   @ApiQuery({ type: String, name: 'tvType', required: true })
   @ApiResponse({ status: 200, description: 'get certCode successfully' })
@@ -39,15 +52,26 @@ export class TvAuthController {
   async getCerCode(@Query() query): Promise<any> {
     const { deviceToken, tvType } = query;
 
+    // check devicetoken
+    let device = await this.tvDeviceService.getTvDeviceOne({
+      tvDeviceToken: deviceToken,
+    });
+    if (!device) {
+      device = await this.tvDeviceService.createTvDevice({
+        tvType,
+        tvDeviceToken: deviceToken,
+        status: 'ACTIVE',
+      });
+    }
+
     const certCode = await this.getUniqueCertCode();
 
     await this.service.createTvCertCode({
       tvCertCode: certCode,
-      tvType,
-      tvDeviceToken: deviceToken,
       expireDt: moment().add(5, 'minutes').toDate(),
+      tvDeviceId: device.id,
     });
-    //todo add verfify code
+    //todo add verfify cod
 
     return {
       statusCode: 200,

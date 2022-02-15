@@ -20,5 +20,6 @@ import { UserMappingService } from './userMapping.service';
     CrudsConsumerService,
     UsersService,
   ],
+  exports: [UserMappingService],
 })
 export class UserMappingModule {}

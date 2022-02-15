@@ -15,12 +15,8 @@ export class TvCertCode {
   id: number;
 
   @ApiProperty()
-  @Column('varchar', { name: 'tv_device_token', nullable: true, length: 255 })
-  tvDeviceToken: Date | null;
-
-  @ApiProperty()
-  @Column('varchar', { name: 'tv_type', nullable: true, length: 255 })
-  tvType: string | null;
+  @Column('int', { name: 'tv_device_id', nullable: true })
+  tvDeviceId: number | null;
 
   @ApiProperty()
   @Column('varchar', { name: 'tv_cert_code', nullable: true, length: 255 })

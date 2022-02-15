@@ -37,7 +37,8 @@ import { AllExceptionsFilter } from 'modules/common/HttpExeption';
 import { ProviderLogModule } from 'modules/providerLog';
 import { ConsumerLogModule } from 'modules/consumerLog';
 import { UserMappingLogModule } from 'modules/userMappingLog';
-import { TvAppModule } from 'modules/api.tvapp/tvapp.module';
+import { TvAppApiModule } from 'modules/api.tvapp/tvapp.module';
+import { ProviderApiModule } from 'modules/api.provider/provider.module';
 var serviceAccount = require('../../../firebase.json');
 
 config();
@@ -62,7 +63,7 @@ config();
           migrationsTableName: 'migrations_typeorm',
           migrationsRun: true,
           keepConnectionAlive: configService.get('DB_CONNECTION_ALIVE'),
-          logging: true,
+          // logging: true,
         } as TypeOrmModuleAsyncOptions;
       },
     }),
@@ -118,7 +119,8 @@ config();
     CategoryModule,
     UserMappingModule,
     UserMappingLogModule,
-    TvAppModule,
+    TvAppApiModule,
+    ProviderApiModule,
   ],
   controllers: [AppController],
   providers: [

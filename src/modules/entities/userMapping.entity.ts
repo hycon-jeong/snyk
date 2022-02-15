@@ -15,6 +15,7 @@ import { Provider } from './provider.entity';
 import { User } from './user.entity';
 import { UserMappingLog } from './userMappingLog.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { TvDevice } from './tvDevice.entity';
 
 @Entity('user-mapping', { schema: 'mycar' })
 export class UserMapping {
@@ -58,6 +59,7 @@ export class UserMapping {
   @ManyToOne(() => Consumer, (consumer) => consumer.userMappings)
   @JoinColumn({ name: 'consumer_id' })
   public consumer: Consumer;
+
   @ApiProperty()
   @Column({ name: 'consumer_id' })
   consumerId: number;
@@ -65,7 +67,15 @@ export class UserMapping {
   @ManyToOne(() => Provider, (provider) => provider.userMappings)
   @JoinColumn({ name: 'provider_id' })
   public provider: Provider;
+
   @ApiProperty()
   @Column({ name: 'provider_id' })
   providerId: number;
+
+  @Column('int', { name: 'tv_device_id', nullable: true })
+  tvDeviceId: number | null;
+
+  @ManyToOne(() => TvDevice, (tvDevice) => tvDevice.userMappings)
+  @JoinColumn({ name: 'tv_device_id' })
+  public tvDevice: TvDevice;
 }

@@ -20,6 +20,9 @@ export class User {
   @Column('varchar', { name: 'user_id', unique: true, length: 255 })
   userId: string;
 
+  @Column('int', { name: 'provider_id', nullable: true })
+  providerId: number;
+
   @ApiProperty()
   @Column({ name: 'email', nullable: true })
   @Index({ unique: true, where: 'email IS NOT NULL' })
