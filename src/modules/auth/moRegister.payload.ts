@@ -17,10 +17,10 @@ export class MoRegisterPayload extends PickType(RegisterPayload, [
   @ApiProperty({
     required: true,
     type: String,
-    description: 'verification code',
+    description: 'tvCertCode',
   })
   @IsNotEmpty()
-  verificationCode: string;
+  tvCertCode: string;
 
   @ApiProperty({
     required: true,

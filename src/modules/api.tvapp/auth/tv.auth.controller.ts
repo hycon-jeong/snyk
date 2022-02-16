@@ -17,9 +17,9 @@ import {
 } from '@nestjs/swagger';
 import * as crypto from 'crypto';
 import { TvAuthService } from './tv.auth.service';
-import 'moment-timezone';
 import * as moment from 'moment';
-moment.tz.setDefault('Asia/Seoul');
+import 'moment-timezone';
+import 'moment/locale/ko';
 
 import { Between } from 'typeorm';
 import { TvDeviceService } from '../device/tv.device.service';
@@ -66,9 +66,11 @@ export class TvAuthController {
 
     const certCode = await this.getUniqueCertCode();
 
-    await this.service.createTvCertCode({
+    const expireDt = moment().add(5, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+
+    const res = await this.service.createTvCertCode({
       tvCertCode: certCode,
-      expireDt: moment().add(5, 'minutes').toDate(),
+      expireDt: expireDt,
       tvDeviceId: device.id,
     });
     //todo add verfify cod
@@ -86,10 +88,11 @@ export class TvAuthController {
       .randomInt(100000, 999999)
       .toString()
       .padStart(6, '0');
-
+    const expireDt = moment().add(5, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    const now = moment().format('YYYY-MM-DD HH:mm:ss');
     const res = await this.service.getTvCertCodeOne({
       tvCertCode: randomValue,
-      expireDt: Between(moment().toDate(), moment().add(5, 'minutes').toDate()),
+      expireDt: Between(now, expireDt),
     });
 
     if (res) {

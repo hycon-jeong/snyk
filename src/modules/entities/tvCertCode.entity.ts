@@ -27,6 +27,6 @@ export class TvCertCode {
   tvVerifyCode: string | null;
 
   @ApiProperty()
-  @Column('datetime', { name: 'expire_dt', nullable: true })
+  @Column('timestamp', { name: 'expire_dt', nullable: true })
   expireDt: Date | null;
 }

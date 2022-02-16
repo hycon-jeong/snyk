@@ -44,7 +44,7 @@ export class UsersService extends TypeOrmCrudService<User> {
 
   async moCreate(
     payload: Partial<UserFillableFields> & {
-      verificationCode: string;
+      tvCertCode: string;
       role: Roles;
       status: string;
     },
@@ -55,29 +55,29 @@ export class UsersService extends TypeOrmCrudService<User> {
         'User with provided userid already created.',
       );
     }
-    payload.name = payload.verificationCode;
+    payload.name = payload.tvCertCode;
     return await this.userRepository.save(payload);
   }
 
   async createUserMapping(payload: UserMappingFillableFields) {
-    const user = new User();
-    const consumer = new Consumer();
-    const provider = new Provider();
-    user.id = payload.user_id;
-    consumer.id = payload.consumer_id;
-    provider.id = payload.provider_id;
-    const _map = await this.userMappingRepository.findOne({
-      userId: user.id,
-      consumerId: consumer.id,
-      providerId: provider.id,
-    });
-    const obj = {
-      ...payload,
-      user: user,
-      consumer,
-      provider,
-    };
-    _map && (obj['id'] = _map.id);
-    return await this.userMappingRepository.save(obj);
+    // const user = new User();
+    // const consumer = new Consumer();
+    // const provider = new Provider();
+    // user.id = payload.user_id;
+    // consumer.id = payload.consumer_id;
+    // provider.id = payload.provider_id;
+    // const _map = await this.userMappingRepository.findOne({
+    //   userId: user.id,
+    //   consumerId: consumer.id,
+    //   providerId: provider.id,
+    // });
+    // const obj = {
+    //   ...payload,
+    //   user: user,
+    //   consumer,
+    //   provider,
+    // };
+    // _map && (obj['id'] = _map.id);
+    return await this.userMappingRepository.save(payload);
   }
 }

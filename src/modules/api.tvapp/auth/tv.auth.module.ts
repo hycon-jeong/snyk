@@ -14,5 +14,6 @@ import { TvAuthService } from './tv.auth.service';
   ],
   controllers: [TvAuthController],
   providers: [TvAuthService],
+  exports: [TvAuthService],
 })
 export class TvAuthModule {}

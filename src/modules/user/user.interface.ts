@@ -5,9 +5,11 @@ export class UserFillableFields {
 }
 
 export class UserMappingFillableFields {
-  user_id: number;
-  provider_id: number;
-  consumer_id: number;
+  userId: number;
+  providerId: number;
+  consumerId: number;
+  tvDeviceId: number;
   key: string;
   mappingStatus: string;
+  name: string;
 }

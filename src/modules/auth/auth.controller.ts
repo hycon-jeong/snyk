@@ -1,16 +1,24 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   HttpException,
   HttpStatus,
+  Inject,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UserMapping } from 'modules/entities';
+import { TvAuthService } from 'modules/api.tvapp/auth/tv.auth.service';
+import { TvDeviceService } from 'modules/api.tvapp/device/tv.device.service';
 import { User } from 'modules/entities/user.entity';
+import 'moment-timezone';
+import * as moment from 'moment';
+moment.tz.setDefault('Asia/Seoul');
+
+import { LessThan, MoreThan } from 'typeorm';
 import { AuthService, LoginPayload, RegisterPayload } from './';
 import { CurrentUser } from './../common/decorator/current-user.decorator';
 import { UsersService } from './../user';
@@ -22,6 +30,8 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UsersService,
+    private readonly tvDeviceService: TvDeviceService,
+    private readonly tvAuthService: TvAuthService,
   ) {}
 
   @Post('login')
@@ -62,27 +72,46 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async moRegister(@Body() payload: MoRegisterPayload): Promise<any> {
-    const { userId, role, password, verificationCode, ...rest } = payload;
+    const { userId, role, password, tvCertCode, ...rest } = payload;
+
+    // 인증번호 확인
+    const tvCert = await this.tvAuthService.getTvCertCodeOne({
+      where: {
+        tvCertCode,
+        expireDt: MoreThan(moment().format('YYYY-MM-DD HH:mm:ss')),
+      },
+    });
+
+    if (!tvCert || !tvCert.id) {
+      throw new BadRequestException('인증번호가 일치하지 않습니다.');
+    }
+
     let user = await this.userService.findOne({
       where: { userId: userId },
     });
+
     if (!user) {
       user = await this.userService.moCreate({
         userId,
         role,
         password,
-        verificationCode,
+        tvCertCode,
         status: 'ACTIVE',
       });
     }
     try {
       await this.userService.createUserMapping({
-        user_id: user.id,
+        userId: user.id,
         mappingStatus: 'ACTIVE',
+        providerId: payload.provider_id,
+        consumerId: payload.consumer_id,
+        tvDeviceId: tvCert.tvDeviceId,
+        name: user.name,
         ...rest,
       });
     } catch (err) {
       console.log(err);
+      return err;
     }
 
     return await this.authService.createToken(user);
