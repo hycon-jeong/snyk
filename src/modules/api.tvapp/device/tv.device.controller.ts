@@ -58,7 +58,7 @@ export class TvDeviceController {
   @ApiQuery({
     type: String,
     name: 'tvType',
-    required: true,
+    required: false,
     description: 'tv 타입',
   })
   @ApiResponse({ status: 200, description: 'get user list successfully' })
@@ -100,7 +100,7 @@ export class TvDeviceController {
   @ApiQuery({
     type: String,
     name: 'tvType',
-    required: true,
+    required: false,
     description: 'tv 타입',
   })
   @ApiParam({

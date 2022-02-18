@@ -133,6 +133,10 @@ export class CrudEventController implements CrudController<Event> {
             'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
           provider: `${providerData.providerName}`,
           url: '',
+          title: '차량 알림',
+          body:
+            messageData.message ||
+            '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
         },
       });
     }

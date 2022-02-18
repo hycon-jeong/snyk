@@ -46,7 +46,7 @@ export class TvAuthController {
     summary: '인증코드 가져오기',
   })
   @ApiQuery({ type: String, name: 'deviceToken', required: true })
-  @ApiQuery({ type: String, name: 'tvType', required: true })
+  @ApiQuery({ type: String, name: 'tvType', required: false })
   @ApiResponse({ status: 200, description: 'get certCode successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   async getCerCode(@Query() query): Promise<any> {

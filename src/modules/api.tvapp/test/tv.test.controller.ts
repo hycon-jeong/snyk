@@ -71,6 +71,8 @@ export class TvTestController {
           'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
         provider: `씽크웨이`,
         url: '',
+        title: '차량 알림',
+        body: '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
       },
     });
 
