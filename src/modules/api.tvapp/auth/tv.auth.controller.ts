@@ -63,9 +63,10 @@ export class TvAuthController {
         status: 'ACTIVE',
       });
     }
+    console.log('deviceToken >>>>>>>>>>' + deviceToken);
 
     const certCode = await this.getUniqueCertCode();
-
+    console.log('certCode >>>>>>>>>>' + certCode);
     const expireDt = moment().add(5, 'minutes').format('YYYY-MM-DD HH:mm:ss');
 
     const res = await this.service.createTvCertCode({
