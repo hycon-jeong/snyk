@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module, Scope } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { ConsumerModule } from 'modules/consumer/consumer.module';
 import { EventModule } from 'modules/event';

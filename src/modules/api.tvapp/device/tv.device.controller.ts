@@ -61,8 +61,33 @@ export class TvDeviceController {
     required: false,
     description: 'tv 타입',
   })
-  @ApiResponse({ status: 200, description: 'get user list successfully' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({
+    status: 200,
+    description: 'get user list successfully',
+    content: {
+      'application/json': {
+        example: {
+          statusCode: 200,
+          data: { users: '{유저 리스트}' },
+          isSuccess: true,
+          message: 'success',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'bad request',
+    content: {
+      'application/json': {
+        example: {
+          statusCode: 400,
+          isSuccess: false,
+          message: '{에러 내용}',
+        },
+      },
+    },
+  })
   async getUserListByTvApp(@Query() query): Promise<any> {
     const { deviceToken, tvType } = query;
 
@@ -109,8 +134,32 @@ export class TvDeviceController {
     description: 'user pk',
     required: true,
   })
-  @ApiResponse({ status: 200, description: 'Disconnecting user successfully' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({
+    status: 200,
+    description: 'Disconnecting user successfully',
+    content: {
+      'application/json': {
+        example: {
+          statusCode: 200,
+          isSuccess: true,
+          message: 'success',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'bad request',
+    content: {
+      'application/json': {
+        example: {
+          statusCode: 400,
+          isSuccess: false,
+          message: '{에러 내용}',
+        },
+      },
+    },
+  })
   async disconnectUserInTv(@Query() query, @Param('id') userId): Promise<any> {
     const { deviceToken, tvType } = query;
 
@@ -133,7 +182,6 @@ export class TvDeviceController {
 
     return {
       statusCode: 200,
-      // data: { users: userMappings.map((map) => map.user) },
       isSuccess: true,
       message: 'success',
     };

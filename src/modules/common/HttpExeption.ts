@@ -1,5 +1,6 @@
 import {
   ArgumentsHost,
+  BadRequestException,
   Catch,
   ExceptionFilter,
   HttpException,
@@ -15,17 +16,23 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const errorData = exception.getResponse() as Record<string, any>;
     const response = ctx.getResponse();
     const status = exception.getStatus();
+
     if (errorData.message && errorData.message.length > 0) {
-      return response.status(status).send(errorData);
+      return response.status(status).send({ ...errorData, isSuccess: false });
     }
-    const message = await this._i18n.translate(errorData.messageCode, {
-      lang: ctx.getRequest().i18nLang,
-    });
+    let message;
+    if (typeof errorData === 'object') {
+      message = await this._i18n.translate(errorData?.messageCode, {
+        lang: ctx.getRequest().i18nLang,
+      });
+    }
+    message = errorData;
     response.status(status).send({
       message,
       statusCode: status,
       error: errorData.error,
       messageCode: errorData.messageCode,
+      isSuccess: false,
     });
   }
 }

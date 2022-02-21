@@ -19,6 +19,8 @@ import { ProviderApiModule } from 'modules/api.provider/provider.module';
 import { ProviderEventModule } from 'modules/api.provider/event/provider.event.module';
 import { TvDeviceModule } from 'modules/api.tvapp/device/tv.device.module';
 import { TvTestModule } from 'modules/api.tvapp/test/tv.test.module';
+import { AllExceptionsFilter } from 'modules/common/HttpExeption';
+import { I18nModule, I18nService } from 'nestjs-i18n';
 
 dotenv.config();
 
@@ -56,6 +58,7 @@ async function bootstrap() {
   );
   app.enableCors();
   app.useGlobalPipes(new TrimStringsPipe(), new ValidationPipe());
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   /**
