@@ -93,6 +93,47 @@ export class TvTestController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   async getUserListByTvApp(@Query() query): Promise<any> {
     const { deviceToken, eventType } = query;
+    let data = {};
+
+    if (eventType === 'normal') {
+      data = {
+        body: '마이카 알람서비스로부터 차량 시동 알림이 도착하였습니다.',
+        imageUrl:
+          'https://imgd.aeplcdn.com/0x0/n/cw/ec/27032/s60-exterior-right-front-three-quarter-3.jpeg',
+
+        position: 'center',
+        subMessage: `연결된 장치 : 씽크웨이 / 블랙박스`,
+        // redirectUrl: 'https://www.naver.com',
+        title: '차량 알림',
+        type: eventType,
+      };
+    }
+    if (eventType === 'important') {
+      data = {
+        body: '마이카 알람서비스로부터 차량 충돌 알림이 도착하였습니다.',
+        imageUrl:
+          'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
+
+        position: 'center',
+        subMessage: `연결된 장치 : 씽크웨이 / 블랙박스`,
+        redirectUrl: 'https://www.naver.com',
+        title: '차량 알림',
+        type: eventType,
+      };
+    }
+    if (eventType === 'advertise') {
+      data = {
+        body: '마이카 알람서비스로부터 광고 메세지가 도착하였습니다.마이카 알람서비스로부터 광고 메세지가 도착하였습니다.마이카 알람서비스로부터 광고 메세지가',
+        imageUrl:
+          'https://www.google.com/url?sa=i&url=https%3A%2F%2Flive.lge.co.kr%2Flg_truesteamtrue_0522%2F&psig=AOvVaw3uI9dl5AXRg41MjqOVuoJK&ust=1645694493986000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCIjSsfK_lfYCFQAAAAAdAAAAABAY',
+
+        position: 'center',
+        subMessage: `연결된 장치 : 씽크웨이 / 블랙박스`,
+        redirectUrl: 'https://www.naver.com',
+        title: '차량 알림',
+        type: eventType,
+      };
+    }
 
     const res = await this.firebaseMessage.sendToDevice(deviceToken, {
       // notifction 제거> 백그라운드에서 못 받음
@@ -100,18 +141,9 @@ export class TvTestController {
       //   title: '차량 알림',
       //   body: '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
       // },
-      data: {
-        position: 'center',
-        imageUrl:
-          'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
-        subMessage: `씽크웨이`,
-        redirectUrl: 'https://www.naver.com',
-        title: '차량 알림',
-        body: '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
-        type: eventType,
-      },
+      data: data,
     });
-    console.log(res);
+
     return {
       statusCode: 200,
       isSuccess: true,
