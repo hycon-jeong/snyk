@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Param,
   Patch,
   Query,
   UseGuards,
@@ -19,6 +20,7 @@ import {
 } from '@nestjsx/crud';
 import CrudsConsumerService from 'modules/consumer/consumer.service';
 import { User, UserMapping } from 'modules/entities';
+import { FirebaseMessagingService } from 'modules/firebase';
 import CrudsProviderService from 'modules/provider/provider.service';
 import { UsersService } from 'modules/user';
 import { UserMappingService } from './userMapping.service';
@@ -36,6 +38,13 @@ import { UserMappingService } from './userMapping.service';
       'updateOneBase',
       'deleteOneBase',
     ],
+  },
+  params: {
+    id: {
+      primary: true,
+      type: 'number',
+      field: 'id',
+    },
   },
   query: {
     join: {
@@ -74,6 +83,7 @@ export class UserMappingController implements CrudController<UserMapping> {
     public readonly providerService: CrudsProviderService,
     public readonly consumerService: CrudsConsumerService,
     public readonly userService: UsersService,
+    private firebaseMessage: FirebaseMessagingService,
   ) {}
 
   get base(): CrudController<UserMapping> {
@@ -122,6 +132,7 @@ export class UserMappingController implements CrudController<UserMapping> {
   async updateOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: UserMapping,
+    @Param('id') id,
   ) {
     if (dto.providerId) {
       const providerData = await this.providerService.findOne({
@@ -152,6 +163,29 @@ export class UserMappingController implements CrudController<UserMapping> {
       } else {
         dto.user = userData;
       }
+    }
+
+    const userMapping = await this.service.findOne({
+      where: { id },
+      join: {
+        leftJoinAndSelect: { tvDevice: 'mapping.tvDevice' },
+        alias: 'mapping',
+      },
+    });
+
+    if (dto.mappingStatus === 'INACTIVE') {
+      // 맵핑 삭제
+      this.firebaseMessage.sendToDevice([userMapping.tvDevice.tvDeviceToken], {
+        // notification: {
+        //   title: '차량 알림',
+        //   body:
+        //     dto.messageContent ||
+        //     '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
+        // },
+        data: {
+          isConnected: 'false',
+        },
+      });
     }
     return this.base.updateOneBase(req, dto);
   }

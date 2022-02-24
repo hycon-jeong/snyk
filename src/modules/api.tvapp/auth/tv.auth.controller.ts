@@ -180,6 +180,7 @@ export class TvAuthController {
     }
     const userMapping = await this.userMappingService.findOne({
       tvDeviceId: device.id,
+      mappingStatus: 'ACTIVE',
     });
     if (!userMapping || !userMapping.id) {
       throw new BadRequestException('등록된 서비스가 없습니다.');
