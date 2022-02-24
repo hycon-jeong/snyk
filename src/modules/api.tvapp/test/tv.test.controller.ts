@@ -35,6 +35,12 @@ export interface IResponse {
   message?: string;
 }
 
+export enum EventType {
+  normal = 'normal',
+  important = 'important',
+  advertise = 'advertise',
+}
+
 @ApiBearerAuth()
 // @UseGuards(AuthGuard())
 @Controller('api/tvapp/test')
@@ -55,27 +61,57 @@ export class TvTestController {
     required: true,
     description: 'tv 기기 토큰',
   })
-  @ApiResponse({ status: 200, description: 'get user list successfully' })
+  @ApiQuery({
+    enum: EventType,
+    name: 'eventType',
+    required: true,
+    description: '이벤트 타입(일반,중요,광고)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'push data',
+    content: {
+      'application/json': {
+        example: {
+          statusCode: 200,
+          isSuccess: true,
+          message: 'success',
+          data: {
+            position: 'center',
+            imageUrl:
+              'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
+            provider: `씽크웨이`,
+            redirectUrl: 'https://www.naver.com',
+            title: '차량 알림',
+            body: '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
+            type: 'normal',
+          },
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   async getUserListByTvApp(@Query() query): Promise<any> {
-    const { deviceToken } = query;
+    const { deviceToken, eventType } = query;
 
     const res = await this.firebaseMessage.sendToDevice(deviceToken, {
-      notification: {
-        title: '차량 알림',
-        body: '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
-      },
+      // notifction 제거> 백그라운드에서 못 받음
+      // notification: {
+      //   title: '차량 알림',
+      //   body: '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
+      // },
       data: {
         position: 'center',
         imageUrl:
           'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
         provider: `씽크웨이`,
-        redirectUrl: '',
+        redirectUrl: 'https://www.naver.com',
         title: '차량 알림',
         body: '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
+        type: eventType,
       },
     });
-
+    console.log(res);
     return {
       statusCode: 200,
       isSuccess: true,

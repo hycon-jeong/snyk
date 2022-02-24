@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty } from 'class-validator';
+import { EventType } from 'modules/api.tvapp/test/tv.test.controller';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 
 export class CreateEventDto {
@@ -7,7 +8,7 @@ export class CreateEventDto {
   @ApiProperty()
   readonly messageId: number;
 
-  @ApiProperty()
+  @ApiProperty({ enum: EventStatus })
   @IsEnum(EventStatus)
   readonly status: EventStatus;
 
@@ -22,4 +23,8 @@ export class CreateEventDto {
 
   @ApiProperty()
   readonly issuedAt: Date;
+
+  @ApiProperty({ enum: EventType })
+  @IsEnum(EventType)
+  readonly eventType: EventType;
 }

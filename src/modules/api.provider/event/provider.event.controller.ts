@@ -119,12 +119,12 @@ export class CrudEventController implements CrudController<Event> {
 
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
-        notification: {
-          title: '차량 알림',
-          body:
-            dto.messageContent ||
-            '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
-        },
+        // notification: {
+        //   title: '차량 알림',
+        //   body:
+        //     dto.messageContent ||
+        //     '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
+        // },
         data: {
           position: 'center',
           imageUrl:
@@ -136,6 +136,7 @@ export class CrudEventController implements CrudController<Event> {
           body:
             dto.messageContent ||
             '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
+          type: dto.eventType,
         },
       });
     }
