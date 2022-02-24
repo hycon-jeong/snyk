@@ -116,6 +116,7 @@ export class CrudEventController implements CrudController<Event> {
     if (!categoryData || !categoryData.id) {
       throw new BadRequestException('cagetory not found');
     }
+    const subMessage = `${providerData.providerName}`;
 
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
@@ -130,7 +131,7 @@ export class CrudEventController implements CrudController<Event> {
           imageUrl:
             dto.imageUrl ||
             'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
-          provider: `${providerData.providerName}`,
+          subMessage: subMessage,
           redirectUrl: '',
           title: '차량 알림',
           body:
@@ -155,6 +156,7 @@ export class CrudEventController implements CrudController<Event> {
         provider: providerData,
         messageContent: dto.messageContent,
         message: messageData,
+        subMessageContent: subMessage,
       } as Event),
     };
   }

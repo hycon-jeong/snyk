@@ -39,6 +39,14 @@ export class Event {
   messageContent: string | null;
 
   @ApiProperty()
+  @Column('varchar', {
+    name: 'sub_message_content',
+    nullable: true,
+    length: 500,
+  })
+  subMessageContent: string | null;
+
+  @ApiProperty()
   @Column('varchar', { name: 'image_url', nullable: true })
   imageUrl: string | null;
 
