@@ -20,7 +20,7 @@ import {
 } from '@nestjsx/crud';
 import { CategoryService } from 'modules/category/category.service';
 import { EventStatus } from 'modules/common/constants/eventStatus';
-import { Event, EventType, User } from 'modules/entities';
+import { Event, User } from 'modules/entities';
 import CrudsFcmTokenService from 'modules/fcmToken/fcmToken.service';
 import { FirebaseMessagingService } from 'modules/firebase';
 import { MessageService } from 'modules/message/message.service';
@@ -100,8 +100,6 @@ export class CrudEventController implements CrudController<Event> {
     public readonly usersService: UsersService,
     public readonly providerService: CrudsProviderService,
     public readonly categoryService: CategoryService,
-    @InjectRepository(EventType)
-    private readonly eventTypeRepository: Repository<EventType>,
   ) {}
   get base(): CrudController<Event> {
     return this;
@@ -151,37 +149,37 @@ export class CrudEventController implements CrudController<Event> {
       providerKey: '',
       issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
       provider: providerData,
-      eventType: dto.eventType,
+      messageContent: dto.messageContent,
     } as Event);
   }
 
-  @Override('updateOneBase')
-  async updateFunction(
-    @ParsedRequest() req: CrudRequest,
-    @ParsedBody() dto: UpdateEventDto,
-  ) {
-    const event: Partial<Event> = dto;
-    if (dto.eventTypeId) {
-      const eventTypeData = await this.eventTypeRepository.findOne({
-        id: dto.eventTypeId,
-      });
-      if (!eventTypeData || !eventTypeData.id) {
-        throw new BadRequestException('Event Type not found');
-      }
-      event.eventType = eventTypeData;
-    }
-    if (dto.categoryId) {
-      const categoryData = await this.categoryService.findOne({
-        id: dto.categoryId,
-      });
-      if (!categoryData || !categoryData.id) {
-        throw new BadRequestException('category Type not found');
-      }
-      event.category = categoryData;
-    }
-    this.logger.log(event);
-    return this.service.updateOne(req, event);
-  }
+  // @Override('updateOneBase')
+  // async updateFunction(
+  //   @ParsedRequest() req: CrudRequest,
+  //   @ParsedBody() dto: UpdateEventDto,
+  // ) {
+  //   const event: Partial<Event> = dto;
+  //   if (dto.eventTypeId) {
+  //     const eventTypeData = await this.eventTypeRepository.findOne({
+  //       id: dto.eventTypeId,
+  //     });
+  //     if (!eventTypeData || !eventTypeData.id) {
+  //       throw new BadRequestException('Event Type not found');
+  //     }
+  //     event.eventType = eventTypeData;
+  //   }
+  //   if (dto.categoryId) {
+  //     const categoryData = await this.categoryService.findOne({
+  //       id: dto.categoryId,
+  //     });
+  //     if (!categoryData || !categoryData.id) {
+  //       throw new BadRequestException('category Type not found');
+  //     }
+  //     event.category = categoryData;
+  //   }
+  //   this.logger.log(event);
+  //   return this.service.updateOne(req, event);
+  // }
 
   @Get('provider/manage')
   @ApiResponse({ status: 201, description: 'Successful Login' })

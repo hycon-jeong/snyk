@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { EventStatus } from 'modules/common/constants/eventStatus';
-import { EventType } from 'modules/entities';
 
 export class CreateEventDto {
   @IsNotEmpty()
@@ -19,7 +18,7 @@ export class CreateEventDto {
   readonly imageUrl: string;
 
   @ApiProperty()
-  readonly eventType: EventType;
+  readonly messageContent: string;
 
   @ApiProperty()
   readonly issuedAt: Date;

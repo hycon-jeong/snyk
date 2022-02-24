@@ -7,7 +7,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { EventType } from './eventType.entity';
 import { Message } from './message.entity';
 import { UserMapping } from './userMapping.entity';
 import { EventLog } from './eventLog.entity';
@@ -34,6 +33,10 @@ export class Event {
   @ApiProperty()
   @Column('varchar', { name: 'provider_code', nullable: true, length: 255 })
   providerCode: string | null;
+
+  @ApiProperty()
+  @Column('varchar', { name: 'message_content', nullable: true, length: 500 })
+  messageContent: string | null;
 
   @ApiProperty()
   @Column('varchar', { name: 'image_url', nullable: true })
@@ -74,12 +77,6 @@ export class Event {
   @JoinColumn({ name: 'message_id' })
   message: Message;
 
-  @ManyToOne(() => EventType, (eventType) => eventType.events, {
-    cascade: ['insert', 'update'],
-  })
-  @JoinColumn({ name: 'event_type_id' })
-  eventType: EventType;
-
   @ManyToOne(() => Provider, (provider) => provider.events, {})
   @JoinColumn({ name: 'provider_id' })
   provider: Provider;
@@ -92,8 +89,7 @@ export class Event {
 
   @Column({ name: 'provider_id' })
   provider_id: number;
-  @Column({ name: 'event_type_id' })
-  event_type_id: number;
+
   @Column({ name: 'message_id' })
   message_id: number;
   @Column({ name: 'user_mapping_id' })

@@ -20,7 +20,7 @@ import {
 } from '@nestjsx/crud';
 import { CategoryService } from 'modules/category/category.service';
 import { EventStatus } from 'modules/common/constants/eventStatus';
-import { Event, EventType, User } from 'modules/entities';
+import { Event, User } from 'modules/entities';
 import CrudsFcmTokenService from 'modules/fcmToken/fcmToken.service';
 import { FirebaseMessagingService } from 'modules/firebase';
 import { MessageService } from 'modules/message/message.service';
@@ -62,8 +62,6 @@ export class CrudEventController implements CrudController<Event> {
     public readonly providerService: CrudsProviderService,
     public readonly categoryService: CategoryService,
     public readonly userMappingService: UserMappingService,
-    @InjectRepository(EventType)
-    private readonly eventTypeRepository: Repository<EventType>,
   ) {}
   get base(): CrudController<Event> {
     return this;
@@ -124,32 +122,39 @@ export class CrudEventController implements CrudController<Event> {
         notification: {
           title: '차량 알림',
           body:
-            messageData.message ||
+            dto.messageContent ||
             '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
         },
         data: {
           position: 'center',
           imageUrl:
+            dto.imageUrl ||
             'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
           provider: `${providerData.providerName}`,
-          url: '',
+          redirectUrl: '',
           title: '차량 알림',
           body:
-            messageData.message ||
+            dto.messageContent ||
             '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
         },
       });
     }
-    return this.base.createOneBase(req, {
-      user_mapping_id: userMappings[0].id,
-      message: messageData,
-      category: categoryData,
-      status: EventStatus.COMPLETE,
-      imageUrl: dto.imageUrl,
-      providerKey: '',
-      issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
-      provider: providerData,
-      eventType: dto.eventType,
-    } as Event);
+
+    return {
+      statusCode: 200,
+      isSuccess: true,
+      message: 'success',
+      data: await this.base.createOneBase(req, {
+        user_mapping_id: userMappings[0].id,
+        category: categoryData,
+        status: EventStatus.COMPLETE,
+        imageUrl: dto.imageUrl,
+        providerKey: '',
+        issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
+        provider: providerData,
+        messageContent: dto.messageContent,
+        message: messageData,
+      } as Event),
+    };
   }
 }

@@ -3,7 +3,6 @@ import { CreateEventDto } from './create-event.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { EventStatus } from 'modules/common/constants/eventStatus';
-import { EventType } from 'modules/entities';
 
 // export class UpdateEventDto extends PartialType(CreateEventDto) {}
 export class UpdateEventDto {

@@ -5,7 +5,6 @@ import { CategoryService } from 'modules/category/category.service';
 import {
   Event,
   User,
-  EventType,
   Eventitemresult,
   FcmToken,
   UserMapping,
@@ -26,7 +25,6 @@ import CrudsEventService from './provider.event.service';
     TypeOrmModule.forFeature([
       Event,
       User,
-      EventType,
       Eventitemresult,
       FcmToken,
       Message,

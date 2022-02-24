@@ -3,7 +3,6 @@ export * from './consumerEventType.entity';
 export * from './consumerLog.entity';
 export * from './event.entity';
 export * from './eventLog.entity';
-export * from './eventType.entity';
 export * from './eventitemresult.entity';
 export * from './message.entity';
 export * from './provider.entity';
