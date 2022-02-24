@@ -19,6 +19,12 @@ export class CreateEventDto {
   readonly imageUrl: string;
 
   @ApiProperty()
+  readonly title: string;
+
+  @ApiProperty()
+  readonly redirectUrl: string;
+
+  @ApiProperty()
   readonly messageContent: string;
 
   @ApiProperty()
