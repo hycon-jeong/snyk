@@ -116,7 +116,10 @@ export class CrudEventController implements CrudController<Event> {
     if (!categoryData || !categoryData.id) {
       throw new BadRequestException('cagetory not found');
     }
-    const subMessage = `연결된 장치 : ${providerData.providerName} / 블랙박스`;
+    const subMessage =
+      dto.eventType === 'advertise'
+        ? '자세한 사항은 상세보기를 눌러주세요.'
+        : `연결된 장치 : ${providerData.providerName} / 블랙박스`;
 
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
