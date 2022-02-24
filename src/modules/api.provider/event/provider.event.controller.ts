@@ -132,7 +132,7 @@ export class CrudEventController implements CrudController<Event> {
             dto.imageUrl ||
             'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
           subMessage: subMessage,
-          redirectUrl: dto.redirectUrl || 'https://casper.hyundai.com/',
+          redirectUrl: dto.redirectUrl,
           title: dto.title || '차량 알림',
           body:
             dto.messageContent ||
