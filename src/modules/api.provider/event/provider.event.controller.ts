@@ -21,6 +21,7 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
+import { EventType } from 'modules/api.tvapp/test/tv.test.controller';
 import { CategoryService } from 'modules/category/category.service';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import { Event, User } from 'modules/entities';
@@ -120,9 +121,12 @@ export class CrudEventController implements CrudController<Event> {
       throw new BadRequestException('cagetory not found');
     }
     const subMessage =
-      dto.eventType === 'advertise'
+      dto.eventType === 'advertise' || dto.eventType === 'important.advertise'
         ? '자세한 사항은 상세보기를 눌러주세요.'
         : `연결된 장치 : ${providerData.providerName} / 블랙박스`;
+
+    if (dto.eventType === 'important.advertise')
+      dto.eventType = EventType.important;
 
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {

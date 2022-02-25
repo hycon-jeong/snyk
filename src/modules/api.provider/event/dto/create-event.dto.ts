@@ -32,5 +32,5 @@ export class CreateEventDto {
 
   @ApiProperty({ enum: EventType })
   @IsEnum(EventType)
-  readonly eventType: EventType;
+  eventType: EventType;
 }
