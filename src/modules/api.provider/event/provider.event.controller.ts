@@ -1,8 +1,11 @@
 import {
   BadRequestException,
+  Body,
   Get,
   Logger,
+  Post,
   Query,
+  Req,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Controller, UseGuards } from '@nestjs/common';
@@ -161,6 +164,17 @@ export class CrudEventController implements CrudController<Event> {
         message: messageData,
         subMessageContent: subMessage,
       } as Event),
+    };
+  }
+
+  @Post('test')
+  @ApiResponse({ status: 201, description: 'Successful Login' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async test(@Req() req, @Body() body): Promise<any> {
+    console.log(body, req?.headers);
+    return {
+      isSuccess: true,
     };
   }
 }
