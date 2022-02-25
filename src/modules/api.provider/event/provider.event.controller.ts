@@ -122,7 +122,7 @@ export class CrudEventController implements CrudController<Event> {
     }
     const subMessage =
       dto.eventType === 'advertise' || dto.eventType === 'important.advertise'
-        ? '자세한 사항은 상세보기를 눌러주세요.'
+        ? '자세한 사항은 "상세보기" 버튼을\n 눌러 확인하세요.'
         : `연결된 장치 : ${providerData.providerName} / 블랙박스`;
 
     if (dto.eventType === 'important.advertise')
