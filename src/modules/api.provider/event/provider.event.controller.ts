@@ -248,6 +248,7 @@ export class CrudEventController implements CrudController<Event> {
           subMessageContent: data.subMessage,
           category_id: parseInt(body.msgCode),
           message_id: 1,
+          provider: provider,
         } as Event);
       }),
     );
