@@ -206,7 +206,7 @@ export class CrudEventController implements CrudController<Event> {
       position: 'center',
       imageUrl: '',
       subMessage: '',
-      redirectUrl: body.redirectUrl,
+      redirectUrl: body.redirectUrl ? body.redirectUrl : '',
       title: '차량 알림',
       body: '',
       type: 'normal',
