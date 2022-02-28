@@ -201,7 +201,7 @@ export class CrudEventController implements CrudController<Event> {
     const tokensArray = userMappings.map(
       (item) => item.tvDevice?.tvDeviceToken,
     );
-    console.log(tokensArray);
+    console.log(tokensArray, userMappings);
     const data = {
       position: 'center',
       imageUrl: '',
@@ -237,7 +237,7 @@ export class CrudEventController implements CrudController<Event> {
     }
 
     userMappings.forEach(async (userMapping) => {
-      const result = await this.service.createOne(req, {
+      const result = await this.service.insertOne({
         user_mapping_id: userMapping.id,
         status: EventStatus.COMPLETE,
         imageUrl: data.imageUrl,
