@@ -237,7 +237,7 @@ export class CrudEventController implements CrudController<Event> {
     }
 
     userMappings.forEach(async (userMapping) => {
-      await this.service.insertOne({
+      const result = await this.service.createOne(req, {
         user_mapping_id: userMapping.id,
         status: EventStatus.COMPLETE,
         imageUrl: data.imageUrl,
@@ -248,6 +248,7 @@ export class CrudEventController implements CrudController<Event> {
         category_id: parseInt(body.msgCode),
         message_id: 1,
       } as Event);
+      console.log(result);
     });
 
     return {
