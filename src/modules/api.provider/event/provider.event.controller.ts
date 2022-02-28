@@ -215,9 +215,12 @@ export class CrudEventController implements CrudController<Event> {
     const subMessage = `연결된 장치 : ${provider.providerName} / 블랙박스`;
     // 시동 꺼짐
     if (body.msgCode == '2') {
-      data.imageUrl = 'https://i.ibb.co/ydhmZB1/image.png';
-      data.title = '차량 알림';
-      data.body = '블랙박스 전원이 꺼졌습니다.';
+      const category = await this.categoryService.findOne({
+        id: parseInt(body.msgCode),
+      });
+      data.imageUrl = category.imageUrl;
+      data.title = category.name;
+      data.body = category.desc;
       data.type = 'normal';
       data.subMessage = subMessage;
     }
@@ -232,19 +235,24 @@ export class CrudEventController implements CrudController<Event> {
       });
     }
 
-    return {
-      statusCode: 200,
-      isSuccess: true,
-      message: 'success',
-      data: await this.service.insertOne({
-        user_mapping_id: userMappings[0].id,
+    userMappings.forEach(async (userMapping) => {
+      await this.service.insertOne({
+        user_mapping_id: userMapping.id,
         status: EventStatus.COMPLETE,
         imageUrl: data.imageUrl,
         providerKey: '',
         issuedAt: new Date(),
         messageContent: data.body,
         subMessageContent: data.subMessage,
-      } as Event),
+        category_id: parseInt(body.msgCode),
+        message_id: 1,
+      } as Event);
+    });
+
+    return {
+      statusCode: 200,
+      isSuccess: true,
+      message: 'success',
     };
   }
 }
