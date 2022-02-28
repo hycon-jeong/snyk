@@ -252,7 +252,7 @@ export class CrudEventController implements CrudController<Event> {
         } as Event);
       }),
     );
-    console.log(res);
+
     return {
       statusCode: 200,
       isSuccess: true,
