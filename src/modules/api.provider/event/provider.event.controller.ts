@@ -201,7 +201,7 @@ export class CrudEventController implements CrudController<Event> {
     const tokensArray = userMappings.map(
       (item) => item.tvDevice?.tvDeviceToken,
     );
-    console.log(tokensArray);
+
     const data = {
       position: 'center',
       imageUrl: '',
@@ -230,6 +230,8 @@ export class CrudEventController implements CrudController<Event> {
 
     // 광고
 
+    // push
+    console.log(data);
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
         data: data,
