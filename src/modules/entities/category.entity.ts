@@ -13,6 +13,7 @@ import { Event, EventLog } from '.';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from './user.entity';
 import { Provider } from '.';
+import { EventType } from 'modules/api.tvapp/test/tv.test.controller';
 
 @Entity('categories', { schema: 'mycar' })
 export class Category {
@@ -37,6 +38,10 @@ export class Category {
   @ApiProperty()
   @Column('varchar', { name: 'image_url', nullable: true })
   imageUrl: string | null;
+
+  @ApiProperty()
+  @Column('varchar', { name: 'event_type', nullable: true, default: 'normal' })
+  eventType: EventType;
 
   @CreateDateColumn({
     type: 'timestamp',

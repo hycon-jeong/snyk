@@ -211,21 +211,27 @@ export class CrudEventController implements CrudController<Event> {
       body: '',
       type: 'normal',
     };
-
+    const category = await this.categoryService.findOne({
+      id: parseInt(body.msgCode),
+    });
+    if (!category || !category.id) {
+      throw new BadRequestException('유효하지 않은 msgCode입니다.');
+    }
     // 일반
     const subMessage = `연결된 장치 : ${provider.providerName} / 블랙박스`;
+    data.imageUrl = category.imageUrl;
+    data.title = category.name;
+    data.body = category.desc;
+    data.subMessage = subMessage;
+    data.type = category.eventType;
     // 시동 꺼짐
-    if (body.msgCode == '2') {
-      const category = await this.categoryService.findOne({
-        id: parseInt(body.msgCode),
-      });
-      data.imageUrl = category.imageUrl;
-      data.title = category.name;
-      data.body = category.desc;
-      data.type = 'normal';
-      data.subMessage = subMessage;
-    }
-
+    // if (body.msgCode == '2') {
+    //   data.imageUrl = category.imageUrl;
+    //   data.title = category.name;
+    //   data.body = category.desc;
+    //   data.subMessage = subMessage;
+    //   data.type = category.eventType;
+    // }
     // 중요
 
     // 광고
