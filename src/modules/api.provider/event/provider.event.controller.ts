@@ -35,6 +35,7 @@ import { Repository } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import CrudsEventService from './provider.event.service';
+import { ILamdaReponse } from './type/providerEvent.interface';
 
 @ApiBearerAuth()
 @Crud({
@@ -175,10 +176,83 @@ export class CrudEventController implements CrudController<Event> {
   @ApiResponse({ status: 201, description: 'Successful Login' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async test(@Req() req, @Body() body): Promise<any> {
-    console.log(body, req?.headers);
+  async test(@Req() req, @Body() body: ILamdaReponse): Promise<any> {
+    const provider = await this.providerService.findOne({
+      providerCode: body?.companyid,
+    });
+    if (!body.companyid || !provider) {
+      throw new BadRequestException('회사를 찾을 수 없습니다.');
+    }
+
+    const user = await this.usersService.findOne({
+      userId: body.userid,
+      providerId: provider.id,
+      status: 'ACTIVE',
+    });
+    if (!user || !user.id) {
+      throw new BadRequestException('유저를 찾을 수 없습니다.');
+    }
+    const userMappings = await this.userMappingService.find({
+      where: { userId: user.id, mappingStatus: 'ACTIVE' },
+      join: {
+        leftJoinAndSelect: { tvDevice: 'mapping.tvDevice' },
+        alias: 'mapping',
+      },
+    });
+
+    if (!userMappings.length) {
+      throw new BadRequestException('userMappings not found');
+    }
+    const tokensArray = userMappings.map(
+      (item) => item.tvDevice?.tvDeviceToken,
+    );
+
+    const data = {
+      position: 'center',
+      imageUrl: '',
+      subMessage: '',
+      redirectUrl: body.redirectUrl,
+      title: '차량 알림',
+      body: '',
+      type: 'normal',
+    };
+
+    // 일반
+    const subMessage = `연결된 장치 : ${provider.providerName} / 블랙박스`;
+    // 시동 꺼짐
+    if (body.msgCode == '2') {
+      data.imageUrl = 'https://i.ibb.co/ydhmZB1/image.png';
+      data.title = '차량 알림';
+      data.body = '블랙박스 전원이 꺼졌습니다.';
+      data.type = 'normal';
+      data.subMessage = subMessage;
+    }
+
+    // 중요
+
+    // 광고
+
+    // dto.eventType = EventType.important;
+
+    if (tokensArray && tokensArray.length > 0) {
+      this.firebaseMessage.sendToDevice(tokensArray, {
+        data: data,
+      });
+    }
+
     return {
+      statusCode: 200,
       isSuccess: true,
+      message: 'success',
+      data: await this.base.createOneBase(req, {
+        user_mapping_id: userMappings[0].id,
+        status: EventStatus.COMPLETE,
+        imageUrl: data.imageUrl,
+        providerKey: '',
+        issuedAt: new Date(),
+        messageContent: data.body,
+        subMessageContent: data.subMessage,
+      } as Event),
     };
   }
 }
