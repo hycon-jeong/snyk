@@ -201,7 +201,7 @@ export class CrudEventController implements CrudController<Event> {
     const tokensArray = userMappings.map(
       (item) => item.tvDevice?.tvDeviceToken,
     );
-    console.log(tokensArray, userMappings);
+    console.log(tokensArray);
     const data = {
       position: 'center',
       imageUrl: '',
@@ -236,21 +236,22 @@ export class CrudEventController implements CrudController<Event> {
       });
     }
 
-    userMappings.forEach(async (userMapping) => {
-      const result = await this.service.insertOne({
-        user_mapping_id: userMapping.id,
-        status: EventStatus.COMPLETE,
-        imageUrl: data.imageUrl,
-        providerKey: '',
-        issuedAt: new Date(),
-        messageContent: data.body,
-        subMessageContent: data.subMessage,
-        category_id: parseInt(body.msgCode),
-        message_id: 1,
-      } as Event);
-      console.log(result);
-    });
-
+    const res = await Promise.all(
+      userMappings.map(async (userMapping) => {
+        return await this.service.insertOne({
+          user_mapping_id: userMapping.id,
+          status: EventStatus.COMPLETE,
+          imageUrl: data.imageUrl,
+          providerKey: '',
+          issuedAt: new Date(),
+          messageContent: data.body,
+          subMessageContent: data.subMessage,
+          category_id: parseInt(body.msgCode),
+          message_id: 1,
+        } as Event);
+      }),
+    );
+    console.log(res);
     return {
       statusCode: 200,
       isSuccess: true,
