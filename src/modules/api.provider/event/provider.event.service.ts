@@ -13,6 +13,10 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
     super(eventRepository);
   }
 
+  async insertOne(payload): Promise<any> {
+    return this.eventRepository.save(payload);
+  }
+
   async getProviderApiCalls(): Promise<any> {
     const query = this.eventRepository
       .createQueryBuilder('event')

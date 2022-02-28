@@ -131,12 +131,6 @@ export class CrudEventController implements CrudController<Event> {
 
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
-        // notification: {
-        //   title: '차량 알림',
-        //   body:
-        //     dto.messageContent ||
-        //     '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
-        // },
         data: {
           position: 'center',
           imageUrl:
@@ -232,8 +226,6 @@ export class CrudEventController implements CrudController<Event> {
 
     // 광고
 
-    // dto.eventType = EventType.important;
-
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
         data: data,
@@ -244,7 +236,7 @@ export class CrudEventController implements CrudController<Event> {
       statusCode: 200,
       isSuccess: true,
       message: 'success',
-      data: await this.service.createOne(req, {
+      data: await this.service.insertOne({
         user_mapping_id: userMappings[0].id,
         status: EventStatus.COMPLETE,
         imageUrl: data.imageUrl,
