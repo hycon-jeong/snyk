@@ -244,7 +244,7 @@ export class CrudEventController implements CrudController<Event> {
       statusCode: 200,
       isSuccess: true,
       message: 'success',
-      data: await this.base.createOneBase(req, {
+      data: await this.service.createOne(req, {
         user_mapping_id: userMappings[0].id,
         status: EventStatus.COMPLETE,
         imageUrl: data.imageUrl,
