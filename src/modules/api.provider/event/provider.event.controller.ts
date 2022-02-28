@@ -171,6 +171,7 @@ export class CrudEventController implements CrudController<Event> {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async test(@Req() req, @Body() body: ILamdaReponse): Promise<any> {
+    console.log(body);
     const provider = await this.providerService.findOne({
       providerCode: body?.companyid,
     });
@@ -200,7 +201,7 @@ export class CrudEventController implements CrudController<Event> {
     const tokensArray = userMappings.map(
       (item) => item.tvDevice?.tvDeviceToken,
     );
-
+    console.log(tokensArray);
     const data = {
       position: 'center',
       imageUrl: '',
