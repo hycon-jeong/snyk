@@ -220,7 +220,7 @@ export class CrudEventController implements CrudController<Event> {
     // 일반
     const subMessage = `연결된 장치 : ${provider.providerName} / 블랙박스`;
     data.imageUrl = category.imageUrl;
-    data.title = category.name;
+    data.title = category.title;
     data.body = category.desc;
     data.subMessage = subMessage;
     data.type = category.eventType;

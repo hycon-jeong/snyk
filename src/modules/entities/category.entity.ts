@@ -32,6 +32,10 @@ export class Category {
   name: string | null;
 
   @ApiProperty()
+  @Column('varchar', { name: 'title', nullable: true })
+  title: string | null;
+
+  @ApiProperty()
   @Column('varchar', { name: 'desc', nullable: true })
   desc: string | null;
 
