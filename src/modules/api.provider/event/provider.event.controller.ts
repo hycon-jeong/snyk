@@ -166,11 +166,12 @@ export class CrudEventController implements CrudController<Event> {
     };
   }
 
-  @Post('test')
+  @Post('push')
   @ApiResponse({ status: 201, description: 'Successful Login' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async test(@Req() req, @Body() body: ILamdaReponse): Promise<any> {
+  async generateEvent(@Req() req, @Body() body: ILamdaReponse): Promise<any> {
+    console.log('data from blackbox >>>>>>>>>>');
     console.log(body);
     const provider = await this.providerService.findOne({
       providerCode: body?.companyid,
@@ -237,6 +238,7 @@ export class CrudEventController implements CrudController<Event> {
     // 광고
 
     // push
+    console.log('push data >>>>>>>>>>>>>>');
     console.log(data);
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
@@ -244,7 +246,7 @@ export class CrudEventController implements CrudController<Event> {
       });
     }
 
-    const res = await Promise.all(
+    await Promise.all(
       userMappings.map(async (userMapping) => {
         return await this.service.insertOne({
           user_mapping_id: userMapping.id,

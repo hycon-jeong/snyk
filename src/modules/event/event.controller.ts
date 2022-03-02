@@ -134,9 +134,10 @@ export class CrudEventController implements CrudController<Event> {
 
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
-        notification: {
-          title: 'My car service event title',
-          body: messageData.message || 'notificaiton message',
+        data: {
+          body: '마이카 알람서비스로부터 차량 충돌 알림이 도착하였습니다.',
+          imageUrl: 'https://i.ibb.co/71YvfCK/image.png',
+          title: '차량 알림',
         },
       });
     }

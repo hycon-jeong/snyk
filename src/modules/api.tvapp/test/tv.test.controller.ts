@@ -142,7 +142,7 @@ export class TvTestController {
       //   title: '차량 알림',
       //   body: '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
       // },
-      data: data,
+      data: { ...data, clickUrl: 'http://localhost:3003' },
     });
 
     return {
