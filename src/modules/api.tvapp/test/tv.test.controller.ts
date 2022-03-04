@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
@@ -27,6 +28,8 @@ moment.tz.setDefault('Asia/Seoul');
 import { Between } from 'typeorm';
 import { UserMappingService } from 'modules/userMapping/userMapping.service';
 import { FirebaseMessagingService } from 'modules/firebase';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 export interface IResponse {
   statusCode: number;
@@ -50,6 +53,7 @@ export class TvTestController {
   constructor(
     private readonly service: TvTestService,
     private firebaseMessage: FirebaseMessagingService,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
 
   @Get('fcm')

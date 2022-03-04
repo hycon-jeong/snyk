@@ -21,6 +21,8 @@ import { TvDeviceModule } from 'modules/api.tvapp/device/tv.device.module';
 import { TvTestModule } from 'modules/api.tvapp/test/tv.test.module';
 import { AllExceptionsFilter } from 'modules/common/HttpExeption';
 import { I18nModule, I18nService } from 'nestjs-i18n';
+import * as morgan from 'morgan';
+import winston from 'winston';
 
 dotenv.config();
 
@@ -30,7 +32,7 @@ async function bootstrap() {
   const logger =
     process.env.NODE_ENV === 'production'
       ? WinstonModule.createLogger(winstonOptions)
-      : new Logger('Bootstrap Logger');
+      : WinstonModule.createLogger(winstonOptions);
   const nestAppOptions: NestApplicationOptions = {
     logger: logger,
   };
@@ -42,6 +44,8 @@ async function bootstrap() {
   setupTvAppSwagger(app, {
     include: [TvAuthModule, TvDeviceModule, TvTestModule],
   });
+
+  app.use(morgan('combined'));
 
   // secure app by setting various HTTP headers.
   app.use(helmet());

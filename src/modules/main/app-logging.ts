@@ -7,7 +7,8 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 const { APP_ENV } = process.env;
-const logLevel = APP_ENV === 'development' ? 'info' : 'info';
+console.log(APP_ENV);
+const logLevel = APP_ENV === 'development' ? 'debug' : 'debug';
 const errorLogOptions = {
   file: {
     level: logLevel,
@@ -58,7 +59,9 @@ export const winstonOptions: WinstonModuleOptions = {
       level: logLevel,
       format: winston.format.combine(
         winston.format.timestamp(),
-        nestWinstonModuleUtilities.format.nestLike(),
+        nestWinstonModuleUtilities.format.nestLike('mycar', {
+          prettyPrint: true,
+        }),
       ),
     }),
     new winston.transports.DailyRotateFile(logOptions.file),

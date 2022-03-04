@@ -46,6 +46,7 @@
     "helmet": "^4.6.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.34",
+    "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "nest-winston": "^1.6.1",
     "nestjs-i18n": "^8.1.9",

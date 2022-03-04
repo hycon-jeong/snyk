@@ -2,7 +2,7 @@ import {
   BadRequestException,
   Body,
   Get,
-  Logger,
+  Inject,
   Post,
   Query,
   Req,
@@ -31,7 +31,9 @@ import { MessageService } from 'modules/message/message.service';
 import CrudsProviderService from 'modules/provider/provider.service';
 import { UsersService } from 'modules/user';
 import { UserMappingService } from 'modules/userMapping/userMapping.service';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Repository } from 'typeorm';
+import { Logger } from 'winston';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import CrudsEventService from './provider.event.service';
@@ -57,7 +59,6 @@ import { ILamdaReponse } from './type/providerEvent.interface';
   },
 })
 export class CrudEventController implements CrudController<Event> {
-  private logger = new Logger('EventController');
   constructor(
     private firebaseMessage: FirebaseMessagingService,
     public readonly service: CrudsEventService,
@@ -67,6 +68,7 @@ export class CrudEventController implements CrudController<Event> {
     public readonly providerService: CrudsProviderService,
     public readonly categoryService: CategoryService,
     public readonly userMappingService: UserMappingService,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
   get base(): CrudController<Event> {
     return this;
@@ -130,24 +132,26 @@ export class CrudEventController implements CrudController<Event> {
     if (dto.eventType === 'important.advertise')
       dto.eventType = EventType.important;
 
+    const pushData = {
+      position: 'center',
+      imageUrl:
+        dto.imageUrl ||
+        'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
+      subMessage: subMessage,
+      redirectUrl: dto.redirectUrl,
+      title: dto.title || '차량 알림',
+      body:
+        dto.messageContent ||
+        '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
+      type: dto.eventType,
+    };
+
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
-        data: {
-          position: 'center',
-          imageUrl:
-            dto.imageUrl ||
-            'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
-          subMessage: subMessage,
-          redirectUrl: dto.redirectUrl,
-          title: dto.title || '차량 알림',
-          body:
-            dto.messageContent ||
-            '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
-          type: dto.eventType,
-        },
+        data: pushData,
       });
     }
-
+    this.logger.info(`push data from web >>>>>>>>>> ${pushData}`);
     return {
       statusCode: 200,
       isSuccess: true,
@@ -172,8 +176,7 @@ export class CrudEventController implements CrudController<Event> {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async generateEvent(@Req() req, @Body() body: ILamdaReponse): Promise<any> {
-    console.log('data from blackbox >>>>>>>>>>');
-    console.log(body);
+    this.logger.info(`data from blackbox >>>>>>>>>> ${body}`);
     const provider = await this.providerService.findOne({
       providerCode: body?.companyid,
     });
@@ -229,13 +232,14 @@ export class CrudEventController implements CrudController<Event> {
     data.type = category.eventType;
 
     // push
-    console.log('push data >>>>>>>>>>>>>>');
-    console.log(data);
+
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(tokensArray, {
         data: data,
       });
     }
+
+    this.logger.info(`push data >>>>>>>>>> ${data}`);
 
     await Promise.all(
       userMappings.map(async (userMapping) => {
