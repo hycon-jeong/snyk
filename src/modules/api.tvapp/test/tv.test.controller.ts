@@ -124,7 +124,7 @@ export class TvTestController {
     }
     if (eventType === 'advertise') {
       data = {
-        body: '마이카 알람서비스로부터 광고 메세지가 도착하였습니다.마이카 알람서비스로부터 광고 메세지가 도착하였습니다.마이카 알람서비스로부터 광고 메세지가',
+        body: '마이카 알람서비스로부터 광고 메세지가 도착하였습니다.',
         imageUrl:
           'https://www.google.com/url?sa=i&url=https%3A%2F%2Flive.lge.co.kr%2Flg_truesteamtrue_0522%2F&psig=AOvVaw3uI9dl5AXRg41MjqOVuoJK&ust=1645694493986000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCIjSsfK_lfYCFQAAAAAdAAAAABAY',
 

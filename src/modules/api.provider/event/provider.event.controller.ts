@@ -124,7 +124,8 @@ export class CrudEventController implements CrudController<Event> {
     const subMessage =
       dto.eventType === 'advertise' || dto.eventType === 'important.advertise'
         ? '자세한 사항은 "상세보기" 버튼을\n 눌러 확인하세요.'
-        : `연결된 장치 : ${providerData.providerName} / 블랙박스`;
+        : // : `연결된 장치 : ${providerData.providerName} / 블랙박스`;
+          `연결된 장치 : 현대 소나타`;
 
     if (dto.eventType === 'important.advertise')
       dto.eventType = EventType.important;
@@ -218,24 +219,14 @@ export class CrudEventController implements CrudController<Event> {
     if (!category || !category.id) {
       throw new BadRequestException('유효하지 않은 msgCode입니다.');
     }
-    // 일반
-    const subMessage = `연결된 장치 : ${provider.providerName} / 블랙박스`;
+
+    // const subMessage = `연결된 장치 : ${provider.providerName} / 블랙박스`;
+    const subMessage = `연결된 장치 : 현대 소나타`;
     data.imageUrl = category.imageUrl;
     data.title = category.title;
     data.body = category.desc;
     data.subMessage = subMessage;
     data.type = category.eventType;
-    // 시동 꺼짐
-    // if (body.msgCode == '2') {
-    //   data.imageUrl = category.imageUrl;
-    //   data.title = category.name;
-    //   data.body = category.desc;
-    //   data.subMessage = subMessage;
-    //   data.type = category.eventType;
-    // }
-    // 중요
-
-    // 광고
 
     // push
     console.log('push data >>>>>>>>>>>>>>');
