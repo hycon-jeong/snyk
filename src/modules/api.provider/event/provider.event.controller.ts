@@ -220,8 +220,8 @@ export class CrudEventController implements CrudController<Event> {
       throw new BadRequestException('유효하지 않은 msgCode입니다.');
     }
 
-    // const subMessage = `연결된 장치 : ${provider.providerName} / 블랙박스`;
-    const subMessage = `연결된 장치 : 현대 소나타`;
+    const subMessage = `연결된 장치 : ${provider.providerName} / 블랙박스`;
+    // const subMessage = `연결된 장치 : 현대 소나타`;
     data.imageUrl = category.imageUrl;
     data.title = category.title;
     data.body = category.desc;
