@@ -151,7 +151,7 @@ export class CrudEventController implements CrudController<Event> {
         data: pushData,
       });
     }
-    this.logger.info(`push data from web >>>>>>>>>> ${pushData}`);
+    this.logger.debug(`push data from web >>>>>>>>>> ${pushData}`);
     return {
       statusCode: 200,
       isSuccess: true,
@@ -176,7 +176,7 @@ export class CrudEventController implements CrudController<Event> {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async generateEvent(@Req() req, @Body() body: ILamdaReponse): Promise<any> {
-    this.logger.info(`data from blackbox >>>>>>>>>> ${body}`);
+    this.logger.debug(`data from blackbox >>>>>>>>>> ${body}`);
     const provider = await this.providerService.findOne({
       providerCode: body?.companyid,
     });
@@ -239,7 +239,7 @@ export class CrudEventController implements CrudController<Event> {
       });
     }
 
-    this.logger.info(`push data >>>>>>>>>> ${data}`);
+    this.logger.debug(`push data >>>>>>>>>> ${data}`);
 
     await Promise.all(
       userMappings.map(async (userMapping) => {
