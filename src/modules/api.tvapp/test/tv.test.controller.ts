@@ -148,7 +148,7 @@ export class TvTestController {
       // },
       data: { ...data, clickUrl: 'http://localhost:3003' },
     });
-    this.logger.debug(res);
+
     return {
       statusCode: 200,
       isSuccess: true,
