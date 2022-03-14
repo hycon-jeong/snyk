@@ -42,7 +42,7 @@ export enum EventType {
   normal = 'normal',
   important = 'important',
   advertise = 'advertise',
-  importantAdvertise = 'important.advertise',
+  // importantAdvertise = 'important.advertise',
 }
 
 @ApiBearerAuth()

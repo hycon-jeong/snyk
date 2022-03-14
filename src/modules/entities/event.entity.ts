@@ -92,13 +92,13 @@ export class Event {
   @ManyToOne(() => Category, (category) => category.events, {})
   @JoinColumn({ name: 'category_id' })
   category: Category;
-  @Column({ name: 'category_id' })
+  @Column({ name: 'category_id', nullable: true })
   category_id: number;
 
   @Column({ name: 'provider_id' })
   provider_id: number;
 
-  @Column({ name: 'message_id' })
+  @Column({ name: 'message_id', nullable: true })
   message_id: number;
   @Column({ name: 'user_mapping_id' })
   user_mapping_id: number;

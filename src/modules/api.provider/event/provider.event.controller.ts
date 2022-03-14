@@ -10,7 +10,13 @@ import {
 } from '@nestjs/common';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Crud,
@@ -32,8 +38,13 @@ import CrudsProviderService from 'modules/provider/provider.service';
 import { UsersService } from 'modules/user';
 import { UserMappingService } from 'modules/userMapping/userMapping.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { PROVIDER_VERSION } from 'swagger/constants';
 import { Repository } from 'typeorm';
 import { Logger } from 'winston';
+import {
+  createEventDescriptionHtml,
+  createEventHtml,
+} from '../swagger/swagger.html';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import CrudsEventService from './provider.event.service';
@@ -48,7 +59,7 @@ import { ILamdaReponse } from './type/providerEvent.interface';
     only: ['createOneBase'],
   },
 })
-@Controller('api/provider/event')
+@Controller(`api/provider/${PROVIDER_VERSION}/event`)
 @ApiTags('Event')
 @CrudAuth({
   property: 'user',
@@ -77,6 +88,10 @@ export class CrudEventController implements CrudController<Event> {
   @Override()
   @ApiQuery({ type: String, name: 'userKey', required: true })
   @ApiQuery({ type: String, name: 'providerId', required: true })
+  @ApiBody({
+    type: CreateEventDto,
+    description: createEventDescriptionHtml(),
+  })
   async createOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: CreateEventDto,
@@ -105,32 +120,21 @@ export class CrudEventController implements CrudController<Event> {
     const tokensArray = userMappings.map(
       (item) => item.tvDevice?.tvDeviceToken,
     );
-    const messageData = await this.messageService.findOne({
-      id: dto.messageId,
-    });
-    if (!messageData || !messageData.id) {
-      throw new BadRequestException('Message not found');
-    }
+
     const providerData = await this.providerService.findOne({
       id: providerId,
     });
     if (!providerData || !providerData.id) {
       throw new BadRequestException('Provider not found');
     }
-    const categoryData = await this.categoryService.findOne({
-      id: dto.category,
-    });
-    if (!categoryData || !categoryData.id) {
-      throw new BadRequestException('cagetory not found');
-    }
+
     const subMessage =
-      dto.eventType === 'advertise' || dto.eventType === 'important.advertise'
+      dto.eventType === 'advertise'
         ? '자세한 사항은 "상세보기" 버튼을\n 눌러 확인하세요.'
         : // : `연결된 장치 : ${providerData.providerName} / 블랙박스`;
           `연결된 장치 : 현대 소나타`;
 
-    if (dto.eventType === 'important.advertise')
-      dto.eventType = EventType.important;
+    dto.eventType = EventType.important;
 
     const pushData = {
       position: 'center',
@@ -160,14 +164,14 @@ export class CrudEventController implements CrudController<Event> {
       message: 'success',
       data: await this.base.createOneBase(req, {
         user_mapping_id: userMappings[0].id,
-        category: categoryData,
+        // category: categoryData,
         status: EventStatus.COMPLETE,
         imageUrl: dto.imageUrl,
         providerKey: '',
         issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
         provider: providerData,
         messageContent: dto.messageContent,
-        message: messageData,
+        // message: messageData,
         subMessageContent: subMessage,
       } as Event),
     };
