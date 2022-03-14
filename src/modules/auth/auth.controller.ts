@@ -87,7 +87,7 @@ export class AuthController {
     }
 
     let user = await this.userService.findOne({
-      where: { userId: userId },
+      where: { userId: userId, status: 'ACTIVE' },
     });
 
     if (!user) {
@@ -95,8 +95,8 @@ export class AuthController {
         userId,
         role,
         password,
-        tvCertCode,
         status: 'ACTIVE',
+        providerId: payload.provider_id,
       });
     }
     try {

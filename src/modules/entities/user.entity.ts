@@ -17,7 +17,7 @@ import { Roles } from 'modules/common/constants/roles';
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column('varchar', { name: 'user_id', unique: true, length: 255 })
+  @Column('varchar', { name: 'user_id', length: 255 })
   userId: string;
 
   @Column('int', { name: 'provider_id', nullable: true })

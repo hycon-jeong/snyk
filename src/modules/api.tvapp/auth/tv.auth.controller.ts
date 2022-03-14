@@ -27,6 +27,7 @@ import 'moment/locale/ko';
 import { Between } from 'typeorm';
 import { TvDeviceService } from '../device/tv.device.service';
 import { UserMappingService } from 'modules/userMapping/userMapping.service';
+import { TVAPP_VERSION } from 'swagger/constants';
 
 export class IResponse {
   statusCode: number;
@@ -37,7 +38,7 @@ export class IResponse {
 
 @ApiBearerAuth()
 // @UseGuards(AuthGuard())
-@Controller('api/tvapp/auth')
+@Controller(`api/tvapp/${TVAPP_VERSION}/auth`)
 @ApiTags('Auth')
 export class TvAuthController {
   constructor(

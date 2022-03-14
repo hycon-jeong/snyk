@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsString, Max, MaxLength } from 'class-validator';
-import { createEventHtml } from 'modules/api.provider/swagger/swagger.html';
 import { EventType } from 'modules/api.tvapp/test/tv.test.controller';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import * as moment from 'moment';
+import { createEventHtml } from '../swagger/swagger.html';
 
 export class CreateEventDto {
   @ApiProperty({

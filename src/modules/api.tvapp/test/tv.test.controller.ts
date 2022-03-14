@@ -30,6 +30,7 @@ import { UserMappingService } from 'modules/userMapping/userMapping.service';
 import { FirebaseMessagingService } from 'modules/firebase';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
+import { TVAPP_VERSION } from 'swagger/constants';
 
 export interface IResponse {
   statusCode: number;
@@ -47,7 +48,7 @@ export enum EventType {
 
 @ApiBearerAuth()
 // @UseGuards(AuthGuard())
-@Controller('api/tvapp/test')
+@Controller(`api/tvapp/${TVAPP_VERSION}/test`)
 @ApiTags('Test')
 export class TvTestController {
   constructor(

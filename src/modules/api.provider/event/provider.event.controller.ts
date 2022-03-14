@@ -13,6 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiOperation,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -44,7 +45,7 @@ import { Logger } from 'winston';
 import {
   createEventDescriptionHtml,
   createEventHtml,
-} from '../swagger/swagger.html';
+} from './swagger/swagger.html';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import CrudsEventService from './provider.event.service';
@@ -86,11 +87,27 @@ export class CrudEventController implements CrudController<Event> {
   }
 
   @Override()
+  @ApiOperation({
+    summary: '메세지 전송',
+  })
   @ApiQuery({ type: String, name: 'userKey', required: true })
   @ApiQuery({ type: String, name: 'providerId', required: true })
   @ApiBody({
     type: CreateEventDto,
     description: createEventDescriptionHtml(),
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'bad request',
+    content: {
+      'application/json': {
+        example: {
+          statusCode: 400,
+          isSuccess: false,
+          message: '[{에러 내용}] | {에러내용}',
+        },
+      },
+    },
   })
   async createOne(
     @ParsedRequest() req: CrudRequest,
@@ -115,7 +132,7 @@ export class CrudEventController implements CrudController<Event> {
     });
 
     if (!userMappings.length) {
-      throw new BadRequestException('userMappings not found');
+      throw new BadRequestException('User not found');
     }
     const tokensArray = userMappings.map(
       (item) => item.tvDevice?.tvDeviceToken,
@@ -129,7 +146,7 @@ export class CrudEventController implements CrudController<Event> {
     }
 
     const subMessage =
-      dto.eventType === 'advertise'
+      dto.eventType === 'advertise' || dto.redirectUrl
         ? '자세한 사항은 "상세보기" 버튼을\n 눌러 확인하세요.'
         : // : `연결된 장치 : ${providerData.providerName} / 블랙박스`;
           `연결된 장치 : 현대 소나타`;
@@ -138,9 +155,7 @@ export class CrudEventController implements CrudController<Event> {
 
     const pushData = {
       position: 'center',
-      imageUrl:
-        dto.imageUrl ||
-        'https://mars-sequel.s3.ap-northeast-2.amazonaws.com/images/car-collision+1.png',
+      imageUrl: dto.imageUrl || 'https://i.ibb.co/71YvfCK/image.png',
       subMessage: subMessage,
       redirectUrl: dto.redirectUrl,
       title: dto.title || '차량 알림',
@@ -177,97 +192,97 @@ export class CrudEventController implements CrudController<Event> {
     };
   }
 
-  @Post('push')
-  @ApiResponse({ status: 201, description: 'Successful Login' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async generateEvent(@Req() req, @Body() body: ILamdaReponse): Promise<any> {
-    this.logger.debug(`data from blackbox >>>>>>>>>> ${JSON.stringify(body)}`);
-    const provider = await this.providerService.findOne({
-      providerCode: body?.companyid,
-    });
-    if (!body.companyid || !provider) {
-      throw new BadRequestException('회사를 찾을 수 없습니다.');
-    }
+  // @Post('push')
+  // @ApiResponse({ status: 201, description: 'Successful Login' })
+  // @ApiResponse({ status: 400, description: 'Bad Request' })
+  // @ApiResponse({ status: 401, description: 'Unauthorized' })
+  // async generateEvent(@Req() req, @Body() body: ILamdaReponse): Promise<any> {
+  //   this.logger.debug(`data from blackbox >>>>>>>>>> ${JSON.stringify(body)}`);
+  //   const provider = await this.providerService.findOne({
+  //     providerCode: body?.companyid,
+  //   });
+  //   if (!body.companyid || !provider) {
+  //     throw new BadRequestException('회사를 찾을 수 없습니다.');
+  //   }
 
-    const user = await this.usersService.findOne({
-      userId: body.userid,
-      providerId: provider.id,
-      status: 'ACTIVE',
-    });
-    if (!user || !user.id) {
-      throw new BadRequestException('유저를 찾을 수 없습니다.');
-    }
-    const userMappings = await this.userMappingService.find({
-      where: { userId: user.id, mappingStatus: 'ACTIVE' },
-      join: {
-        leftJoinAndSelect: { tvDevice: 'mapping.tvDevice' },
-        alias: 'mapping',
-      },
-    });
+  //   const user = await this.usersService.findOne({
+  //     userId: body.userid,
+  //     providerId: provider.id,
+  //     status: 'ACTIVE',
+  //   });
+  //   if (!user || !user.id) {
+  //     throw new BadRequestException('유저를 찾을 수 없습니다.');
+  //   }
+  //   const userMappings = await this.userMappingService.find({
+  //     where: { userId: user.id, mappingStatus: 'ACTIVE' },
+  //     join: {
+  //       leftJoinAndSelect: { tvDevice: 'mapping.tvDevice' },
+  //       alias: 'mapping',
+  //     },
+  //   });
 
-    if (!userMappings.length) {
-      throw new BadRequestException('userMappings not found');
-    }
-    const tokensArray = userMappings.map(
-      (item) => item.tvDevice?.tvDeviceToken,
-    );
+  //   if (!userMappings.length) {
+  //     throw new BadRequestException('userMappings not found');
+  //   }
+  //   const tokensArray = userMappings.map(
+  //     (item) => item.tvDevice?.tvDeviceToken,
+  //   );
 
-    const data = {
-      position: 'center',
-      imageUrl: '',
-      subMessage: '',
-      redirectUrl: body.redirectUrl ? body.redirectUrl : '',
-      title: '차량 알림',
-      body: '',
-      type: 'normal',
-    };
-    const category = await this.categoryService.findOne({
-      id: parseInt(body.msgCode),
-    });
-    if (!category || !category.id) {
-      throw new BadRequestException('유효하지 않은 msgCode입니다.');
-    }
+  //   const data = {
+  //     position: 'center',
+  //     imageUrl: '',
+  //     subMessage: '',
+  //     redirectUrl: body.redirectUrl ? body.redirectUrl : '',
+  //     title: '차량 알림',
+  //     body: '',
+  //     type: 'normal',
+  //   };
+  //   const category = await this.categoryService.findOne({
+  //     id: parseInt(body.msgCode),
+  //   });
+  //   if (!category || !category.id) {
+  //     throw new BadRequestException('유효하지 않은 msgCode입니다.');
+  //   }
 
-    const subMessage = `연결된 장치 : ${provider.providerName} / 블랙박스`;
-    // const subMessage = `연결된 장치 : 현대 소나타`;
-    data.imageUrl = category.imageUrl;
-    data.title = category.title;
-    data.body = category.desc;
-    data.subMessage = subMessage;
-    data.type = category.eventType;
+  //   const subMessage = `연결된 장치 : ${provider.providerName} / 블랙박스`;
+  //   // const subMessage = `연결된 장치 : 현대 소나타`;
+  //   data.imageUrl = category.imageUrl;
+  //   data.title = category.title;
+  //   data.body = category.desc;
+  //   data.subMessage = subMessage;
+  //   data.type = category.eventType;
 
-    // push
+  //   // push
 
-    if (tokensArray && tokensArray.length > 0) {
-      this.firebaseMessage.sendToDevice(tokensArray, {
-        data: data,
-      });
-    }
+  //   if (tokensArray && tokensArray.length > 0) {
+  //     this.firebaseMessage.sendToDevice(tokensArray, {
+  //       data: data,
+  //     });
+  //   }
 
-    this.logger.debug(`push data >>>>>>>>>> ${JSON.stringify(data)}`);
+  //   this.logger.debug(`push data >>>>>>>>>> ${JSON.stringify(data)}`);
 
-    await Promise.all(
-      userMappings.map(async (userMapping) => {
-        return await this.service.insertOne({
-          user_mapping_id: userMapping.id,
-          status: EventStatus.COMPLETE,
-          imageUrl: data.imageUrl,
-          providerKey: '',
-          issuedAt: new Date(),
-          messageContent: data.body,
-          subMessageContent: data.subMessage,
-          category_id: parseInt(body.msgCode),
-          message_id: 1,
-          provider: provider,
-        } as Event);
-      }),
-    );
+  //   await Promise.all(
+  //     userMappings.map(async (userMapping) => {
+  //       return await this.service.insertOne({
+  //         user_mapping_id: userMapping.id,
+  //         status: EventStatus.COMPLETE,
+  //         imageUrl: data.imageUrl,
+  //         providerKey: '',
+  //         issuedAt: new Date(),
+  //         messageContent: data.body,
+  //         subMessageContent: data.subMessage,
+  //         category_id: parseInt(body.msgCode),
+  //         message_id: 1,
+  //         provider: provider,
+  //       } as Event);
+  //     }),
+  //   );
 
-    return {
-      statusCode: 200,
-      isSuccess: true,
-      message: 'success',
-    };
-  }
+  //   return {
+  //     statusCode: 200,
+  //     isSuccess: true,
+  //     message: 'success',
+  //   };
+  // }
 }

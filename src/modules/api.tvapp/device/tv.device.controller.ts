@@ -26,6 +26,7 @@ moment.tz.setDefault('Asia/Seoul');
 
 import { Between } from 'typeorm';
 import { UserMappingService } from 'modules/userMapping/userMapping.service';
+import { TVAPP_VERSION } from 'swagger/constants';
 
 export interface IResponse {
   statusCode: number;
@@ -36,7 +37,7 @@ export interface IResponse {
 
 @ApiBearerAuth()
 // @UseGuards(AuthGuard())
-@Controller('api/tvapp/device')
+@Controller(`api/tvapp/${TVAPP_VERSION}/device`)
 @ApiTags('Device')
 export class TvDeviceController {
   constructor(

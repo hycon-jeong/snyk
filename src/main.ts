@@ -23,6 +23,7 @@ import { AllExceptionsFilter } from 'modules/common/HttpExeption';
 import { I18nModule, I18nService } from 'nestjs-i18n';
 import * as morgan from 'morgan';
 import winston from 'winston';
+import { ProviderAuthModule } from 'modules/api.provider/auth/provider.auth.module';
 
 dotenv.config();
 
@@ -39,7 +40,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, nestAppOptions);
   setupSwagger(app);
   // provider api docs
-  setupProviderSwagger(app, { include: [ProviderEventModule] });
+  setupProviderSwagger(app, {
+    include: [ProviderEventModule, ProviderAuthModule],
+  });
   // tvapp api docs
   setupTvAppSwagger(app, {
     include: [TvAuthModule, TvDeviceModule, TvTestModule],

@@ -42,11 +42,16 @@ export class UsersService extends TypeOrmCrudService<User> {
     return await this.userRepository.save(payload);
   }
 
+  async insert(payload) {
+    return await this.userRepository.save(payload);
+  }
+
   async moCreate(
     payload: Partial<UserFillableFields> & {
-      tvCertCode: string;
+      // tvCertCode: string;
       role: Roles;
       status: string;
+      providerId: number;
     },
   ) {
     const user = await this.getByUserId(payload.userId);
@@ -55,7 +60,7 @@ export class UsersService extends TypeOrmCrudService<User> {
         'User with provided userid already created.',
       );
     }
-    payload.name = payload.tvCertCode;
+    // payload.name = payload.tvCertCode;
     return await this.userRepository.save(payload);
   }
 
