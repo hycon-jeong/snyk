@@ -8,11 +8,11 @@ export class MoRegisterPayload extends PickType(RegisterPayload, [
 ]) {
   @ApiProperty({
     required: true,
-    description: 'user id',
-    type: String,
+    description: 'user key',
+    type: Number,
   })
   @IsString()
-  userId: string;
+  userKey: number;
 
   @ApiProperty({
     required: true,
@@ -37,12 +37,4 @@ export class MoRegisterPayload extends PickType(RegisterPayload, [
   })
   @IsNotEmpty()
   consumer_id: number;
-
-  @ApiProperty({
-    required: true,
-    type: String,
-    description: 'key',
-  })
-  @IsNotEmpty()
-  key: string;
 }

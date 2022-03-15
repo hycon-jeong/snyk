@@ -175,17 +175,20 @@ export class UserMappingController implements CrudController<UserMapping> {
 
     if (dto.mappingStatus === 'INACTIVE') {
       // 맵핑 삭제
-      this.firebaseMessage.sendToDevice([userMapping.tvDevice.tvDeviceToken], {
-        // notification: {
-        //   title: '차량 알림',
-        //   body:
-        //     dto.messageContent ||
-        //     '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
-        // },
-        data: {
-          isConnected: 'false',
+      this.firebaseMessage.sendToDevice(
+        [userMapping?.tvDevice?.tvDeviceToken],
+        {
+          // notification: {
+          //   title: '차량 알림',
+          //   body:
+          //     dto.messageContent ||
+          //     '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
+          // },
+          data: {
+            isConnected: 'false',
+          },
         },
-      });
+      );
     }
     return this.base.updateOneBase(req, dto);
   }

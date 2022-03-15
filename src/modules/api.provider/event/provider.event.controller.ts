@@ -122,7 +122,7 @@ export class CrudEventController implements CrudController<Event> {
   ) {
     const { userKey, providerId } = query;
     const user = await this.usersService.findOne({
-      userId: userKey,
+      id: userKey,
       providerId,
       status: 'ACTIVE',
     });
@@ -138,7 +138,7 @@ export class CrudEventController implements CrudController<Event> {
     });
 
     if (!userMappings.length) {
-      throw new BadRequestException('User not found');
+      throw new BadRequestException('There is no connected tv list');
     }
     const tokensArray = userMappings.map(
       (item) => item.tvDevice?.tvDeviceToken,

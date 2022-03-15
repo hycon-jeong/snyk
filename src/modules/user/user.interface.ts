@@ -11,5 +11,5 @@ export class UserMappingFillableFields {
   tvDeviceId: number;
   key: string;
   mappingStatus: string;
-  name: string;
+  name?: string;
 }
