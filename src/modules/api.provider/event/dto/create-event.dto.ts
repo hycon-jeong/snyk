@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, Max, MaxLength } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+} from 'class-validator';
 import { EventType } from 'modules/api.tvapp/test/tv.test.controller';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import * as moment from 'moment';
@@ -12,6 +19,7 @@ export class CreateEventDto {
     required: false,
     example: 'https://cdn.policetv.co.kr/news/photo/202009/11773_7845_319.jpg',
   })
+  @IsOptional()
   readonly imageUrl: string;
 
   @ApiProperty({
@@ -32,6 +40,7 @@ export class CreateEventDto {
     maxLength: 512,
   })
   @MaxLength(512)
+  @IsOptional()
   readonly redirectUrl: string;
 
   @ApiProperty({
@@ -41,6 +50,7 @@ export class CreateEventDto {
     maxLength: 512,
   })
   @MaxLength(512)
+  @IsOptional()
   readonly callbackUrl: string;
 
   @ApiProperty({
@@ -52,6 +62,7 @@ export class CreateEventDto {
     example: 'ko',
   })
   @MaxLength(12)
+  @IsOptional()
   readonly languageCode: string;
 
   @ApiProperty({
@@ -91,8 +102,8 @@ export class CreateEventDto {
     example: '차량 알림',
     name: 'optMsgTitle',
   })
-  @IsString()
   @MaxLength(80)
+  @IsOptional()
   readonly optMsgTitle: string;
 
   @ApiProperty({
@@ -105,6 +116,7 @@ export class CreateEventDto {
   })
   @IsString()
   @MaxLength(80)
+  @IsOptional()
   readonly optMsgContent: string;
 
   readonly status: EventStatus;
