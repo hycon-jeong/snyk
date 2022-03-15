@@ -6,6 +6,7 @@ export class CreateProviderUserDto {
     type: String,
     description: 'provider측 사용자 식별번호',
     required: true,
+    example: '34634',
   })
   @MinLength(1)
   @IsString()
@@ -15,6 +16,7 @@ export class CreateProviderUserDto {
     type: String,
     description: 'provider 고유 아이디 (마이카 서비스에서 제공)',
     required: true,
+    example: 'PVD3344718234',
   })
   readonly providerId: string;
 }

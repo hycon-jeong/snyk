@@ -94,8 +94,18 @@ export class CrudEventController implements CrudController<Event> {
   @ApiOperation({
     summary: '메세지 전송',
   })
-  @ApiQuery({ type: String, name: 'myCarUserKey', required: true })
-  @ApiQuery({ type: String, name: 'providerId', required: true })
+  @ApiQuery({
+    type: String,
+    name: 'myCarUserKey',
+    required: true,
+    example: 'MYCAR1647338573154',
+  })
+  @ApiQuery({
+    type: String,
+    name: 'providerId',
+    required: true,
+    example: 'PVD3344718234',
+  })
   @ApiBody({
     type: CreateEventDto,
     description: createEventDescriptionHtml(),
