@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export const createEventHtml = (): string => {
   return `이벤트 타입
     <div>1. normal</div>
@@ -34,3 +36,45 @@ export const createEventDescriptionHtml = (): string => {
     </div>
   `;
 };
+
+export class createEventSuccessResponse {
+  @ApiProperty({
+    type: Number,
+    description: 'Http Code',
+    example: 201,
+    required: true,
+    default: 201,
+  })
+  readonly statusCode: number;
+
+  @ApiProperty({
+    type: String,
+    description: 'API 성공 여부',
+    required: true,
+    example: true,
+    default: true,
+  })
+  readonly isSuccess: boolean;
+
+  @ApiProperty({
+    type: String,
+    description: 'API 응답 메세지',
+    required: true,
+    example: '{메세지 내용}',
+  })
+  readonly message: string;
+
+  @ApiProperty({
+    type: Object,
+    description: '응답 객체',
+    required: true,
+    example: {
+      messageContent: 'string',
+      subMessageContent: 'string',
+      issuedAt: 'date',
+      imageUrl: 'string',
+      status: 'string',
+    },
+  })
+  readonly data?: object;
+}

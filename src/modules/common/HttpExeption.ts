@@ -6,6 +6,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
+import * as moment from 'moment';
 
 @Catch(HttpException)
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -16,9 +17,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const errorData = exception.getResponse() as Record<string, any>;
     const response = ctx.getResponse();
     const status = exception.getStatus();
-
+    const issuedAt = moment.utc(new Date());
     if (errorData.message && errorData.message.length > 0) {
-      return response.status(status).send({ ...errorData, isSuccess: false });
+      const { error, ...rest } = errorData;
+      return response
+        .status(status)
+        .send({ ...rest, isSuccess: false, issuedAt });
     }
     let message;
     if (typeof errorData === 'object') {
@@ -30,9 +34,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     response.status(status).send({
       message,
       statusCode: status,
-      error: errorData.error,
+      // error: errorData.error,
       messageCode: errorData.messageCode,
       isSuccess: false,
+      issuedAt,
     });
   }
 }

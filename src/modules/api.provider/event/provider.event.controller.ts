@@ -45,11 +45,15 @@ import { Logger } from 'winston';
 import {
   createEventDescriptionHtml,
   createEventHtml,
-} from './swagger/swagger.html';
+  createEventSuccessResponse,
+} from './swagger/swagger.util';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import CrudsEventService from './provider.event.service';
-import { ILamdaReponse } from './type/providerEvent.interface';
+import {
+  CreateRequestErrorResponseDto,
+  CreateServerErrorResponseDto,
+} from 'swagger/swagger.response';
 
 @ApiBearerAuth()
 @Crud({
@@ -97,17 +101,19 @@ export class CrudEventController implements CrudController<Event> {
     description: createEventDescriptionHtml(),
   })
   @ApiResponse({
+    status: 201,
+    description: 'Post event successfully',
+    type: createEventSuccessResponse,
+  })
+  @ApiResponse({
     status: 400,
     description: 'bad request',
-    content: {
-      'application/json': {
-        example: {
-          statusCode: 400,
-          isSuccess: false,
-          message: '[{에러 내용}] | {에러내용}',
-        },
-      },
-    },
+    type: CreateRequestErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'server error',
+    type: CreateServerErrorResponseDto,
   })
   async createOne(
     @ParsedRequest() req: CrudRequest,
@@ -173,22 +179,25 @@ export class CrudEventController implements CrudController<Event> {
     this.logger.debug(
       `push data from web >>>>>>>>>> ${JSON.stringify(pushData)}`,
     );
+    const event = await this.base.createOneBase(req, {
+      user_mapping_id: userMappings[0].id,
+      // category: categoryData,
+      status: EventStatus.COMPLETE,
+      imageUrl: dto.imageUrl,
+      providerKey: '',
+      issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
+      provider: providerData,
+      messageContent: dto.messageContent,
+      // message: messageData,
+      subMessageContent: subMessage,
+    } as Event);
+    const { messageContent, subMessageContent, issuedAt, imageUrl, status } =
+      event;
     return {
-      statusCode: 200,
+      statusCode: 201,
       isSuccess: true,
       message: 'success',
-      data: await this.base.createOneBase(req, {
-        user_mapping_id: userMappings[0].id,
-        // category: categoryData,
-        status: EventStatus.COMPLETE,
-        imageUrl: dto.imageUrl,
-        providerKey: '',
-        issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
-        provider: providerData,
-        messageContent: dto.messageContent,
-        // message: messageData,
-        subMessageContent: subMessage,
-      } as Event),
+      data: { messageContent, subMessageContent, issuedAt, imageUrl, status },
     };
   }
 

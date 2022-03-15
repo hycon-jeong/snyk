@@ -46,7 +46,14 @@ import { CreateProviderUserDto } from './dto/create-user.dto';
 import { Roles } from 'modules/common/constants/roles';
 import CrudsProviderAuthService from './provider.auth.service';
 import { ILamdaReponse } from './type/providerEvent.interface';
-import { createUserDescriptionHtml } from './swagger/swagger.html';
+import {
+  createUserDescriptionHtml,
+  createUserSuccessResponse,
+} from './swagger/swagger.util';
+import {
+  CreateRequestErrorResponseDto,
+  CreateServerErrorResponseDto,
+} from 'swagger/swagger.response';
 
 @ApiBearerAuth()
 @Crud({
@@ -92,17 +99,19 @@ export class CrudProviderAuthController implements CrudController<User> {
     description: createUserDescriptionHtml(),
   })
   @ApiResponse({
+    status: 201,
+    description: 'Create user successfully',
+    type: createUserSuccessResponse,
+  })
+  @ApiResponse({
     status: 400,
     description: 'bad request',
-    content: {
-      'application/json': {
-        example: {
-          statusCode: 400,
-          isSuccess: false,
-          message: '[{에러 내용}] | {에러내용}',
-        },
-      },
-    },
+    type: CreateRequestErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'server error',
+    type: CreateServerErrorResponseDto,
   })
   async createOne(
     @ParsedRequest() req: CrudRequest,
