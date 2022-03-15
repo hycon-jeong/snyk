@@ -22,7 +22,7 @@ export const createEventHtml = (): string => {
 export const createEventDescriptionHtml = (): string => {
   return `<div>
       <h2>mandatory</h2>
-        <div>1. title</div>
+        <div>1. messageTitle</div>
         <div>2. messageContent</div>
         <div>3. issuedAt</div>
         <div>4. eventType</div>
@@ -30,6 +30,8 @@ export const createEventDescriptionHtml = (): string => {
         <div>1. imageUrl </div>
         <div>  - default : logo</div>
         <div>2. redirectUrl</div>
+        <div>3. callbackUrl</div>
+        <div>4. msgLanguage</div>
         <div></div>
         <div>최대 글자 수는 변할 수 있습니다.</div>
         <h3>프로퍼티의 자세한 내용은 Schema를 클릭하세요.</h3>

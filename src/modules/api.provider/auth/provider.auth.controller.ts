@@ -64,7 +64,7 @@ import {
     only: ['createOneBase'],
   },
 })
-@Controller(`api/provider/${PROVIDER_VERSION}/auth`)
+@Controller(`api/provider/${PROVIDER_VERSION}/userid`)
 @ApiTags('Auth')
 @CrudAuth({
   property: 'user',
@@ -117,7 +117,7 @@ export class CrudProviderAuthController implements CrudController<User> {
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: CreateProviderUserDto,
   ) {
-    const { providerUserKey, providerId } = dto;
+    const { userKey, providerId } = dto;
     const providerData = await this.providerService.findOne({
       id: providerId,
       status: 'ACTIVE',
@@ -126,24 +126,16 @@ export class CrudProviderAuthController implements CrudController<User> {
       throw new BadRequestException('Provider not found');
     }
     let user = await this.usersService.findOne({
-      userId: providerUserKey,
+      userId: userKey,
       providerId,
       status: 'ACTIVE',
     });
-    if (!user || !user.id) {
-      user = await this.usersService.insert({
-        userId: providerUserKey,
-        role: Roles.USER,
-        password: '123456',
-        status: 'ACTIVE',
-        providerId,
-      });
-    }
+
     return {
       statusCode: 200,
       isSuccess: true,
       message: 'success',
-      data: { userKey: user.id },
+      data: { userKey: user?.id },
     };
   }
 }

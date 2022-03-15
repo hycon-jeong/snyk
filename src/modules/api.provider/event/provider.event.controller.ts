@@ -94,7 +94,7 @@ export class CrudEventController implements CrudController<Event> {
   @ApiOperation({
     summary: '메세지 전송',
   })
-  @ApiQuery({ type: String, name: 'userKey', required: true })
+  @ApiQuery({ type: String, name: 'myCarUserKey', required: true })
   @ApiQuery({ type: String, name: 'providerId', required: true })
   @ApiBody({
     type: CreateEventDto,
@@ -120,9 +120,9 @@ export class CrudEventController implements CrudController<Event> {
     @ParsedBody() dto: CreateEventDto,
     @Query() query,
   ) {
-    const { userKey, providerId } = query;
+    const { myCarUserKey, providerId } = query;
     const user = await this.usersService.findOne({
-      id: userKey,
+      id: myCarUserKey,
       providerId,
       status: 'ACTIVE',
     });
@@ -152,19 +152,19 @@ export class CrudEventController implements CrudController<Event> {
     }
 
     const subMessage =
-      dto.eventType === 'advertise' || dto.redirectUrl
+      dto.eventType === EventType.ADVERTISE || dto.redirectUrl
         ? '자세한 사항은 "상세보기" 버튼을\n 눌러 확인하세요.'
         : // : `연결된 장치 : ${providerData.providerName} / 블랙박스`;
           `연결된 장치 : 현대 소나타`;
 
-    dto.eventType = EventType.important;
+    // dto.eventType = EventType.IMPORTANT;
 
     const pushData = {
       position: 'center',
       imageUrl: dto.imageUrl || 'https://i.ibb.co/71YvfCK/image.png',
       subMessage: subMessage,
       redirectUrl: dto.redirectUrl,
-      title: dto.title || '차량 알림',
+      title: dto.messageTitle || '차량 알림',
       body:
         dto.messageContent ||
         '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
@@ -191,13 +191,12 @@ export class CrudEventController implements CrudController<Event> {
       // message: messageData,
       subMessageContent: subMessage,
     } as Event);
-    const { messageContent, subMessageContent, issuedAt, imageUrl, status } =
-      event;
+    const { messageContent, issuedAt, imageUrl, status } = event;
     return {
       statusCode: 201,
       isSuccess: true,
       message: 'success',
-      data: { messageContent, subMessageContent, issuedAt, imageUrl, status },
+      data: { messageContent, issuedAt, imageUrl, status },
     };
   }
 

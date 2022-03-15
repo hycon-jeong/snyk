@@ -72,7 +72,7 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async moRegister(@Body() payload: MoRegisterPayload): Promise<any> {
-    const { userKey, role, password, tvCertCode, ...rest } = payload;
+    const { userId, role, password, tvCertCode, ...rest } = payload;
 
     // 인증번호 확인
     const tvCert = await this.tvAuthService.getTvCertCodeOne({
@@ -87,26 +87,27 @@ export class AuthController {
     }
 
     let user = await this.userService.findOne({
-      where: { id: userKey, status: 'ACTIVE' },
+      where: { userId: userId, status: 'ACTIVE' },
     });
 
-    // if (!user) {
-    //   user = await this.userService.moCreate({
-    //     userId,
-    //     role,
-    //     password,
-    //     status: 'ACTIVE',
-    //     providerId: payload.provider_id,
-    //   });
-    // }
+    if (!user) {
+      user = await this.userService.moCreate({
+        userId,
+        role,
+        password,
+        // tvCertCode,
+        status: 'ACTIVE',
+        providerId: payload.provider_id,
+      });
+    }
     try {
       await this.userService.createUserMapping({
-        userId: userKey,
+        userId: user.id,
         mappingStatus: 'ACTIVE',
         providerId: payload.provider_id,
         consumerId: payload.consumer_id,
         tvDeviceId: tvCert.tvDeviceId,
-        key: userKey + '',
+        name: user.name,
         ...rest,
       });
     } catch (err) {

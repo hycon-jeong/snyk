@@ -40,10 +40,9 @@ export interface IResponse {
 }
 
 export enum EventType {
-  normal = 'normal',
-  important = 'important',
-  advertise = 'advertise',
-  // importantAdvertise = 'important.advertise',
+  INFO = 'INFO',
+  IMPORTANT = 'IMPORTANT',
+  ADVERTISE = 'ADVERTISE',
 }
 
 @ApiBearerAuth()

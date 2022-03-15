@@ -20,17 +20,39 @@ export class CreateEventDto {
     required: true,
     example: '차량 알림',
     default: '차량 알림',
-    maxLength: 33,
+    maxLength: 36,
   })
-  @MaxLength(33)
-  readonly title: string;
+  @MaxLength(36)
+  readonly messageTitle: string;
 
   @ApiProperty({
     type: String,
-    description: 'tv 앱에서 상세보기 클릭 시 화면 전환 할 url',
+    description: 'tv 앱에서 상세보기 클릭 시 화면 전환 할 URL',
     required: false,
+    maxLength: 512,
   })
+  @MaxLength(512)
   readonly redirectUrl: string;
+
+  @ApiProperty({
+    type: String,
+    description: '사용자의 이벤트 처리 결과를 받을 수 있는 URL',
+    required: false,
+    maxLength: 512,
+  })
+  @MaxLength(512)
+  readonly callbackUrl: string;
+
+  @ApiProperty({
+    type: String,
+    description: 'ISO Language Code ( "ko", "en-US" )',
+    required: false,
+    maxLength: 12,
+    default: 'ko',
+    example: 'ko',
+  })
+  @MaxLength(12)
+  readonly msgLanguage: string;
 
   @ApiProperty({
     type: String,
@@ -55,8 +77,8 @@ export class CreateEventDto {
     enum: EventType,
     required: true,
     description: `\n${createEventHtml()}`,
-    default: EventType.normal,
-    example: EventType.normal,
+    default: EventType.INFO,
+    example: EventType.INFO,
   })
   @IsEnum(EventType)
   eventType: EventType;

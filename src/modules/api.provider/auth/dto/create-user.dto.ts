@@ -9,7 +9,7 @@ export class CreateProviderUserDto {
   })
   @MinLength(1)
   @IsString()
-  readonly providerUserKey: string;
+  readonly userKey: string;
 
   @ApiProperty({
     type: Number,
