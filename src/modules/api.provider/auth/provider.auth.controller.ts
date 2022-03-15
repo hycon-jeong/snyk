@@ -119,7 +119,7 @@ export class CrudProviderAuthController implements CrudController<User> {
   ) {
     const { userKey, providerId } = dto;
     const providerData = await this.providerService.findOne({
-      id: providerId,
+      providerCode: providerId,
       status: 'ACTIVE',
     });
     if (!providerData || !providerData.id) {
@@ -127,7 +127,7 @@ export class CrudProviderAuthController implements CrudController<User> {
     }
     let user = await this.usersService.findOne({
       userId: userKey,
-      providerId,
+      providerId: providerData.id,
       status: 'ACTIVE',
     });
 
@@ -135,7 +135,7 @@ export class CrudProviderAuthController implements CrudController<User> {
       statusCode: 200,
       isSuccess: true,
       message: 'success',
-      data: { userKey: user?.id },
+      data: { userKey: user?.userKey },
     };
   }
 }

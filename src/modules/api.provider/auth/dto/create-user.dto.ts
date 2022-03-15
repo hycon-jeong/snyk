@@ -12,9 +12,9 @@ export class CreateProviderUserDto {
   readonly userKey: string;
 
   @ApiProperty({
-    type: Number,
+    type: String,
     description: 'provider 고유 아이디 (마이카 서비스에서 제공)',
     required: true,
   })
-  readonly providerId: number;
+  readonly providerId: string;
 }

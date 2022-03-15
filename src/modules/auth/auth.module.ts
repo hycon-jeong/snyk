@@ -10,6 +10,7 @@ import { TvDeviceModule } from 'modules/api.tvapp/device/tv.device.module';
 import { TvAuthModule } from 'modules/api.tvapp/auth/tv.auth.module';
 import 'moment-timezone';
 import * as moment from 'moment';
+import { ProviderModule } from 'modules/provider';
 moment.tz.setDefault('Asia/Seoul');
 
 @Module({
@@ -35,6 +36,7 @@ moment.tz.setDefault('Asia/Seoul');
     }),
     TvDeviceModule,
     TvAuthModule,
+    ProviderModule,
   ],
   controllers: [AuthController],
   providers: [

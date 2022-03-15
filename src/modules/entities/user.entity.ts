@@ -20,6 +20,9 @@ export class User {
   @Column('varchar', { name: 'user_id', length: 255 })
   userId: string;
 
+  @Column('varchar', { name: 'user_key', length: 255, nullable: true })
+  userKey: string;
+
   @Column('int', { name: 'provider_id', nullable: true })
   providerId: number;
 

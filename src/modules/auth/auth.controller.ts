@@ -23,6 +23,7 @@ import { AuthService, LoginPayload, RegisterPayload } from './';
 import { CurrentUser } from './../common/decorator/current-user.decorator';
 import { UsersService } from './../user';
 import { MoRegisterPayload } from './moRegister.payload';
+import CrudsProviderService from 'modules/provider/provider.service';
 
 @Controller('api/auth')
 @ApiTags('authentication')
@@ -32,6 +33,7 @@ export class AuthController {
     private readonly userService: UsersService,
     private readonly tvDeviceService: TvDeviceService,
     private readonly tvAuthService: TvAuthService,
+    private readonly providerService: CrudsProviderService,
   ) {}
 
   @Post('login')
@@ -74,6 +76,13 @@ export class AuthController {
   async moRegister(@Body() payload: MoRegisterPayload): Promise<any> {
     const { userId, role, password, tvCertCode, ...rest } = payload;
 
+    const providerData = await this.providerService.findOne({
+      providerCode: payload.provider_id,
+    });
+    if (!providerData || !providerData.id) {
+      throw new BadRequestException('Provider not found');
+    }
+
     // 인증번호 확인
     const tvCert = await this.tvAuthService.getTvCertCodeOne({
       where: {
@@ -87,7 +96,7 @@ export class AuthController {
     }
 
     let user = await this.userService.findOne({
-      where: { userId: userId, status: 'ACTIVE' },
+      where: { userId: userId, status: 'ACTIVE', providerId: providerData.id },
     });
 
     if (!user) {
@@ -97,14 +106,15 @@ export class AuthController {
         password,
         // tvCertCode,
         status: 'ACTIVE',
-        providerId: payload.provider_id,
+        providerId: providerData.id,
+        userKey: this.generateUserKey(),
       });
     }
     try {
       await this.userService.createUserMapping({
         userId: user.id,
         mappingStatus: 'ACTIVE',
-        providerId: payload.provider_id,
+        providerId: providerData.id,
         consumerId: payload.consumer_id,
         tvDeviceId: tvCert.tvDeviceId,
         name: user.name,
@@ -125,5 +135,11 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getLoggedInUser(@CurrentUser() user: User): Promise<User> {
     return user;
+  }
+
+  generateUserKey() {
+    const prefix = 'MYCAR';
+    const datetime = Date.now();
+    return prefix + datetime;
   }
 }

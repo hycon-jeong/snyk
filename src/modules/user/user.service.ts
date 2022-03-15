@@ -52,6 +52,7 @@ export class UsersService extends TypeOrmCrudService<User> {
       role: Roles;
       status: string;
       providerId: number;
+      userKey: string;
     },
   ) {
     const user = await this.getByUserId(payload.userId);

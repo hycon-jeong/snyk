@@ -52,7 +52,7 @@ export class CreateEventDto {
     example: 'ko',
   })
   @MaxLength(12)
-  readonly msgLanguage: string;
+  readonly languageCode: string;
 
   @ApiProperty({
     type: String,
@@ -82,6 +82,30 @@ export class CreateEventDto {
   })
   @IsEnum(EventType)
   eventType: EventType;
+
+  @ApiProperty({
+    type: String,
+    description: 'Tv앱에서 지원 안하는 언어셋일 경우 보여질 제목',
+    required: false,
+    maxLength: 80,
+    example: '차량 알림',
+    name: 'optMsgTitle',
+  })
+  @IsString()
+  @MaxLength(80)
+  readonly optMsgTitle: string;
+
+  @ApiProperty({
+    type: String,
+    description: 'Tv앱에서 지원 안하는 언어셋일 경우 보여질 내용',
+    required: false,
+    maxLength: 80,
+    example: '마이카 알람서비스로부터 차량 충돌 알림이 도착하였습니다.',
+    name: 'optMsgContent',
+  })
+  @IsString()
+  @MaxLength(80)
+  readonly optMsgContent: string;
 
   readonly status: EventStatus;
 }

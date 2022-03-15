@@ -121,9 +121,17 @@ export class CrudEventController implements CrudController<Event> {
     @Query() query,
   ) {
     const { myCarUserKey, providerId } = query;
+
+    const providerData = await this.providerService.findOne({
+      providerCode: providerId,
+    });
+    if (!providerData || !providerData.id) {
+      throw new BadRequestException('Provider not found');
+    }
+
     const user = await this.usersService.findOne({
-      id: myCarUserKey,
-      providerId,
+      userKey: myCarUserKey,
+      providerId: providerData.id,
       status: 'ACTIVE',
     });
     if (!user || !user.id) {
@@ -143,13 +151,6 @@ export class CrudEventController implements CrudController<Event> {
     const tokensArray = userMappings.map(
       (item) => item.tvDevice?.tvDeviceToken,
     );
-
-    const providerData = await this.providerService.findOne({
-      id: providerId,
-    });
-    if (!providerData || !providerData.id) {
-      throw new BadRequestException('Provider not found');
-    }
 
     const subMessage =
       dto.eventType === EventType.ADVERTISE || dto.redirectUrl

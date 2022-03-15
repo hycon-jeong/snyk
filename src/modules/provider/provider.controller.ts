@@ -1,7 +1,9 @@
 import {
   BadRequestException,
   Controller,
+  Get,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -43,6 +45,19 @@ export class CrudProviderController implements CrudController<Provider> {
 
   get base(): CrudController<Provider> {
     return this;
+  }
+
+  @Get('/code')
+  async getProviderByCode(@ParsedRequest() req: CrudRequest, @Query() query) {
+    const { providerId } = query;
+    const provider = await this.service.findOne({
+      providerCode: providerId,
+      status: 'ACTIVE',
+    });
+    if (!provider) {
+      throw new BadRequestException('Provider not found');
+    }
+    return provider;
   }
 
   @Override()

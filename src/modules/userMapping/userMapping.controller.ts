@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Param,
   Patch,
   Query,
@@ -88,6 +89,27 @@ export class UserMappingController implements CrudController<UserMapping> {
 
   get base(): CrudController<UserMapping> {
     return this;
+  }
+
+  @Get('/byProvider')
+  async getUserMappingsByProvider(
+    @ParsedRequest() req: CrudRequest,
+    @Query() query,
+  ) {
+    const { providerId, userKey } = query;
+    const provider = await this.providerService.findOne({
+      providerCode: providerId,
+      status: 'ACTIVE',
+    });
+    if (!provider) {
+      throw new BadRequestException('Provider not found');
+    }
+    const userMappings = await this.service.find({
+      providerId: provider.id,
+      mappingStatus: 'ACTIVE',
+      key: userKey,
+    });
+    return userMappings;
   }
 
   @Override()
