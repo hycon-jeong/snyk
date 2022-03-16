@@ -2,18 +2,18 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export const createEventHtml = (): string => {
   return `이벤트 타입
-    <div>1. normal</div>
+    <div>1. INFO</div>
     <div>- name : 일반 알림</div>
     <div>- ui : 토스트</div>
     <img src="https://i.ibb.co/yRHpGkh/2022-03-14-4-50-56.png" />
-    <div>2. important</div>
+    <div>2. IMPORTANT</div>
     <div>- name : 중요 알림</div>
     <div>- ui : 팝업</div>
     <div>1. redirectUrl 프로퍼티 유</div>
     <img src="https://i.ibb.co/zsyvpc6/2022-03-14-4-42-26.png" />
     <div>2. redirectUrl 프로퍼티 무</div>
     <div><img src="https://i.ibb.co/8KGp2nN/2022-03-14-4-43-58.png" /></div>
-    <div>3. advertise</div>
+    <div>3. ADVERTISE</div>
     <div>- name : 광고 알림</div>
     <div>- ui : 팝업\n</div>
     <img src="https://i.ibb.co/4Mv2Wgq/2022-03-14-4-45-42.png" />`;
@@ -32,8 +32,10 @@ export const createEventDescriptionHtml = (): string => {
         <div>2. redirectUrl</div>
         <div>3. callbackUrl</div>
         <div>4. msgLanguage</div>
+        <div>5. optMsgTitle</div>
+        <div>6. optMsgContent</div>
         <div></div>
-        <div>최대 글자 수는 변할 수 있습니다.</div>
+        
         <h3>프로퍼티의 자세한 내용은 Schema를 클릭하세요.</h3>
     </div>
   `;
