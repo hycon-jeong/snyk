@@ -35,7 +35,6 @@ export const createEventDescriptionHtml = (): string => {
         <div>5. optMsgTitle</div>
         <div>6. optMsgContent</div>
         <div></div>
-        
         <h3>프로퍼티의 자세한 내용은 Schema를 클릭하세요.</h3>
     </div>
   `;
