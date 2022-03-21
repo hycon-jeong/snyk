@@ -172,6 +172,16 @@ export class CrudEventController implements CrudController<Event> {
 
     // dto.eventType = EventType.IMPORTANT;
 
+    if (dto.eventType === EventType.ADVERTISE) {
+      (dto.eventType as any) = 'advertise';
+    }
+    if (dto.eventType === EventType.IMPORTANT) {
+      (dto.eventType as any) = 'important';
+    }
+    if (dto.eventType === EventType.INFO) {
+      (dto.eventType as any) = 'normal';
+    }
+
     const pushData = {
       position: 'center',
       imageUrl: dto.imageUrl || 'https://i.ibb.co/71YvfCK/image.png',
