@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 
 export const createUserDescriptionHtml = (): string => {
   return `<div>
@@ -7,6 +7,16 @@ export const createUserDescriptionHtml = (): string => {
         <div>1. providerUserKey</div>
         <div>2. providerId</div>
         <h3>프로퍼티의 자세한 내용은 Schema를 클릭하세요.</h3>
+    </div>
+  `;
+};
+
+export const deleteUserDescriptionHtml = (): string => {
+  return `<div>
+  <div>providerUserKey,providerId에 해당하는 유저 삭제</div>
+      <h2>mandatory</h2>
+        <div>1. providerUserKey</div>
+        <div>2. providerId</div>
     </div>
   `;
 };
@@ -47,4 +57,18 @@ export class createUserSuccessResponse {
     },
   })
   readonly data?: object;
+}
+
+export class deleteUserSuccessResponse extends PickType(
+  createUserSuccessResponse,
+  ['isSuccess', 'message'],
+) {
+  @ApiProperty({
+    type: Number,
+    description: 'Http Code',
+    example: 200,
+    required: true,
+    default: 200,
+  })
+  readonly statusCode: number;
 }

@@ -30,6 +30,10 @@ export class UsersService extends TypeOrmCrudService<User> {
     return await this.userRepository.findOne({ userId: userId });
   }
 
+  async updateUser(criteria, payload) {
+    return await this.userRepository.update(criteria, payload);
+  }
+
   async create(payload: UserFillableFields) {
     const user = await this.getByUserId(payload.userId);
 

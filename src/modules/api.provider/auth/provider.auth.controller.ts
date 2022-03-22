@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  Delete,
   Get,
   Inject,
   Post,
@@ -49,6 +50,8 @@ import { ILamdaReponse } from './type/providerEvent.interface';
 import {
   createUserDescriptionHtml,
   createUserSuccessResponse,
+  deleteUserDescriptionHtml,
+  deleteUserSuccessResponse,
 } from './swagger/swagger.util';
 import {
   CreateRequestErrorResponseDto,
@@ -136,6 +139,78 @@ export class CrudProviderAuthController implements CrudController<User> {
       isSuccess: true,
       message: 'success',
       data: { userKey: user?.userKey },
+    };
+  }
+
+  @Delete()
+  @ApiOperation({
+    summary: '마이카 알람서비스 사용자 탈퇴',
+    description: deleteUserDescriptionHtml(),
+  })
+  @ApiQuery({
+    type: String,
+    name: 'myCarUserKey',
+    required: true,
+    example: 'MYCAR1647338573154',
+  })
+  @ApiQuery({
+    type: String,
+    name: 'providerId',
+    required: true,
+    example: 'PVD3344718234',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Delete user successfully',
+    type: deleteUserSuccessResponse,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'bad request',
+    type: CreateRequestErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'server error',
+    type: CreateServerErrorResponseDto,
+  })
+  async deleteOne(@ParsedRequest() req: CrudRequest, @Query() query) {
+    const { myCarUserKey, providerId } = query;
+    const providerData = await this.providerService.findOne({
+      providerCode: providerId,
+      status: 'ACTIVE',
+    });
+    if (!providerData || !providerData.id) {
+      throw new BadRequestException('Provider not found');
+    }
+    let user = await this.usersService.findOne({
+      userKey: myCarUserKey,
+      providerId: providerData.id,
+      status: 'ACTIVE',
+    });
+
+    if (!user || !user.id) {
+      throw new BadRequestException('User not found');
+    }
+
+    const userMappings = await this.userMappingService.find({
+      where: { userId: user.id, mappingStatus: 'ACTIVE' },
+    });
+
+    await this.usersService.updateUser({ id: user.id }, { status: 'INACTIVE' });
+
+    const promArr = userMappings.map((map) => {
+      return this.userMappingService.updateUserMappings(
+        { mappingStatus: 'INACTIVE' },
+        { id: map.id },
+      );
+    });
+    await Promise.all(promArr);
+
+    return {
+      statusCode: 200,
+      isSuccess: true,
+      message: 'success',
     };
   }
 }
