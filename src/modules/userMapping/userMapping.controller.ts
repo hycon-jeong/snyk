@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -118,6 +119,50 @@ export class UserMappingController implements CrudController<UserMapping> {
       },
     });
     return userMappings;
+  }
+
+  @Get('/testv1/myCarUserKey')
+  async getUserMappingByMyCarUserKey(
+    @ParsedRequest() req: CrudRequest,
+    @Query() query,
+  ) {
+    const { myCarUserKey } = query;
+
+    const user = await this.userService.findOne({
+      userKey: myCarUserKey,
+      status: 'ACTIVE',
+    });
+
+    if (!user || !user.id) {
+      throw new BadRequestException('User not found');
+    }
+
+    const provider = await this.providerService.findOne({
+      id: user.providerId,
+      status: 'ACTIVE',
+    });
+
+    const userMappings = await this.service.find({
+      where: {
+        mappingStatus: 'ACTIVE',
+        userId: user.id,
+      },
+      join: {
+        alias: 'userMapping',
+        leftJoinAndSelect: {
+          consumer: 'userMapping.consumer',
+        },
+      },
+    });
+    return {
+      isSuccess: true,
+      data: {
+        provider,
+        userMappings,
+        user,
+      },
+      statusCode: 200,
+    };
   }
 
   @Override()
