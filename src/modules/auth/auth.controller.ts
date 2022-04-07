@@ -11,8 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { TvAuthService } from 'modules/api.tvapp/auth/tv.auth.service';
-import { TvDeviceService } from 'modules/api.tvapp/device/tv.device.service';
+import { TvAuthService } from 'modules/api.tvapp/v1/auth/tv.auth.service';
 import { User } from 'modules/entities/user.entity';
 import 'moment-timezone';
 import * as moment from 'moment';
@@ -24,6 +23,7 @@ import { CurrentUser } from './../common/decorator/current-user.decorator';
 import { UsersService } from './../user';
 import { MoRegisterPayload } from './moRegister.payload';
 import CrudsProviderService from 'modules/provider/provider.service';
+import { TvDeviceService } from 'modules/api.tvapp/v1/device/tv.device.service';
 
 @Controller('api/auth')
 @ApiTags('authentication')
@@ -124,8 +124,12 @@ export class AuthController {
       console.log(err);
       return err;
     }
-
-    return await this.authService.createToken(user);
+    const token = await this.authService.createToken(user);
+    return {
+      accessToken: token.accessToken,
+      expireIn: token.expiresIn,
+      user: token.user,
+    };
   }
 
   @ApiBearerAuth()

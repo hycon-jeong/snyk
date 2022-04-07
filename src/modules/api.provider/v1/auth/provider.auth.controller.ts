@@ -29,7 +29,6 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
-import { EventType } from 'modules/api.tvapp/test/tv.test.controller';
 import { CategoryService } from 'modules/category/category.service';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import { Event, User } from 'modules/entities';
@@ -57,6 +56,7 @@ import {
   CreateRequestErrorResponseDto,
   CreateServerErrorResponseDto,
 } from 'swagger/swagger.response';
+import { AuthService, JwtAuthGuard } from 'modules/auth';
 
 @ApiBearerAuth()
 @Crud({
@@ -87,6 +87,7 @@ export class CrudProviderAuthController implements CrudController<User> {
     public readonly providerService: CrudsProviderService,
     public readonly categoryService: CategoryService,
     public readonly userMappingService: UserMappingService,
+    public readonly authService: AuthService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
   get base(): CrudController<User> {
@@ -133,16 +134,24 @@ export class CrudProviderAuthController implements CrudController<User> {
       providerId: providerData.id,
       status: 'ACTIVE',
     });
+    const token = await this.authService.createToken(user);
 
     return {
       statusCode: 200,
       isSuccess: true,
       message: 'success',
-      data: { userKey: user?.userKey },
+      data: {
+        userKey: user?.userKey,
+        token: {
+          accessToken: token.accessToken,
+          expireIn: token.expiresIn,
+        },
+      },
     };
   }
 
   @Delete()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: '마이카 알람서비스 사용자 탈퇴',
     description: deleteUserDescriptionHtml(),

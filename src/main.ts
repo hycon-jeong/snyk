@@ -14,16 +14,17 @@ import * as helmet from 'helmet';
 import * as compression from 'compression';
 import * as rateLimit from 'express-rate-limit';
 import { winstonOptions } from 'modules/main/app-logging';
-import { TvAuthModule } from 'modules/api.tvapp/auth/tv.auth.module';
-import { ProviderApiModule } from 'modules/api.provider/provider.module';
-import { ProviderEventModule } from 'modules/api.provider/event/provider.event.module';
-import { TvDeviceModule } from 'modules/api.tvapp/device/tv.device.module';
-import { TvTestModule } from 'modules/api.tvapp/test/tv.test.module';
+import { TvAuthModule } from 'modules/api.tvapp/v1/auth/tv.auth.module';
+import { ProviderApiModule } from 'modules/api.provider/v1/provider.module';
+
 import { AllExceptionsFilter } from 'modules/common/HttpExeption';
 import { I18nModule, I18nService } from 'nestjs-i18n';
 import * as morgan from 'morgan';
 import winston from 'winston';
-import { ProviderAuthModule } from 'modules/api.provider/auth/provider.auth.module';
+import { ProviderAuthModule } from 'modules/api.provider/v1/auth/provider.auth.module';
+import { ProviderEventModule } from 'modules/api.provider/v1/event/provider.event.module';
+import { TvDeviceModule } from 'modules/api.tvapp/v1/device/tv.device.module';
+import { TvTestModule } from 'modules/api.tvapp/v1/test/tv.test.module';
 
 dotenv.config();
 

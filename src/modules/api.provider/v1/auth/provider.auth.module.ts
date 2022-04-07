@@ -19,6 +19,7 @@ import { UsersService } from 'modules/user';
 import { UserMappingModule } from 'modules/userMapping/userMapping.module';
 import CrudsProviderAuthService from './provider.auth.service';
 import { CrudProviderAuthController } from './provider.auth.controller';
+import { AuthModule } from 'modules/auth';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CrudProviderAuthController } from './provider.auth.controller';
     ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     UserMappingModule,
+    AuthModule,
   ],
   providers: [
     CrudsProviderAuthService,

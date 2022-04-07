@@ -29,7 +29,6 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
-import { EventType } from 'modules/api.tvapp/test/tv.test.controller';
 import { CategoryService } from 'modules/category/category.service';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import { Event, User } from 'modules/entities';
@@ -56,6 +55,8 @@ import {
   CreateServerErrorResponseDto,
 } from 'swagger/swagger.response';
 import { ILamdaReponse } from './type/providerEvent.interface';
+import { EventType } from 'modules/api.tvapp/v1/test/tv.test.controller';
+import { JwtAuthGuard } from 'modules/auth';
 
 @ApiBearerAuth()
 @Crud({
@@ -66,6 +67,7 @@ import { ILamdaReponse } from './type/providerEvent.interface';
     only: ['createOneBase'],
   },
 })
+@UseGuards(JwtAuthGuard)
 @Controller(`api/provider/${PROVIDER_VERSION}/event`)
 @ApiTags('Event')
 @CrudAuth({

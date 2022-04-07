@@ -6,11 +6,11 @@ import { UserModule } from './../user';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
-import { TvDeviceModule } from 'modules/api.tvapp/device/tv.device.module';
-import { TvAuthModule } from 'modules/api.tvapp/auth/tv.auth.module';
+import { TvAuthModule } from 'modules/api.tvapp/v1/auth/tv.auth.module';
 import 'moment-timezone';
 import * as moment from 'moment';
 import { ProviderModule } from 'modules/provider';
+import { TvDeviceModule } from 'modules/api.tvapp/v1/device/tv.device.module';
 moment.tz.setDefault('Asia/Seoul');
 
 @Module({
@@ -44,6 +44,6 @@ moment.tz.setDefault('Asia/Seoul');
     JwtStrategy,
     { provide: 'MomentWrapper', useValue: moment },
   ],
-  exports: [PassportModule.register({ defaultStrategy: 'jwt' })],
+  exports: [PassportModule.register({ defaultStrategy: 'jwt' }), AuthService],
 })
 export class AuthModule {}

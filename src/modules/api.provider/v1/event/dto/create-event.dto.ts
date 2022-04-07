@@ -7,7 +7,7 @@ import {
   Max,
   MaxLength,
 } from 'class-validator';
-import { EventType } from 'modules/api.tvapp/test/tv.test.controller';
+import { EventType } from 'modules/api.tvapp/v1/test/tv.test.controller';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import * as moment from 'moment';
 import { createEventHtml } from '../swagger/swagger.util';

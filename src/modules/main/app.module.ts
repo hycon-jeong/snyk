@@ -37,8 +37,8 @@ import { AllExceptionsFilter } from 'modules/common/HttpExeption';
 import { ProviderLogModule } from 'modules/providerLog';
 import { ConsumerLogModule } from 'modules/consumerLog';
 import { UserMappingLogModule } from 'modules/userMappingLog';
-import { TvAppApiModule } from 'modules/api.tvapp/tvapp.module';
-import { ProviderApiModule } from 'modules/api.provider/provider.module';
+import { TvAppApiModule } from 'modules/api.tvapp/v1/auth/tvapp.module';
+import { ProviderApiModule } from 'modules/api.provider/v1/provider.module';
 var serviceAccount = require('../../../firebase.json');
 
 config();
