@@ -10,7 +10,7 @@ export const SWAGGER_PROVIDER_API_ROOT = `api/provider/${PROVIDER_VERSION}/docs`
 export const SWAGGER_PROVIDER_API_NAME = 'MyCarService Provider API';
 export const SWAGGER_PROVIDER_API_DESCRIPTION = `
   <div>Mobile App Url</div>
-  <a href="http://52.78.213.140:3000/connect?userKey=34634&providerId=PVD3344718234">http://52.78.213.140:3000/connect?userKey={userKey}&providerId={providerId}</a>
+  <a href="http://52.78.163.143:3000/connect?userKey=34634&providerId=PVD3344718234">http://52.78.163.143:3000/connect?userKey={userKey}&providerId={providerId}</a>
   `;
 export const SWAGGER_PROVIDER_API_CURRENT_VERSION = PROVIDER_VERSION;
 
