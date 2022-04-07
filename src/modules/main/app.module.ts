@@ -39,6 +39,7 @@ import { ConsumerLogModule } from 'modules/consumerLog';
 import { UserMappingLogModule } from 'modules/userMappingLog';
 import { TvAppApiModule } from 'modules/api.tvapp/v1/auth/tvapp.module';
 import { ProviderApiModule } from 'modules/api.provider/v1/provider.module';
+import { TvAppV0ApiModule } from 'modules/api.tvapp/v0/auth/tvapp.module';
 var serviceAccount = require('../../../firebase.json');
 
 config();
@@ -122,6 +123,7 @@ config();
     UserMappingLogModule,
     TvAppApiModule,
     ProviderApiModule,
+    TvAppV0ApiModule,
   ],
   controllers: [AppController],
   providers: [
