@@ -19,27 +19,29 @@ export class StatisticsService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  async getTotalConsumer() {
-    const totalConsumer = this.consumerRepository.count();
-    return totalConsumer;
-  }
 
-  async getTotalProvider() {
-    const totalProvider = this.providerRepository.count();
+  async getTotalProvider({ providerId }) {
+    const params = {};
+    if (providerId) params['id'] = providerId;
+    const totalProvider = this.providerRepository.count(params);
     return totalProvider;
   }
 
-  async getTotalEvent() {
-    const totalEvent = this.eventRepository.count();
+  async getTotalEvent({ providerId }) {
+    const params = {};
+    if (providerId) params['providerId'] = providerId;
+    const totalEvent = this.eventRepository.count(params);
     return totalEvent;
   }
-  async getTotalMessage() {
+  async getTotalMessage({ providerId }) {
     const totalMessage = this.messageRepository.count();
     return totalMessage;
   }
 
-  async getTotalUser() {
-    return this.userRepository.count();
+  async getTotalUser({ providerId }) {
+    const params = {};
+    if (providerId) params['providerId'] = providerId;
+    return this.userRepository.count(params);
   }
 
   async getUserRank(startDate, today, endDate) {

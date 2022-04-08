@@ -35,25 +35,25 @@ export class StatisticsController {
   @Get('total')
   @ApiResponse({ status: 200, description: 'Fetch Profile Request Received' })
   @ApiResponse({ status: 400, description: 'Fetch Profile Request Failed' })
-  async getTotal(): Promise<TotalStatistics> {
-    const totalConsumer = this.statisticsService.getTotalConsumer();
-    const totalProvider = this.statisticsService.getTotalProvider();
-    const totalEvent = this.statisticsService.getTotalEvent();
-    const totalMessage = this.statisticsService.getTotalMessage();
-    const totalUser = this.statisticsService.getTotalUser();
+  async getTotal(@Query() query): Promise<TotalStatistics> {
+    const { providerId } = query;
+    const totalProvider = this.statisticsService.getTotalProvider({
+      providerId,
+    });
+    const totalEvent = this.statisticsService.getTotalEvent({ providerId });
+    const totalMessage = this.statisticsService.getTotalMessage({ providerId });
+    const totalUser = this.statisticsService.getTotalUser({ providerId });
     const allPromise = await Promise.all([
-      totalConsumer,
       totalProvider,
       totalEvent,
       totalMessage,
       totalUser,
     ]);
     return {
-      consumer: allPromise[0] || 0,
-      provider: allPromise[1] || 0,
-      event: allPromise[2] || 0,
-      message: allPromise[3] || 0,
-      user: allPromise[4] || 0,
+      provider: allPromise[0] || 0,
+      event: allPromise[1] || 0,
+      message: allPromise[2] || 0,
+      user: allPromise[3] || 0,
     };
   }
 

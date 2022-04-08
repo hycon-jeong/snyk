@@ -96,7 +96,7 @@ export class Event {
   category_id: number;
 
   @Column({ name: 'provider_id' })
-  provider_id: number;
+  providerId: number;
 
   @Column({ name: 'message_id', nullable: true })
   message_id: number;
