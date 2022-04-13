@@ -27,7 +27,10 @@ export class UsersService extends TypeOrmCrudService<User> {
   }
 
   async getByUserId(userId: string) {
-    return await this.userRepository.findOne({ userId: userId });
+    return await this.userRepository.findOne({
+      where: { userId: userId },
+      relations: ['userAuthorityMappings', 'userAuthorityMappings.authority'],
+    });
   }
 
   async updateUser(criteria, payload) {

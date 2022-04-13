@@ -40,6 +40,9 @@ import { UserMappingLogModule } from 'modules/userMappingLog';
 import { TvAppApiModule } from 'modules/api.tvapp/v1/auth/tvapp.module';
 import { ProviderApiModule } from 'modules/api.provider/v1/provider.module';
 import { TvAppV0ApiModule } from 'modules/api.tvapp/v0/auth/tvapp.module';
+import { AuthorityMappingModule } from 'modules/authority/map/authority-mapping.module';
+import { AuthorityModule } from 'modules/authority/authority.module';
+import { BlockerModule } from 'modules/blocker/blocker.module';
 var serviceAccount = require('../../../firebase.json');
 
 config();
@@ -121,6 +124,9 @@ config();
     CategoryModule,
     UserMappingModule,
     UserMappingLogModule,
+    AuthorityMappingModule,
+    AuthorityModule,
+    BlockerModule,
     TvAppApiModule,
     ProviderApiModule,
     TvAppV0ApiModule,

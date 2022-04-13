@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -28,11 +29,12 @@ export class TvDevice {
   @Column('varchar', { name: 'status', nullable: true })
   status: string | null;
 
-  @Column('datetime', {
-    name: 'reg_dt',
-    nullable: true,
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
   })
-  regDt: Date | null;
+  public createdAt: Date;
 
   @OneToMany(() => UserMapping, (userMapping) => userMapping.tvDevice)
   userMappings: UserMapping[];

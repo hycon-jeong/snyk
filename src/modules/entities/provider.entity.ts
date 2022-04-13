@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Event } from '.';
+import { Blocker } from './blocker.entity';
 import { ProviderLog } from './providerLog.entity';
+import { UserAuthorityMapping } from './userAuthorityMapping.entity';
 import { UserMapping } from './userMapping.entity';
 
 @Entity('provider', { schema: 'mycar' })
@@ -89,6 +91,15 @@ export class Provider {
 
   @OneToMany(() => UserMapping, (userMapping) => userMapping.provider)
   userMappings: UserMapping[];
+
+  @OneToMany(() => Blocker, (blocker) => blocker.provider)
+  blockers: Blocker[];
+
+  @OneToMany(
+    () => UserAuthorityMapping,
+    (userAuthorityMapping) => userAuthorityMapping.user,
+  )
+  userAuthorityMappings: UserAuthorityMapping[];
 
   @OneToMany(() => Event, (event) => event.provider)
   events: Event[];

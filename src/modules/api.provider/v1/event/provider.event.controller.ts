@@ -57,6 +57,7 @@ import {
 import { ILamdaReponse } from './type/providerEvent.interface';
 import { EventType } from 'modules/api.tvapp/v1/test/tv.test.controller';
 import { JwtAuthGuard } from 'modules/auth';
+import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 
 @ApiBearerAuth()
 @Crud({
@@ -215,6 +216,11 @@ export class CrudEventController implements CrudController<Event> {
       messageContent: dto.messageContent,
       // message: messageData,
       subMessageContent: subMessage,
+      messageTitle: dto.messageTitle,
+      eventType: dto.eventType,
+      redirectUrl: dto.redirectUrl,
+      callbackUrl: dto.callbackUrl,
+      languageCode: dto.languageCode,
     } as Event);
     const { messageContent, issuedAt, imageUrl, status } = event;
     return {

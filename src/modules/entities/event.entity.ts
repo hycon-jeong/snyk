@@ -51,6 +51,26 @@ export class Event {
   imageUrl: string | null;
 
   @ApiProperty()
+  @Column('varchar', { name: 'language_code', nullable: true, length: 16 })
+  languageCode: string | null;
+
+  @ApiProperty()
+  @Column('varchar', { name: 'callback_url', nullable: true, length: 500 })
+  callbackUrl: string | null;
+
+  @ApiProperty()
+  @Column('varchar', { name: 'redirect_url', nullable: true, length: 500 })
+  redirectUrl: string | null;
+
+  @ApiProperty()
+  @Column('varchar', { name: 'message_title', nullable: true, length: 500 })
+  messageTitle: string | null;
+
+  @ApiProperty()
+  @Column('varchar', { name: 'event_type', nullable: true, length: 20 })
+  eventType: string | null;
+
+  @ApiProperty()
   @Column('datetime', { name: 'issued_at', nullable: true })
   issuedAt: Date | null;
 

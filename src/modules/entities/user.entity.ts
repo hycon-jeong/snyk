@@ -12,6 +12,7 @@ import { UserLog } from './userLog.entity';
 import { PasswordTransformer } from './password.transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { Roles } from 'modules/common/constants/roles';
+import { UserAuthorityMapping } from './userAuthorityMapping.entity';
 
 @Entity('users', { schema: 'mycar' })
 export class User {
@@ -63,6 +64,12 @@ export class User {
 
   @OneToMany(() => UserMapping, (userMapping) => userMapping.user)
   userMappings: UserMapping[];
+
+  @OneToMany(
+    () => UserAuthorityMapping,
+    (userAuthorityMapping) => userAuthorityMapping.user,
+  )
+  userAuthorityMappings: UserAuthorityMapping[];
 
   @OneToMany(() => UserLog, (userLog) => userLog.user)
   userLogs: UserLog[];

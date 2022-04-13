@@ -24,6 +24,7 @@ import { UsersService } from './../user';
 import { MoRegisterPayload } from './moRegister.payload';
 import CrudsProviderService from 'modules/provider/provider.service';
 import { TvDeviceService } from 'modules/api.tvapp/v1/device/tv.device.service';
+import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 
 @Controller('api/auth')
 @ApiTags('authentication')
@@ -37,6 +38,7 @@ export class AuthController {
   ) {}
 
   @Post('login')
+  @UseGuards(IpBlockerGuard)
   @ApiResponse({ status: 201, description: 'Successful Login' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })

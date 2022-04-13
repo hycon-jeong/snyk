@@ -42,7 +42,7 @@ import { UsersService } from './user.service';
 @Controller('api/user')
 @ApiTags('user')
 @UseGuards(AuthGuard(), RolesGuard)
-@RolesAllowed(Roles.ADMIN)
+@RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
 export class CrudUserController implements CrudController<User> {
   constructor(public readonly service: UsersService) {}
 }
