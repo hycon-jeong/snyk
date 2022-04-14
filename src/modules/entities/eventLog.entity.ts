@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -20,19 +21,14 @@ export class EventLog {
   id: number;
 
   @ApiProperty()
-  @IsOptional({ groups: [UPDATE] })
-  @IsNotEmpty({ groups: [CREATE] })
-  @IsString({ groups: [CREATE, UPDATE] })
-  @MaxLength(255, { groups: [CREATE, UPDATE] })
-  @Column('varchar', { name: 'event_type', nullable: true, length: 255 })
-  eventType: string | null;
-
-  @ApiProperty()
   @Column('varchar', { name: 'status', nullable: true, length: 45 })
   status: string | null;
 
-  @ApiProperty()
-  @Column('datetime', { name: 'date_at', nullable: true })
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'date_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   dateAt: Date | null;
 
   @ApiProperty()
@@ -40,20 +36,12 @@ export class EventLog {
   userId: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'category_id', nullable: true, length: 255 })
-  categoryId: string | null;
+  @Column({ name: 'action_message', nullable: true, length: 255 })
+  actionMessage: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'consumer_code', nullable: true, length: 255 })
-  consumerCode: string | null;
-
-  @ApiProperty()
-  @Column('varchar', { name: 'provider_code', nullable: true, length: 255 })
-  providerCode: string | null;
-
-  @ApiProperty()
-  @Column('json', { name: 'message', nullable: true })
-  message: object | null;
+  @Column({ name: 'action_data', nullable: true, length: 2000 })
+  actionData: string | null;
 
   @ApiProperty()
   @Column('datetime', { name: 'transmission_at', nullable: true })

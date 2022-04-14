@@ -32,6 +32,14 @@ import { CrudAuthorityMappingService } from './authority-mapping.service';
   routes: {
     only: ['getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
   },
+  query: {
+    join: {
+      provider: {
+        eager: true,
+        alias: 'provider',
+      },
+    },
+  },
 })
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
 @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)

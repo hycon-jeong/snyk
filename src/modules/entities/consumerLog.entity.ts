@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -15,6 +16,14 @@ export class ConsumerLog {
   id: number;
 
   @ApiProperty()
+  @Column({ name: 'consumer_id' })
+  consumerId: number;
+
+  @ApiProperty()
+  @Column({ name: 'message', nullable: true, length: 2000 })
+  message: string | null;
+
+  @ApiProperty()
   @Column('varchar', { name: 'consumer_code', length: 255 })
   consumerCode: string;
 
@@ -22,11 +31,10 @@ export class ConsumerLog {
   @Column('varchar', { name: 'status', nullable: true, length: 255 })
   status: string | null;
 
-  @ApiProperty()
-  @Column('datetime', {
+  @CreateDateColumn({
+    type: 'timestamp',
     name: 'date_at',
-    nullable: true,
-    default: () => 'CURRENT_TIMESTAMP',
+    default: () => 'CURRENT_TIMESTAMP(6)',
   })
   dateAt: Date | null;
 
@@ -53,7 +61,4 @@ export class ConsumerLog {
   @ManyToOne(() => Consumer, (consumer) => consumer.consumerLogs)
   @JoinColumn({ name: 'consumer_id' })
   public consumer: Consumer;
-  @ApiProperty()
-  @Column({ name: 'consumer_id' })
-  consumerId: number;
 }

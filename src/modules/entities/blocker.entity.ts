@@ -19,7 +19,7 @@ export class Blocker {
   id: number;
 
   @ApiProperty()
-  @Column({ name: 'provider_id' })
+  @Column({ name: 'provider_id', nullable: true })
   providerId: number;
 
   @ApiProperty()

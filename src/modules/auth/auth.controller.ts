@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Inject,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -25,6 +26,7 @@ import { MoRegisterPayload } from './moRegister.payload';
 import CrudsProviderService from 'modules/provider/provider.service';
 import { TvDeviceService } from 'modules/api.tvapp/v1/device/tv.device.service';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
+import { LogService } from 'modules/common/services/LogService';
 
 @Controller('api/auth')
 @ApiTags('authentication')
@@ -35,6 +37,7 @@ export class AuthController {
     private readonly tvDeviceService: TvDeviceService,
     private readonly tvAuthService: TvAuthService,
     private readonly providerService: CrudsProviderService,
+    private readonly logService: LogService,
   ) {}
 
   @Post('login')
@@ -44,7 +47,12 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async login(@Body() payload: LoginPayload): Promise<any> {
     const user = await this.authService.validateUser(payload);
-
+    await this.logService.createUserLog({
+      userId: user.id,
+      providerId: user.providerId,
+      actionMessage: 'Login',
+      actionData: `${user.name} login`,
+    });
     return await this.authService.createToken(user);
   }
 
@@ -69,7 +77,30 @@ export class AuthController {
     }
 
     const user = await this.userService.create(payload);
+    await this.logService.createUserLog({
+      userId: user.id,
+      providerId: user.providerId,
+      actionMessage: 'Sign Up',
+      actionData: `${user.name} sign up`,
+    });
     return await this.authService.createToken(user);
+  }
+
+  @Get('logout')
+  @UseGuards(IpBlockerGuard, AuthGuard())
+  @ApiResponse({ status: 201, description: 'Successful Login' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async logout(@Req() req): Promise<any> {
+    const { id } = req.user;
+    const user = await this.userService.findOne({ id });
+    await this.logService.createUserLog({
+      userId: user.id,
+      providerId: user.providerId,
+      actionMessage: 'Logout',
+      actionData: `${user.name} logout`,
+    });
+    return {};
   }
 
   @Post('register/mo')

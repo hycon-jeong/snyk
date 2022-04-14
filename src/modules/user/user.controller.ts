@@ -30,6 +30,10 @@ import { UsersService } from './user.service';
         alias: 'consumer_query',
         eager: true,
       },
+      provider: {
+        alias: 'provider',
+        eager: true,
+      },
     },
     // filter: {
     //   'userMapping_query.mapping_status': {

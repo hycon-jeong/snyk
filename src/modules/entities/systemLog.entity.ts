@@ -8,24 +8,25 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Provider } from '.';
-import { User } from './user.entity';
+import { Provider, User } from '.';
+import { Consumer } from './consumer.entity';
 
-@Entity('user_log', { schema: 'mycar' })
-export class UserLog {
+@Entity('system_log', { schema: 'mycar' })
+export class SystemLog {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
   @ApiProperty()
-  @Column({ name: 'user_id' })
-  userId: number;
+  @Column({ name: 'consumer_id', nullable: true })
+  consumerId: number;
 
   @ApiProperty()
   @Column({ name: 'provider_id', nullable: true })
   providerId: number;
 
-  @Column('varchar', { name: 'status', nullable: true, length: 255 })
-  status: string | null;
+  @ApiProperty()
+  @Column({ name: 'user_id', nullable: true })
+  userId: number;
 
   @ApiProperty()
   @Column({ name: 'action_message', nullable: true, length: 255 })
@@ -42,11 +43,15 @@ export class UserLog {
   })
   dateAt: Date | null;
 
-  @ManyToOne(() => User, (user) => user.userLogs)
-  @JoinColumn({ name: 'user_id' })
-  public user: User;
+  @ManyToOne(() => Consumer, (consumer) => consumer.consumerLogs)
+  @JoinColumn({ name: 'consumer_id' })
+  public consumer: Consumer;
 
   @ManyToOne(() => Provider, (provider) => provider.providerLogs)
   @JoinColumn({ name: 'provider_id' })
   public provider: Provider;
+
+  @ManyToOne(() => User, (user) => user.userLogs)
+  @JoinColumn({ name: 'user_id' })
+  public user: User;
 }

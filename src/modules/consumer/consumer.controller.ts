@@ -9,13 +9,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   Crud,
+  CrudAuth,
   CrudController,
   CrudRequest,
   Override,
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
-import { Consumer } from 'modules/entities';
+import { LogService } from 'modules/common/services/LogService';
+import { Consumer, User } from 'modules/entities';
 import { Not } from 'typeorm';
 import CrudsConsumerService from './consumer.service';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
@@ -36,21 +38,35 @@ import { UpdateConsumerDto } from './dto/update-consumer.dto';
     ],
   },
 })
-// @UseGuards(AuthGuard())
 @Controller('api/consumer')
 @ApiTags('consumer')
+@CrudAuth({
+  property: 'user',
+  persist: (user: User) => {
+    return {
+      user: user,
+    };
+  },
+})
 export class CrudConsumerController implements CrudController<Consumer> {
-  constructor(public readonly service: CrudsConsumerService) {}
+  constructor(
+    public readonly service: CrudsConsumerService,
+    private readonly logService: LogService,
+  ) {}
 
   get base(): CrudController<Consumer> {
     return this;
   }
 
   @Override()
+  @UseGuards(AuthGuard())
   async createOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: CreateConsumerDto,
   ) {
+    const {
+      authPersist: { user },
+    } = req.parsed;
     const consumer = await this.service.findOne({
       consumerCode: dto.consumerCode,
     });
@@ -58,26 +74,41 @@ export class CrudConsumerController implements CrudController<Consumer> {
     if (consumer) {
       throw new BadRequestException('consumer code가 중복되었습니다.');
     }
+    const newConsumer = await this.base.createOneBase(req, dto as Consumer);
+    await this.logService.createConsumerLog({
+      consumerId: newConsumer.id,
+      message: `[생성] 유저 : ${user.name} , '${newConsumer.consumerName}' 매체 생성`,
+    });
 
-    return this.base.createOneBase(req, dto as Consumer);
+    return newConsumer;
   }
 
   @Override()
+  @UseGuards(AuthGuard())
   async updateOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: UpdateConsumerDto,
     @Param('id') id,
   ) {
-    const provider = await this.service.findOne({
+    const {
+      authPersist: { user },
+    } = req.parsed;
+    const consumer = await this.service.findOne({
       where: {
         consumerCode: dto.consumerCode,
         id: Not(id),
       },
     });
 
-    if (provider) {
-      throw new BadRequestException('provider code가 중복되었습니다.');
+    if (consumer) {
+      throw new BadRequestException('consumer code가 중복되었습니다.');
     }
+
+    await this.logService.createConsumerLog({
+      consumerId: id,
+      message: `[수정] 유저 : ${user.name} , '${dto.consumerName}' 매체 수정`,
+    });
+
     return this.base.updateOneBase(req, dto as Consumer);
   }
 }

@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ConsumerLog } from './consumerLog.entity';
+import { SystemLog } from './systemLog.entity';
 import { UserMapping } from './userMapping.entity';
 
 @Entity('consumer', { schema: 'mycar' })
@@ -88,6 +89,9 @@ export class Consumer {
 
   @OneToMany(() => ConsumerLog, (consumerLog) => consumerLog.consumer)
   consumerLogs: ConsumerLog[];
+
+  @OneToMany(() => SystemLog, (systemLog) => systemLog.consumer)
+  systemLogs: SystemLog[];
 
   @OneToMany(() => UserMapping, (userMapping) => userMapping.consumer)
   userMappings: UserMapping[];

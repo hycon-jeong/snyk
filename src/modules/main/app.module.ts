@@ -2,7 +2,6 @@ import { Global, Module, Scope } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { ConsumerModule } from 'modules/consumer/consumer.module';
 import { EventModule } from 'modules/event';
-import { EventLogModule } from 'modules/eventLog';
 import { HealthModule } from 'modules/health/health.module';
 import { MessageModule } from 'modules/message/message.module';
 import { ProviderModule } from 'modules/provider/provider.module';
@@ -43,6 +42,9 @@ import { TvAppV0ApiModule } from 'modules/api.tvapp/v0/auth/tvapp.module';
 import { AuthorityMappingModule } from 'modules/authority/map/authority-mapping.module';
 import { AuthorityModule } from 'modules/authority/authority.module';
 import { BlockerModule } from 'modules/blocker/blocker.module';
+import { EventLogModule } from 'modules/log/event';
+import { UserLogModule } from 'modules/log/user/userLog.module';
+import { SystemLogModule } from 'modules/log/system/systemLog.module';
 var serviceAccount = require('../../../firebase.json');
 
 config();
@@ -125,6 +127,8 @@ config();
     UserMappingModule,
     UserMappingLogModule,
     AuthorityMappingModule,
+    UserLogModule,
+    SystemLogModule,
     AuthorityModule,
     BlockerModule,
     TvAppApiModule,
