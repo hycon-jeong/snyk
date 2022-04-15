@@ -3,6 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -14,6 +16,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Roles } from 'modules/common/constants/roles';
 import { UserAuthorityMapping } from './userAuthorityMapping.entity';
 import { SystemLog } from './systemLog.entity';
+import { Provider } from '.';
 
 @Entity('users', { schema: 'mycar' })
 export class User {
@@ -62,6 +65,10 @@ export class User {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   public updated_at: Date;
+
+  @ManyToOne(() => Provider, (provider) => provider.user)
+  @JoinColumn({ name: 'provider_id' })
+  public provider: Provider;
 
   @OneToMany(() => UserMapping, (userMapping) => userMapping.user)
   userMappings: UserMapping[];

@@ -1,28 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConsumerLog, EventLog, ProviderLog, UserLog } from 'modules/entities';
+import { SystemLog } from 'modules/entities/systemLog.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class LogService {
   constructor(
-    @InjectRepository(ConsumerLog)
-    private consumerLogRepository: Repository<ConsumerLog>,
-    @InjectRepository(ProviderLog)
-    private providerLogRepository: Repository<ProviderLog>,
+    @InjectRepository(SystemLog)
+    private systemLogRepository: Repository<SystemLog>,
     @InjectRepository(EventLog)
     private eventLogRepository: Repository<EventLog>,
     @InjectRepository(UserLog)
     private userLogRepository: Repository<UserLog>,
   ) {}
 
-  async createConsumerLog(log: Partial<ConsumerLog>) {
-    const newLog = await this.consumerLogRepository.save(log);
-    return newLog;
-  }
-
-  async createProviderLog(log: Partial<ProviderLog>) {
-    const newLog = await this.providerLogRepository.save(log);
+  async createSystemLog(log: Partial<SystemLog>) {
+    const newLog = await this.systemLogRepository.save(log);
     return newLog;
   }
   async createEventrLog(log: Partial<EventLog>) {

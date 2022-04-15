@@ -16,6 +16,10 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
+import { RolesGuard } from 'modules/auth/roles.guard';
+import { Roles } from 'modules/common/constants/roles';
+import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
+import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { LogService } from 'modules/common/services/LogService';
 import { Consumer, User } from 'modules/entities';
 import { Not } from 'typeorm';
@@ -59,7 +63,8 @@ export class CrudConsumerController implements CrudController<Consumer> {
   }
 
   @Override()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
+  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
   async createOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: CreateConsumerDto,
@@ -75,16 +80,19 @@ export class CrudConsumerController implements CrudController<Consumer> {
       throw new BadRequestException('consumer code가 중복되었습니다.');
     }
     const newConsumer = await this.base.createOneBase(req, dto as Consumer);
-    await this.logService.createConsumerLog({
+    await this.logService.createSystemLog({
       consumerId: newConsumer.id,
-      message: `[생성] 유저 : ${user.name} , '${newConsumer.consumerName}' 매체 생성`,
+      actionMessage: `[생성] 유저 : ${user.name} , '${newConsumer.consumerName}' 매체 생성`,
+      actionData: 'Consumer',
+      userId: user.id,
     });
 
     return newConsumer;
   }
 
   @Override()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
+  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
   async updateOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: UpdateConsumerDto,
@@ -104,9 +112,11 @@ export class CrudConsumerController implements CrudController<Consumer> {
       throw new BadRequestException('consumer code가 중복되었습니다.');
     }
 
-    await this.logService.createConsumerLog({
+    await this.logService.createSystemLog({
       consumerId: id,
-      message: `[수정] 유저 : ${user.name} , '${dto.consumerName}' 매체 수정`,
+      actionMessage: `[수정] 유저 : ${user.name} , '${dto.consumerName}' 매체 수정`,
+      actionData: 'Consumer',
+      userId: user.id,
     });
 
     return this.base.updateOneBase(req, dto as Consumer);

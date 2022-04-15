@@ -58,6 +58,7 @@ import { ILamdaReponse } from './type/providerEvent.interface';
 import { EventType } from 'modules/api.tvapp/v1/test/tv.test.controller';
 import { JwtAuthGuard } from 'modules/auth';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
+import { LogService } from 'modules/common/services/LogService';
 
 @ApiBearerAuth()
 @Crud({
@@ -89,6 +90,7 @@ export class CrudEventController implements CrudController<Event> {
     public readonly providerService: CrudsProviderService,
     public readonly categoryService: CategoryService,
     public readonly userMappingService: UserMappingService,
+    public readonly logService: LogService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
   get base(): CrudController<Event> {
@@ -223,6 +225,17 @@ export class CrudEventController implements CrudController<Event> {
       languageCode: dto.languageCode,
     } as Event);
     const { messageContent, issuedAt, imageUrl, status } = event;
+    try {
+      await this.logService.createEventrLog({
+        actionMessage: `[송신] 유저 : ${user.name} , '${event.messageTitle}' 메세지 송신`,
+        actionData: 'Event',
+        eventId: event.id,
+        userId: user.id,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
     return {
       statusCode: 201,
       isSuccess: true,

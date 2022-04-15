@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Event, UserLog } from '.';
+import { Event, User, UserLog } from '.';
 import { Blocker } from './blocker.entity';
 import { ProviderLog } from './providerLog.entity';
 import { SystemLog } from './systemLog.entity';
@@ -98,6 +98,9 @@ export class Provider {
 
   @OneToMany(() => Blocker, (blocker) => blocker.provider)
   blockers: Blocker[];
+
+  @OneToMany(() => User, (user) => user.provider)
+  user: User[];
 
   @OneToMany(
     () => UserAuthorityMapping,

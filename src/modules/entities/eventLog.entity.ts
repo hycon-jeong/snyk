@@ -30,10 +30,11 @@ export class EventLog {
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   dateAt: Date | null;
+  @Column({ name: 'user_id', nullable: true })
+  userId: number;
 
-  @ApiProperty()
-  @Column('varchar', { name: 'user_id', nullable: true, length: 255 })
-  userId: string | null;
+  @Column({ name: 'event_id', nullable: true })
+  eventId: number;
 
   @ApiProperty()
   @Column({ name: 'action_message', nullable: true, length: 255 })
