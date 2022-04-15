@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { EventLog } from '.';
 import { ConsumerLog } from './consumerLog.entity';
 import { SystemLog } from './systemLog.entity';
 import { UserMapping } from './userMapping.entity';
@@ -95,4 +96,7 @@ export class Consumer {
 
   @OneToMany(() => UserMapping, (userMapping) => userMapping.consumer)
   userMappings: UserMapping[];
+
+  @OneToMany(() => EventLog, (eventLog) => eventLog.consumer)
+  eventLogs: EventLog[];
 }

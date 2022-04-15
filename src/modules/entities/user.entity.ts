@@ -66,9 +66,9 @@ export class User {
   })
   public updated_at: Date;
 
-  @ManyToOne(() => Provider, (provider) => provider.user)
+  @ManyToOne(() => Provider, (provider) => provider.users)
   @JoinColumn({ name: 'provider_id' })
-  public provider: Provider;
+  provider: Provider;
 
   @OneToMany(() => UserMapping, (userMapping) => userMapping.user)
   userMappings: UserMapping[];

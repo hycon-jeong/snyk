@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Event, User, UserLog } from '.';
+import { Event, EventLog, User, UserLog } from '.';
 import { Blocker } from './blocker.entity';
 import { ProviderLog } from './providerLog.entity';
 import { SystemLog } from './systemLog.entity';
@@ -84,8 +84,8 @@ export class Provider {
   providerServerType: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'status', length: 255 })
-  status: string | null;
+  @Column('varchar', { name: 'status', length: 255, default: 'ACTIVE' })
+  status: string;
 
   @OneToMany(() => ProviderLog, (providerLog) => providerLog.provider)
   providerLogs: ProviderLog[];
@@ -100,7 +100,7 @@ export class Provider {
   blockers: Blocker[];
 
   @OneToMany(() => User, (user) => user.provider)
-  user: User[];
+  users: User[];
 
   @OneToMany(
     () => UserAuthorityMapping,
@@ -110,4 +110,7 @@ export class Provider {
 
   @OneToMany(() => Event, (event) => event.provider)
   events: Event[];
+
+  @OneToMany(() => EventLog, (eventLog) => eventLog.provider)
+  eventLogs: EventLog[];
 }

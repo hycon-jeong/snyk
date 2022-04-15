@@ -227,10 +227,11 @@ export class CrudEventController implements CrudController<Event> {
     const { messageContent, issuedAt, imageUrl, status } = event;
     try {
       await this.logService.createEventrLog({
-        actionMessage: `[송신] 유저 : ${user.name} , '${event.messageTitle}' 메세지 송신`,
+        actionMessage: `[생성] 유저 : ${user.userKey} , '${event.messageTitle}' 이벤트 생성`,
         actionData: 'Event',
         eventId: event.id,
         userId: user.id,
+        providerId: providerData.id,
       });
     } catch (err) {
       console.log(err);

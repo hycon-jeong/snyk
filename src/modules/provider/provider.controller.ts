@@ -94,7 +94,7 @@ export class CrudProviderController implements CrudController<Provider> {
     if (provider) {
       throw new BadRequestException('provider code가 중복되었습니다.');
     }
-
+    console.log(dto);
     const newProvider = await this.base.createOneBase(
       req,
       dto as unknown as Provider,
