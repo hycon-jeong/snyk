@@ -26,8 +26,8 @@ import { CrudsUserLogService } from './userLog.service';
   },
   query: {
     join: {
-      consumer: {
-        alias: 'consumer_query',
+      user: {
+        alias: 'user',
         eager: true,
       },
     },
