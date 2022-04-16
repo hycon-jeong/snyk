@@ -17,11 +17,16 @@ import { Roles } from 'modules/common/constants/roles';
 import { UserAuthorityMapping } from './userAuthorityMapping.entity';
 import { SystemLog } from './systemLog.entity';
 import { EventLog, Provider } from '.';
+import { Role } from './role.entity';
 
 @Entity('users', { schema: 'mycar' })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column('int', { name: 'role_id', nullable: true })
+  roleId: number;
+
   @Column('varchar', { name: 'user_id', length: 255 })
   userId: string;
 
@@ -40,14 +45,14 @@ export class User {
   @Column('varchar', { name: 'name', nullable: true, length: 255 })
   name: string | null;
 
-  @ApiProperty()
-  @Column({
-    type: 'enum',
-    name: 'role',
-    enum: Roles,
-    default: Roles.USER,
-  })
-  role: Roles;
+  // @ApiProperty()
+  // @Column({
+  //   type: 'enum',
+  //   name: 'role',
+  //   enum: Roles,
+  //   default: Roles.USER,
+  // })
+  // role: Roles;
 
   @ApiProperty()
   @Column('varchar', { name: 'status', nullable: true, length: 255 })
@@ -65,6 +70,10 @@ export class User {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   public updated_at: Date;
+
+  @ManyToOne(() => Role, (role) => role.users)
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
 
   @ManyToOne(() => Provider, (provider) => provider.users)
   @JoinColumn({ name: 'provider_id' })

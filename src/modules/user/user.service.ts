@@ -29,7 +29,11 @@ export class UsersService extends TypeOrmCrudService<User> {
   async getByUserId(userId: string) {
     return await this.userRepository.findOne({
       where: { userId: userId },
-      relations: ['userAuthorityMappings', 'userAuthorityMappings.authority'],
+      relations: [
+        'userAuthorityMappings',
+        'userAuthorityMappings.authority',
+        'role',
+      ],
     });
   }
 
@@ -56,7 +60,7 @@ export class UsersService extends TypeOrmCrudService<User> {
   async moCreate(
     payload: Partial<UserFillableFields> & {
       // tvCertCode: string;
-      role: Roles;
+      roleId: number;
       status: string;
       providerId: number;
       userKey: string;

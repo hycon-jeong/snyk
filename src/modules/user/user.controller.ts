@@ -42,6 +42,10 @@ import { UsersService } from './user.service';
         alias: 'authority',
         eager: true,
       },
+      role: {
+        alias: 'role',
+        eager: true,
+      },
     },
     // filter: {
     //   'userMapping_query.mapping_status': {

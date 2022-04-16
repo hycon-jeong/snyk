@@ -9,12 +9,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Event, EventLog, User } from '.';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserAuthorityMapping } from './userAuthorityMapping.entity';
 import { RoleAuthorityMapping } from './roleAuthorityMapping.entity';
 
-@Entity('authority', { schema: 'mycar' })
-export class Authority {
+@Entity('role', { schema: 'mycar' })
+export class Role {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
@@ -45,9 +45,9 @@ export class Authority {
   })
   public updatedAt: Date;
 
-  @OneToMany(() => UserAuthorityMapping, (map) => map.authority)
-  userAuthorityMappings: UserAuthorityMapping[];
-
-  @OneToMany(() => RoleAuthorityMapping, (map) => map.authority)
+  @OneToMany(() => RoleAuthorityMapping, (map) => map.role)
   roleAuthorityMappings: RoleAuthorityMapping[];
+
+  @OneToMany(() => User, (user) => user.role)
+  users: User[];
 }

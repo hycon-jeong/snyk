@@ -24,7 +24,7 @@ export class RolesGuard implements CanActivate {
 
     let isAllowed = false;
     roles.map((role) => {
-      if (context.switchToHttp().getRequest().user.role === role) {
+      if (context.switchToHttp().getRequest().user.role?.code === role) {
         isAllowed = true;
       }
     });
