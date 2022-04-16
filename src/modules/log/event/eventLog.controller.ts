@@ -23,6 +23,14 @@ import CrudsEventLogService from './eventLog.service';
       'deleteOneBase',
     ],
   },
+  query: {
+    join: {
+      user: {
+        alias: 'user',
+        eager: true,
+      },
+    },
+  },
 })
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
 @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)

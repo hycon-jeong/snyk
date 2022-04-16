@@ -16,7 +16,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Roles } from 'modules/common/constants/roles';
 import { UserAuthorityMapping } from './userAuthorityMapping.entity';
 import { SystemLog } from './systemLog.entity';
-import { Provider } from '.';
+import { EventLog, Provider } from '.';
 
 @Entity('users', { schema: 'mycar' })
 export class User {
@@ -84,6 +84,9 @@ export class User {
 
   @OneToMany(() => SystemLog, (systemLog) => systemLog.user)
   systemLogs: SystemLog[];
+
+  @OneToMany(() => EventLog, (eventLog) => eventLog.user)
+  eventLogs: EventLog[];
 
   @Column({
     name: 'password',

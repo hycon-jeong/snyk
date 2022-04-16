@@ -39,6 +39,14 @@ import { CrudBlockerService } from './blocker.service';
       'deleteOneBase',
     ],
   },
+  query: {
+    join: {
+      provider: {
+        alias: 'provider',
+        eager: true,
+      },
+    },
+  },
 })
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
 @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)

@@ -50,8 +50,8 @@ export class AuthController {
     await this.logService.createUserLog({
       userId: user.id,
       providerId: user.providerId,
-      actionMessage: 'Login',
-      actionData: `${user.name} login`,
+      actionData: 'Login',
+      actionMessage: `${user.name} login`,
     });
     return await this.authService.createToken(user);
   }
@@ -80,8 +80,8 @@ export class AuthController {
     await this.logService.createUserLog({
       userId: user.id,
       providerId: user.providerId,
-      actionMessage: 'Sign Up',
-      actionData: `${user.name} sign up`,
+      actionData: 'Sign Up',
+      actionMessage: `${user.name} sign up`,
     });
     return await this.authService.createToken(user);
   }
@@ -97,8 +97,8 @@ export class AuthController {
     await this.logService.createUserLog({
       userId: user.id,
       providerId: user.providerId,
-      actionMessage: 'Logout',
-      actionData: `${user.name} logout`,
+      actionData: 'Logout',
+      actionMessage: `${user.name} logout`,
     });
     return {};
   }

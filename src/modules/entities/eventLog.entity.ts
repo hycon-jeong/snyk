@@ -11,7 +11,7 @@ import { Event } from './event.entity';
 import { CrudValidationGroups } from '@nestjsx/crud';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Category, Consumer, Provider } from '.';
+import { Category, Consumer, Provider, User } from '.';
 
 const { CREATE, UPDATE } = CrudValidationGroups;
 
@@ -69,4 +69,8 @@ export class EventLog {
   @ManyToOne(() => Consumer, (consumer) => consumer.eventLogs, {})
   @JoinColumn({ name: 'consumer_id' })
   consumer: Consumer;
+
+  @ManyToOne(() => User, (user) => user.eventLogs, {})
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

@@ -27,8 +27,8 @@ import { CrudSystemLogService } from './systemLog.service';
   },
   query: {
     join: {
-      consumer: {
-        alias: 'consumer_query',
+      user: {
+        alias: 'user',
         eager: true,
       },
     },

@@ -52,18 +52,16 @@ import { UserMappingService } from './userMapping.service';
     join: {
       user: {
         eager: true,
-        alias: 'user_mapping_query',
+        alias: 'user',
         exclude: ['password'],
       },
       provider: {
         eager: true,
-        alias: 'user_mapping_provider_query',
-        exclude: ['password'],
+        alias: 'provider',
       },
       consumer: {
         eager: true,
-        alias: 'user_mapping_consumer_query',
-        exclude: ['password'],
+        alias: 'consumer',
       },
     },
   },
