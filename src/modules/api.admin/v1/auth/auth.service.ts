@@ -1,8 +1,11 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from 'modules/config';
 import { User } from 'modules/entities/user.entity';
+import { UserAuthorityMapping } from 'modules/entities/userAuthorityMapping.entity';
 import { UsersService } from 'modules/user';
+import { Repository } from 'typeorm';
 import { Hash } from 'utils/Hash';
 import { LoginPayload } from './login.payload';
 
@@ -13,6 +16,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly userService: UsersService,
+    @InjectRepository(UserAuthorityMapping)
+    private readonly userAuthorityMappingService: Repository<UserAuthorityMapping>,
   ) {}
 
   async createToken(user: User) {
@@ -32,5 +37,9 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials!');
     }
     return user;
+  }
+
+  async createAuthorityMapping(payload) {
+    return await this.userAuthorityMappingService.save(payload);
   }
 }

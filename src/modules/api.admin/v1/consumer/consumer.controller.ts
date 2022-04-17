@@ -85,6 +85,9 @@ export class CrudConsumerController implements CrudController<Consumer> {
       actionMessage: `[생성] 유저 : ${user.name} , '${newConsumer.consumerName}' 매체 생성`,
       actionData: 'Consumer',
       userId: user.id,
+      rawData: JSON.stringify({
+        create: newConsumer,
+      }),
     });
 
     return newConsumer;
@@ -109,12 +112,23 @@ export class CrudConsumerController implements CrudController<Consumer> {
     if (consumer) {
       throw new BadRequestException('consumer code가 중복되었습니다.');
     }
+    const _consumer = await this.service.findOne({
+      where: {
+        id: id,
+      },
+    });
 
     await this.logService.createSystemLog({
       consumerId: id,
       actionMessage: `[수정] 유저 : ${user.name} , '${dto.consumerName}' 매체 수정`,
       actionData: 'Consumer',
       userId: user.id,
+      rawData: JSON.stringify({
+        update: {
+          before: _consumer,
+          after: dto,
+        },
+      }),
     });
 
     return this.base.updateOneBase(req, dto as Consumer);

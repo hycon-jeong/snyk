@@ -23,6 +23,9 @@ import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { LogService } from 'modules/common/services/LogService';
 import { RoleService } from './role.service';
 import { UsersService } from 'modules/user';
+import { RolesGuard } from './roles.guard';
+import { Roles } from 'modules/common/constants/roles';
+import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
 
 @Controller('api/admin/v1/auth')
 @ApiTags('authentication')
@@ -46,22 +49,19 @@ export class AuthController {
       userId: user.id,
       providerId: user.providerId,
       actionData: 'Login',
-      actionMessage: `${user.name} login`,
+      actionMessage: `'${user.name}' login`,
     });
     return await this.authService.createToken(user);
   }
 
   @Post('register')
+  @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
+  @RolesAllowed(Roles.ADMIN)
   @ApiResponse({ status: 201, description: 'Successful Registration' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async register(@Body() payload: RegisterPayload): Promise<any> {
-    const { role } = payload;
-    const roleData = await this.roleService.findOne({
-      code: role,
-      status: 'ACTIVE',
-    });
-
+  async register(@Body() payload: RegisterPayload, @Req() req): Promise<any> {
+    const { user: userLogined } = req;
     if (payload.email) {
       const checkEmailUser = await this.userService.findOne({
         email: payload.email,
@@ -79,13 +79,22 @@ export class AuthController {
 
     const user = await this.userService.create({
       ...payload,
-      roleId: roleData.id,
     });
+    const promArr = payload.authorities.map(async (authorityId) => {
+      const dto = {
+        authorityId,
+        userId: user.id,
+        providerId: user.providerId,
+      };
+      return this.authService.createAuthorityMapping(dto);
+    });
+    await Promise.all(promArr);
+
     await this.logService.createUserLog({
-      userId: user.id,
-      providerId: user.providerId,
+      userId: userLogined.id,
+      providerId: userLogined.providerId,
       actionData: 'Sign Up',
-      actionMessage: `${user.name} sign up`,
+      actionMessage: `'${user.name}' sign up by '${userLogined.name}'`,
     });
     return await this.authService.createToken(user);
   }
@@ -102,7 +111,7 @@ export class AuthController {
       userId: user.id,
       providerId: user.providerId,
       actionData: 'Logout',
-      actionMessage: `${user.name} logout`,
+      actionMessage: `'${user.name}' logout`,
     });
     return {};
   }

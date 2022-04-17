@@ -35,6 +35,10 @@ export class UserLog {
   @Column({ name: 'action_data', nullable: true, length: 2000 })
   actionData: string | null;
 
+  @ApiProperty()
+  @Column({ name: 'raw_data', nullable: true, length: 4096 })
+  rawData: string | null;
+
   @CreateDateColumn({
     type: 'timestamp',
     name: 'date_at',

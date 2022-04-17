@@ -21,16 +21,17 @@ import { Roles } from 'modules/common/constants/roles';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { Authority } from 'modules/entities/authority.entity';
+import { RoleAuthorityMapping } from 'modules/entities/roleAuthorityMapping.entity';
 import { UserAuthorityMapping } from 'modules/entities/userAuthorityMapping.entity';
-import { CrudAuthorityMappingService } from './authority-mapping.service';
+import { CrudRoleAuthorityMappingService } from './role-authority-mapping.service';
 
 @ApiBearerAuth()
 @Crud({
   model: {
-    type: UserAuthorityMapping,
+    type: RoleAuthorityMapping,
   },
   routes: {
-    only: ['getManyBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    only: ['getManyBase'],
   },
   query: {
     join: {
@@ -43,23 +44,14 @@ import { CrudAuthorityMappingService } from './authority-mapping.service';
 })
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
 @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
-@Controller('api/admin/v1/authority/map')
-@ApiTags('authorityMapping')
-export class CrudBlockerController
-  implements CrudController<UserAuthorityMapping>
+@Controller('api/admin/v1/role/authority/map')
+@ApiTags('roleAuthorityMapping')
+export class CrudRoleAuthorityMappingController
+  implements CrudController<RoleAuthorityMapping>
 {
-  constructor(public readonly service: CrudAuthorityMappingService) {}
+  constructor(public readonly service: CrudRoleAuthorityMappingService) {}
 
-  get base(): CrudController<UserAuthorityMapping> {
+  get base(): CrudController<RoleAuthorityMapping> {
     return this;
-  }
-
-  @Override()
-  async deleteOne(
-    @ParsedRequest() req: CrudRequest,
-    @ParsedBody() dto,
-    @Param('id') id,
-  ) {
-    return await this.service.updateOne(req, { mappingStatus: 'INACTIVE' });
   }
 }

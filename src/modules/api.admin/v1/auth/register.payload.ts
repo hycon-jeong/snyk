@@ -24,10 +24,18 @@ export class RegisterPayload {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ enum: Roles, required: true })
+  @ApiProperty({
+    required: true,
+  })
   @IsNotEmpty()
-  @IsEnum(Roles, { each: true })
-  role: Roles;
+  roleId: number;
+
+  @ApiProperty({
+    required: true,
+    type: [Number],
+  })
+  @IsNotEmpty()
+  authorities: number[];
 
   @ApiProperty({
     required: true,
@@ -36,7 +44,7 @@ export class RegisterPayload {
   @MinLength(5)
   password: string;
 
-  @ApiProperty({ required: true })
-  @SameAs('password')
-  passwordConfirmation: string;
+  // @ApiProperty({ required: true })
+  // @SameAs('password')
+  // passwordConfirmation: string;
 }

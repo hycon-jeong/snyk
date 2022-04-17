@@ -14,11 +14,12 @@ import { TvDeviceModule } from 'modules/api.tvapp/v1/device/tv.device.module';
 import { RoleService } from './role.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from 'modules/entities/role.entity';
+import { UserAuthorityMapping } from 'modules/entities/userAuthorityMapping.entity';
 moment.tz.setDefault('Asia/Seoul');
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Role]),
+    TypeOrmModule.forFeature([Role, UserAuthorityMapping]),
     UserModule,
     ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),

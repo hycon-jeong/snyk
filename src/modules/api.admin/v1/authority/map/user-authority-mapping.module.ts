@@ -11,16 +11,16 @@ import {
 import { Authority } from 'modules/entities/authority.entity';
 import { Blocker } from 'modules/entities/blocker.entity';
 import { UserAuthorityMapping } from 'modules/entities/userAuthorityMapping.entity';
-import { CrudBlockerController } from './authority-mapping.controller';
-import { CrudAuthorityMappingService } from './authority-mapping.service';
+import { CrudUserAuthorityMappingController } from './user-authority-mapping.controller';
+import { CrudUserAuthorityMappingService } from './user-authority-mapping.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserAuthorityMapping]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
-  providers: [CrudAuthorityMappingService],
-  exports: [CrudAuthorityMappingService],
-  controllers: [CrudBlockerController],
+  providers: [CrudUserAuthorityMappingService],
+  exports: [CrudUserAuthorityMappingService],
+  controllers: [CrudUserAuthorityMappingController],
 })
-export class AuthorityMappingModule {}
+export class UserAuthorityMappingModule {}

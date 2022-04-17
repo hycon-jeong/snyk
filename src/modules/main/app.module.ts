@@ -36,7 +36,6 @@ import { UserMappingLogModule } from 'modules/userMappingLog';
 import { TvAppApiModule } from 'modules/api.tvapp/v1/auth/tvapp.module';
 import { ProviderApiModule } from 'modules/api.provider/v1/provider.module';
 import { TvAppV0ApiModule } from 'modules/api.tvapp/v0/auth/tvapp.module';
-import { AuthorityMappingModule } from 'modules/api.admin/v1/authority/map/authority-mapping.module';
 import { AdminV1Module } from 'modules/api.admin/v1/admin.v1.module';
 import { MobileV1Module } from 'modules/api.mobile/v1/mobile.v1.module';
 
@@ -117,7 +116,6 @@ config();
     CategoryModule,
     UserMappingModule,
     UserMappingLogModule,
-    AuthorityMappingModule,
     TvAppApiModule,
     ProviderApiModule,
     TvAppV0ApiModule,

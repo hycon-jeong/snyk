@@ -55,8 +55,8 @@ export class User {
   // role: Roles;
 
   @ApiProperty()
-  @Column('varchar', { name: 'status', nullable: true, length: 255 })
-  status: string | null;
+  @Column('varchar', { name: 'status', length: 255, default: 'ACTIVE' })
+  status: string;
 
   @CreateDateColumn({
     type: 'timestamp',
