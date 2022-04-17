@@ -1,13 +1,10 @@
 import { Global, Module, Scope } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
-import { ConsumerModule } from 'modules/consumer/consumer.module';
 import { EventModule } from 'modules/event';
 import { HealthModule } from 'modules/health/health.module';
 import { MessageModule } from 'modules/message/message.module';
-import { ProviderModule } from 'modules/provider/provider.module';
 import { SentryModule } from 'modules/sentry/sentry.module';
 import * as path from 'path';
-import { StatisticsModule } from 'modules/statistics/statistics.module';
 import { UserModule } from 'modules/user';
 import { AuthModule } from './../auth';
 import { CommonModule } from './../common';
@@ -39,12 +36,10 @@ import { UserMappingLogModule } from 'modules/userMappingLog';
 import { TvAppApiModule } from 'modules/api.tvapp/v1/auth/tvapp.module';
 import { ProviderApiModule } from 'modules/api.provider/v1/provider.module';
 import { TvAppV0ApiModule } from 'modules/api.tvapp/v0/auth/tvapp.module';
-import { AuthorityMappingModule } from 'modules/authority/map/authority-mapping.module';
-import { AuthorityModule } from 'modules/authority/authority.module';
-import { BlockerModule } from 'modules/blocker/blocker.module';
-import { EventLogModule } from 'modules/log/event';
-import { UserLogModule } from 'modules/log/user/userLog.module';
-import { SystemLogModule } from 'modules/log/system/systemLog.module';
+import { AuthorityMappingModule } from 'modules/api.admin/v1/authority/map/authority-mapping.module';
+import { AdminV1Module } from 'modules/api.admin/v1/admin.v1.module';
+import { MobileV1Module } from 'modules/api.mobile/v1/mobile.v1.module';
+
 var serviceAccount = require('../../../firebase.json');
 
 config();
@@ -115,25 +110,19 @@ config();
     CommonModule,
     UserModule,
     EventModule,
-    EventLogModule,
-    ConsumerModule,
     ConsumerLogModule,
-    ProviderModule,
     ProviderLogModule,
     MessageModule,
-    StatisticsModule,
     FcmTokenModule,
     CategoryModule,
     UserMappingModule,
     UserMappingLogModule,
     AuthorityMappingModule,
-    UserLogModule,
-    SystemLogModule,
-    AuthorityModule,
-    BlockerModule,
     TvAppApiModule,
     ProviderApiModule,
     TvAppV0ApiModule,
+    AdminV1Module,
+    MobileV1Module,
   ],
   controllers: [AppController],
   providers: [

@@ -35,7 +35,7 @@ import { Event, User } from 'modules/entities';
 import CrudsFcmTokenService from 'modules/fcmToken/fcmToken.service';
 import { FirebaseMessagingService } from 'modules/firebase';
 import { MessageService } from 'modules/message/message.service';
-import CrudsProviderService from 'modules/provider/provider.service';
+import CrudsProviderService from 'modules/api.mobile/v1/provider/provider.service';
 import { UsersService } from 'modules/user';
 import { UserMappingService } from 'modules/userMapping/userMapping.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';

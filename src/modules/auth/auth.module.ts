@@ -9,7 +9,7 @@ import { AuthController } from './auth.controller';
 import { TvAuthModule } from 'modules/api.tvapp/v1/auth/tv.auth.module';
 import 'moment-timezone';
 import * as moment from 'moment';
-import { ProviderModule } from 'modules/provider';
+import { ProviderModule } from 'modules/api.mobile/v1/provider';
 import { TvDeviceModule } from 'modules/api.tvapp/v1/device/tv.device.module';
 import { RoleService } from './role.service';
 import { TypeOrmModule } from '@nestjs/typeorm';

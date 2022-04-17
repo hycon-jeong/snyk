@@ -10,7 +10,7 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud';
 import { ConsumerLog } from 'modules/entities';
-import CrudsConsumerService from 'modules/consumer/consumer.service';
+import CrudsConsumerService from 'modules/api.mobile/v1/consumer/consumer.service';
 import CrudsConsumerLogService from './consumerLog.service';
 
 @ApiBearerAuth()

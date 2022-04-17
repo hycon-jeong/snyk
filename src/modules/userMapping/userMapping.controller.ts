@@ -20,10 +20,10 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
-import CrudsConsumerService from 'modules/consumer/consumer.service';
+import CrudsConsumerService from 'modules/api.mobile/v1/consumer/consumer.service';
 import { User, UserMapping } from 'modules/entities';
 import { FirebaseMessagingService } from 'modules/firebase';
-import CrudsProviderService from 'modules/provider/provider.service';
+import CrudsProviderService from 'modules/api.mobile/v1/provider/provider.service';
 import { UsersService } from 'modules/user';
 import { UserMappingService } from './userMapping.service';
 

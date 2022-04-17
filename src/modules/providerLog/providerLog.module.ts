@@ -2,7 +2,7 @@ import { Module, Type } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProviderLog, User, Event, Provider } from 'modules/entities';
-import CrudsProviderService from 'modules/provider/provider.service';
+import CrudsProviderService from 'modules/api.mobile/v1/provider/provider.service';
 import { CrudProviderLogController } from './providerLog.controller';
 import CrudsProviderLogService from './providerLog.service';
 

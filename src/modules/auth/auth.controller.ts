@@ -23,7 +23,7 @@ import { AuthService, LoginPayload, RegisterPayload } from './';
 import { CurrentUser } from './../common/decorator/current-user.decorator';
 import { UsersService } from './../user';
 import { MoRegisterPayload } from './moRegister.payload';
-import CrudsProviderService from 'modules/provider/provider.service';
+import CrudsProviderService from 'modules/api.mobile/v1/provider/provider.service';
 import { TvDeviceService } from 'modules/api.tvapp/v1/device/tv.device.service';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { LogService } from 'modules/common/services/LogService';

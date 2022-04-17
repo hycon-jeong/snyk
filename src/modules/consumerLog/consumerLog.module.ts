@@ -2,7 +2,7 @@ import { Module, Type } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConsumerLog, User, Event, Consumer } from 'modules/entities';
-import CrudsConsumerService from 'modules/consumer/consumer.service';
+import CrudsConsumerService from 'modules/api.mobile/v1/consumer/consumer.service';
 import { CrudConsumerLogController } from './consumerLog.controller';
 import CrudsConsumerLogService from './consumerLog.service';
 

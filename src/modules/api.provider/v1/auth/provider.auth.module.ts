@@ -14,7 +14,7 @@ import {
 } from 'modules/entities';
 import CrudsFcmTokenService from 'modules/fcmToken/fcmToken.service';
 import { MessageService } from 'modules/message/message.service';
-import CrudsProviderService from 'modules/provider/provider.service';
+import CrudsProviderService from 'modules/api.mobile/v1/provider/provider.service';
 import { UsersService } from 'modules/user';
 import { UserMappingModule } from 'modules/userMapping/userMapping.module';
 import CrudsProviderAuthService from './provider.auth.service';

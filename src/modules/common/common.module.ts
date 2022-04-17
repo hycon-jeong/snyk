@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BlockerModule } from 'modules/blocker/blocker.module';
-import { CrudBlockerService } from 'modules/blocker/blocker.service';
+import { BlockerModule } from 'modules/api.admin/v1/blocker/blocker.module';
+import { CrudBlockerService } from 'modules/api.admin/v1/blocker/blocker.service';
 import { ConsumerLog, EventLog, ProviderLog, UserLog } from 'modules/entities';
 import { Blocker } from 'modules/entities/blocker.entity';
 import { SystemLog } from 'modules/entities/systemLog.entity';

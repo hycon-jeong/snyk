@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import * as requestIp from 'request-ip';
-import { CrudBlockerService } from 'modules/blocker/blocker.service';
+import { CrudBlockerService } from 'modules/api.admin/v1/blocker/blocker.service';
 import * as net from 'net';
 import { Address4, Address6 } from 'ip-address';
 import * as dotenv from 'dotenv';
