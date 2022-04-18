@@ -21,11 +21,10 @@ import {
 import { CategoryService } from 'modules/category/category.service';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import { Event, User } from 'modules/entities';
-import CrudsFcmTokenService from 'modules/fcmToken/fcmToken.service';
+import CrudsFcmTokenService from 'modules/api.admin/v1/fcmToken/fcmToken.service';
 import { FirebaseMessagingService } from 'modules/firebase';
 import { MessageService } from 'modules/message/message.service';
 import CrudsProviderService from 'modules/api.mobile/v1/provider/provider.service';
-import { UsersService } from 'modules/user';
 import { Repository } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -97,7 +96,6 @@ export class CrudEventController implements CrudController<Event> {
     public readonly service: CrudsEventService,
     public readonly fcmTokenService: CrudsFcmTokenService,
     public readonly messageService: MessageService,
-    public readonly usersService: UsersService,
     public readonly providerService: CrudsProviderService,
     public readonly categoryService: CategoryService,
   ) {}

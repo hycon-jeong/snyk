@@ -26,6 +26,7 @@ import { UsersService } from 'modules/user';
 import { RolesGuard } from './roles.guard';
 import { Roles } from 'modules/common/constants/roles';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
+import { ChangePwPayload } from './changePw.payload';
 
 @Controller('api/admin/v1/auth')
 @ApiTags('authentication')
@@ -114,6 +115,36 @@ export class AuthController {
       actionMessage: `'${user.name}' logout`,
     });
     return {};
+  }
+
+  @Post('change/password')
+  @UseGuards(IpBlockerGuard)
+  @ApiResponse({ status: 201, description: 'Successful Login' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async changePassword(@Body() payload: ChangePwPayload): Promise<any> {
+    const user = await this.authService.validateUser({
+      userId: payload.userId,
+      password: payload.password,
+    });
+
+    if (user) {
+      await this.userService.updateUser(
+        { id: user.id },
+        { password: payload.newPassword },
+      );
+    }
+
+    await this.logService.createUserLog({
+      userId: user.id,
+      providerId: user.providerId,
+      actionData: 'Password',
+      actionMessage: `'${user.name}' change password`,
+    });
+    return {
+      statusCode: 200,
+      message: 'change password successfully',
+    };
   }
 
   generateUserKey() {

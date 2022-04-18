@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserMapping } from 'modules/entities';
-import { User } from '../entities/user.entity';
-import { CrudUserController } from './user.controller';
+import { User, UserMapping } from 'modules/entities';
 import { UsersService } from './user.service';
 
 @Module({
@@ -13,6 +11,5 @@ import { UsersService } from './user.service';
   ],
   exports: [UsersService],
   providers: [UsersService],
-  controllers: [CrudUserController],
 })
 export class UserModule {}

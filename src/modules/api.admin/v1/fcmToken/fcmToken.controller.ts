@@ -10,8 +10,12 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
+import { Roles } from 'modules/common/constants/roles';
+import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
+import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { FcmToken, User } from 'modules/entities';
 import { FirebaseMessagingService } from 'modules/firebase';
+import { RolesGuard } from '../auth/roles.guard';
 import CrudsFcmTokenService from './fcmToken.service';
 
 @ApiBearerAuth()
@@ -29,14 +33,13 @@ import CrudsFcmTokenService from './fcmToken.service';
     ],
   },
 })
-@UseGuards(AuthGuard())
-@Controller('api/fcm-token')
+@UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
+@RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+@Controller('api/admin/v1/fcm-token')
 @ApiTags('fcmToken')
 @CrudAuth({
   property: 'user',
   persist: (user: User) => {
-    console.log('user ==================== ');
-    console.log(user);
     return {
       user: user.id,
     };

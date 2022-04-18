@@ -1,14 +1,12 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entities/user.entity';
-import { UserMapping } from '../entities/userMapping.entity';
 import { Repository } from 'typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 import { UserFillableFields } from './user.interface';
 import { UserMappingFillableFields } from '.';
 import { Roles } from 'modules/common/constants/roles';
-import { Consumer, Provider } from 'modules/entities';
+import { Consumer, Provider, User, UserMapping } from 'modules/entities';
 
 @Injectable()
 export class UsersService extends TypeOrmCrudService<User> {

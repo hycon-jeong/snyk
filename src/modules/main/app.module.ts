@@ -5,7 +5,6 @@ import { HealthModule } from 'modules/health/health.module';
 import { MessageModule } from 'modules/message/message.module';
 import { SentryModule } from 'modules/sentry/sentry.module';
 import * as path from 'path';
-import { UserModule } from 'modules/user';
 import { AuthModule } from './../auth';
 import { CommonModule } from './../common';
 import { ConfigModule, ConfigService } from './../config';
@@ -16,7 +15,7 @@ import { winstonOptions } from './app-logging';
 import { WinstonModule } from 'nest-winston';
 import * as admin from 'firebase-admin';
 import { FirebaseAdminModule } from 'modules/firebase';
-import { FcmTokenModule } from 'modules/fcmToken';
+import { FcmTokenModule } from 'modules/api.admin/v1/fcmToken';
 import { CategoryModule } from 'modules/category/category.module';
 import { UserMappingModule } from 'modules/userMapping/userMapping.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
@@ -107,7 +106,6 @@ config();
     HealthModule,
     AuthModule,
     CommonModule,
-    UserModule,
     EventModule,
     ConsumerLogModule,
     ProviderLogModule,
