@@ -47,16 +47,21 @@ import { Roles } from 'modules/common/constants/roles';
 import CrudsProviderAuthService from './provider.auth.service';
 import { ILamdaReponse } from './type/providerEvent.interface';
 import {
-  createUserDescriptionHtml,
+  checkUserDescriptionHtml,
   createUserSuccessResponse,
   deleteUserDescriptionHtml,
   deleteUserSuccessResponse,
+  createUserDescriptionHtml,
 } from './swagger/swagger.util';
 import {
   CreateRequestErrorResponseDto,
   CreateServerErrorResponseDto,
 } from 'swagger/swagger.response';
 import { AuthService, JwtAuthGuard } from 'modules/auth';
+import { MoRegisterPayload } from './dto/moRegister.payload';
+import { generateUserKey } from 'utils/String';
+import { RoleService } from 'modules/auth/role.service';
+import CrudsConsumerService from 'modules/api.mobile/v1/consumer/consumer.service';
 
 @ApiBearerAuth()
 @Crud({
@@ -88,6 +93,8 @@ export class CrudProviderAuthController implements CrudController<User> {
     public readonly categoryService: CategoryService,
     public readonly userMappingService: UserMappingService,
     public readonly authService: AuthService,
+    private readonly roleService: RoleService,
+    private readonly consumerService: CrudsConsumerService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
   get base(): CrudController<User> {
@@ -100,7 +107,7 @@ export class CrudProviderAuthController implements CrudController<User> {
   })
   @ApiBody({
     type: CreateProviderUserDto,
-    description: createUserDescriptionHtml(),
+    description: checkUserDescriptionHtml(),
   })
   @ApiResponse({
     status: 201,
@@ -134,6 +141,11 @@ export class CrudProviderAuthController implements CrudController<User> {
       providerId: providerData.id,
       status: 'ACTIVE',
     });
+
+    if (!user || !user.id) {
+      throw new BadRequestException('User not found');
+    }
+
     const token = await this.authService.createToken(user);
 
     return {
@@ -220,6 +232,93 @@ export class CrudProviderAuthController implements CrudController<User> {
       statusCode: 200,
       isSuccess: true,
       message: 'success',
+    };
+  }
+
+  @Post('test/register/mobile')
+  @ApiBody({
+    type: CreateProviderUserDto,
+    description: createUserDescriptionHtml(),
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Create user successfully',
+    type: createUserSuccessResponse,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'bad request',
+    type: CreateRequestErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'server error',
+    type: CreateServerErrorResponseDto,
+  })
+  async moRegister(@Body() payload: MoRegisterPayload): Promise<any> {
+    const { userKey: userId, ...rest } = payload;
+    const roleData = await this.roleService.findOne({
+      code: 'USER',
+      status: 'ACTIVE',
+    });
+    const providerData = await this.providerService.findOne({
+      providerCode: payload.providerId,
+    });
+    if (!providerData || !providerData.id) {
+      throw new BadRequestException('Provider not found');
+    }
+    console.log(providerData);
+    let user = await this.usersService.findOne({
+      where: { userId: userId, status: 'ACTIVE', providerId: providerData.id },
+    });
+
+    const dummyConsumer = await this.consumerService.findOne();
+
+    if (!user) {
+      user = await this.usersService.moCreate({
+        userId,
+        roleId: roleData.id,
+        password: '1234qwer!',
+        status: 'ACTIVE',
+        providerId: providerData.id,
+        userKey: generateUserKey(),
+      });
+    }
+    try {
+      // mapping 중복 처리
+      const _map = await this.userMappingService.findOne({
+        userId: user.id,
+        mappingStatus: 'ACTIVE',
+        providerId: providerData.id,
+        consumerId: dummyConsumer.id,
+      });
+
+      if (_map && _map.id) {
+        throw new BadRequestException('The user already exists.');
+      }
+      await this.usersService.createUserMapping({
+        userId: user.id,
+        mappingStatus: 'ACTIVE',
+        providerId: providerData.id,
+        consumerId: dummyConsumer.id,
+        name: user.name,
+        key: userId,
+      });
+    } catch (err) {
+      throw err;
+    }
+    const token = await this.authService.createToken(user);
+    return {
+      statusCode: 201,
+      isSuccess: true,
+      message: 'success',
+      data: {
+        userKey: token.user.userKey,
+        token: {
+          accessToken: token.accessToken,
+          expireIn: token.expiresIn,
+        },
+      },
     };
   }
 }

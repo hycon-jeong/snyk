@@ -17,4 +17,8 @@ export class TvAuthService {
   createTvCertCode(payload) {
     return this.repository.save(payload);
   }
+
+  deleteOne(id) {
+    return this.repository.delete(id);
+  }
 }

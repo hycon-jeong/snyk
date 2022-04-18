@@ -7,9 +7,9 @@ export class UserFillableFields {
 
 export class UserMappingFillableFields {
   userId: number;
-  providerId: number;
+  providerId: any;
   consumerId: number;
-  tvDeviceId: number;
+  tvDeviceId?: number;
   key: string;
   mappingStatus: string;
   name: string;
