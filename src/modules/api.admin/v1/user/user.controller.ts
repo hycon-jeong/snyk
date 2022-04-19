@@ -11,7 +11,14 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Crud, CrudController } from '@nestjsx/crud';
+import {
+  Crud,
+  CrudAuth,
+  CrudController,
+  CrudRequest,
+  Override,
+  ParsedRequest,
+} from '@nestjsx/crud';
 import { RolesGuard } from 'modules/auth/roles.guard';
 import { Roles } from 'modules/common/constants/roles';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
@@ -30,7 +37,7 @@ import { UsersService } from './user.service';
     type: User,
   },
   routes: {
-    only: ['getOneBase', 'getManyBase', 'updateOneBase'],
+    only: ['getOneBase', 'getManyBase', 'updateOneBase', 'deleteOneBase'],
   },
   query: {
     join: {
@@ -71,6 +78,14 @@ import { UsersService } from './user.service';
 @ApiTags('user')
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
 @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+@CrudAuth({
+  property: 'user',
+  persist: (user: User) => {
+    return {
+      user: user,
+    };
+  },
+})
 export class CrudUserController implements CrudController<User> {
   constructor(
     public readonly service: UsersService,
@@ -187,5 +202,24 @@ export class CrudUserController implements CrudController<User> {
     });
 
     return await this.authService.createToken(user);
+  }
+
+  @Override()
+  async deleteOne(@ParsedRequest() req: CrudRequest, @Param('id') id) {
+    const {
+      authPersist: { user },
+    } = req.parsed;
+    try {
+      const _user = await this.service.findOne(id);
+      await this.logService.createUserLog({
+        actionMessage: `'${_user.name}' was deleted by '${user.name}' 삭제`,
+        actionData: 'User',
+        userId: user.id,
+        providerId: user.providerId,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    return await this.service.updateOne(req, { status: 'INACTIVE' });
   }
 }
