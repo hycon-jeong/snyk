@@ -60,7 +60,7 @@ import { JwtAuthGuard } from 'modules/auth';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { LogService } from 'modules/common/services/LogService';
 
-@ApiBearerAuth()
+// @ApiBearerAuth()
 @Crud({
   model: {
     type: Event,
@@ -69,7 +69,7 @@ import { LogService } from 'modules/common/services/LogService';
     only: ['createOneBase'],
   },
 })
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller(`api/provider/${PROVIDER_VERSION}/event`)
 @ApiTags('Event')
 @CrudAuth({
