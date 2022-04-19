@@ -1,11 +1,27 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudController } from '@nestjsx/crud';
 import { RolesGuard } from 'modules/auth/roles.guard';
 import { Roles } from 'modules/common/constants/roles';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
+import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
+import { LogService } from 'modules/common/services/LogService';
 import { User } from 'modules/entities';
+import { Not } from 'typeorm';
+import { AuthService } from '../auth';
+import { RegisterPayload } from './register.payload';
+import { UpdatePayload } from './update.payload';
 import { UsersService } from './user.service';
 
 @ApiBearerAuth()
@@ -53,8 +69,123 @@ import { UsersService } from './user.service';
 })
 @Controller('api/admin/v1/user')
 @ApiTags('user')
-@UseGuards(AuthGuard(), RolesGuard)
+@UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
 @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
 export class CrudUserController implements CrudController<User> {
-  constructor(public readonly service: UsersService) {}
+  constructor(
+    public readonly service: UsersService,
+    public readonly authService: AuthService,
+    public readonly logService: LogService,
+  ) {}
+
+  @Post('register')
+  @ApiResponse({ status: 201, description: 'Successful Registration' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async register(@Body() payload: RegisterPayload, @Req() req): Promise<any> {
+    const { user: userLogined } = req;
+    if (payload.email) {
+      const checkEmailUser = await this.service.findOne({
+        email: payload.email,
+      });
+      if (checkEmailUser && checkEmailUser.id) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            messageCode: 'auth.emailDuplicated',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    const user = await this.service.create({
+      ...payload,
+    });
+    const promArr = payload.authorities.map(async (authorityId) => {
+      const dto = {
+        authorityId,
+        userId: user.id,
+        providerId: user.providerId,
+      };
+      return this.authService.createAuthorityMapping(dto);
+    });
+    await Promise.all(promArr);
+
+    await this.logService.createUserLog({
+      userId: userLogined.id,
+      providerId: userLogined.providerId,
+      actionData: 'User',
+      actionMessage: `'${user.name}' sign up by '${userLogined.name}'`,
+    });
+    return await this.authService.createToken(user);
+  }
+
+  @Patch('update/:id')
+  async updateUserWithAuthority(
+    @Body() payload: UpdatePayload,
+    @Req() req,
+    @Param('id') id,
+  ): Promise<any> {
+    const { user: userLogined } = req;
+    const { authorities, ...rst } = payload;
+
+    if (payload.email) {
+      const checkEmailUser = await this.service.findOne({
+        email: payload.email,
+        id: Not(id),
+      });
+      if (checkEmailUser && checkEmailUser.id) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            messageCode: 'auth.emailDuplicated',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    if (payload.userId) {
+      const checkUserIdUser = await this.service.findOne({
+        userId: payload.userId,
+        id: Not(id),
+      });
+      if (checkUserIdUser && checkUserIdUser.id) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            messageCode: 'auth.userIdDuplicated',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    await this.service.updateUser({ id }, rst);
+    const user = await this.service.findOne(id);
+    await this.authService.updateAuthorityMapping(
+      { userId: user.id, mappingStatus: 'ACTIVE' },
+      { mappingStatus: 'INACTIVE' },
+    );
+
+    const promArr = authorities.map(async (authorityId) => {
+      const dto = {
+        authorityId,
+        userId: user.id,
+        providerId: payload.providerId,
+      };
+      return this.authService.createAuthorityMapping(dto);
+    });
+    await Promise.all(promArr);
+
+    await this.logService.createUserLog({
+      userId: userLogined.id,
+      providerId: userLogined.providerId,
+      actionData: 'User',
+      actionMessage: `'${user.name}' was updated by '${userLogined.name}'`,
+    });
+
+    return await this.authService.createToken(user);
+  }
 }

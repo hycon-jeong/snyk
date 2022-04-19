@@ -42,4 +42,8 @@ export class AuthService {
   async createAuthorityMapping(payload) {
     return await this.userAuthorityMappingService.save(payload);
   }
+
+  async updateAuthorityMapping(criteria, payload) {
+    return await this.userAuthorityMappingService.update(criteria, payload);
+  }
 }
