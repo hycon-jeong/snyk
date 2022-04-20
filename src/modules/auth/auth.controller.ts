@@ -28,6 +28,8 @@ import { TvDeviceService } from 'modules/api.tvapp/v1/device/tv.device.service';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { LogService } from 'modules/common/services/LogService';
 import { RoleService } from './role.service';
+import { randomBytes } from 'crypto';
+import { KeyStoreService } from 'modules/key-store/key-store.service';
 
 @Controller('api/auth')
 @ApiTags('authentication')
@@ -40,6 +42,7 @@ export class AuthController {
     private readonly providerService: CrudsProviderService,
     private readonly logService: LogService,
     private readonly roleService: RoleService,
+    private readonly keyStoreService: KeyStoreService,
   ) {}
 
   @Post('register/mo')
@@ -106,7 +109,15 @@ export class AuthController {
       console.log(err);
     }
 
-    const token = await this.authService.createToken(user);
+    const accessTokenKey = randomBytes(64).toString('hex');
+    const refreshTokenKey = randomBytes(64).toString('hex');
+    await this.keyStoreService.create(user, accessTokenKey, refreshTokenKey);
+    const token = await this.authService.createToken(
+      user,
+      accessTokenKey,
+      refreshTokenKey,
+    );
+
     return {
       accessToken: token.accessToken,
       expireIn: token.expiresIn,

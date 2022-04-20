@@ -62,6 +62,8 @@ import { MoRegisterPayload } from './dto/moRegister.payload';
 import { generateUserKey } from 'utils/String';
 import { RoleService } from 'modules/auth/role.service';
 import CrudsConsumerService from 'modules/api.mobile/v1/consumer/consumer.service';
+import { randomBytes } from 'crypto';
+import { KeyStoreService } from 'modules/key-store/key-store.service';
 
 @ApiBearerAuth()
 @Crud({
@@ -94,6 +96,7 @@ export class CrudProviderAuthController implements CrudController<User> {
     public readonly userMappingService: UserMappingService,
     public readonly authService: AuthService,
     private readonly roleService: RoleService,
+    private readonly keyStoreService: KeyStoreService,
     private readonly consumerService: CrudsConsumerService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
@@ -146,7 +149,15 @@ export class CrudProviderAuthController implements CrudController<User> {
       throw new BadRequestException('User not found');
     }
 
-    const token = await this.authService.createToken(user);
+    const accessTokenKey = randomBytes(64).toString('hex');
+    const refreshTokenKey = randomBytes(64).toString('hex');
+    await this.keyStoreService.create(user, accessTokenKey, refreshTokenKey);
+
+    const token = await this.authService.createToken(
+      user,
+      accessTokenKey,
+      refreshTokenKey,
+    );
 
     return {
       statusCode: 200,
@@ -307,7 +318,15 @@ export class CrudProviderAuthController implements CrudController<User> {
     } catch (err) {
       throw err;
     }
-    const token = await this.authService.createToken(user);
+
+    const accessTokenKey = randomBytes(64).toString('hex');
+    const refreshTokenKey = randomBytes(64).toString('hex');
+    await this.keyStoreService.create(user, accessTokenKey, refreshTokenKey);
+    const token = await this.authService.createToken(
+      user,
+      accessTokenKey,
+      refreshTokenKey,
+    );
     return {
       statusCode: 201,
       isSuccess: true,

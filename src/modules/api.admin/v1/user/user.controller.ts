@@ -131,9 +131,9 @@ export class CrudUserController implements CrudController<User> {
       userId: userLogined.id,
       providerId: userLogined.providerId,
       actionData: 'User',
-      actionMessage: `'${user.name}' sign up by '${userLogined.name}'`,
+      actionMessage: `'${user.name}' register by '${userLogined.name}'`,
     });
-    return await this.authService.createToken(user);
+    return { statusCode: 200, message: 'success' };
   }
 
   @Patch('update/:id')
@@ -201,7 +201,7 @@ export class CrudUserController implements CrudController<User> {
       actionMessage: `'${user.name}' was updated by '${userLogined.name}'`,
     });
 
-    return await this.authService.createToken(user);
+    return { statusCode: 200, message: 'success' };
   }
 
   @Override()

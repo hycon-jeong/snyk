@@ -18,6 +18,7 @@ import { UserAuthorityMapping } from './userAuthorityMapping.entity';
 import { SystemLog } from './systemLog.entity';
 import { EventLog, Provider } from '.';
 import { Role } from './role.entity';
+import { KeyStores } from './keyStores.entity';
 
 @Entity('users', { schema: 'mycar' })
 export class User {
@@ -96,6 +97,9 @@ export class User {
 
   @OneToMany(() => EventLog, (eventLog) => eventLog.user)
   eventLogs: EventLog[];
+
+  @OneToMany(() => KeyStores, (keyStores) => keyStores.user)
+  keyStores: KeyStores[];
 
   @Column({
     name: 'password',

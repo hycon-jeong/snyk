@@ -15,6 +15,7 @@ import { RoleService } from './role.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from 'modules/entities/role.entity';
 import { UserAuthorityMapping } from 'modules/entities/userAuthorityMapping.entity';
+import { KeyStoreModule } from 'modules/key-store/key-store.module';
 moment.tz.setDefault('Asia/Seoul');
 
 @Module({
@@ -22,6 +23,7 @@ moment.tz.setDefault('Asia/Seoul');
     TypeOrmModule.forFeature([Role, UserAuthorityMapping]),
     UserModule,
     ConfigModule,
+    KeyStoreModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

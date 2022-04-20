@@ -15,12 +15,23 @@ export class AuthService {
     private readonly userService: UsersService,
   ) {}
 
-  async createToken(user: User) {
+  async createToken(user: User, accessTokenKey: string, refreshToken) {
+    const curentTime = Math.floor(Date.now() / 1000);
     return {
       expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
       accessToken: this.jwtService.sign({
+        sub: user.id.toString(),
+        iat: curentTime,
+        prm: accessTokenKey,
         id: user.id,
       }),
+      refreshToken: this.jwtService.sign({
+        sub: user.id.toString(),
+        iat: curentTime,
+        prm: refreshToken,
+        id: user.id,
+      }),
+
       user,
     };
   }

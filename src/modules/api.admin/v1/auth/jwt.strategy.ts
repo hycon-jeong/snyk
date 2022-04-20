@@ -3,12 +3,14 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from 'modules/config';
 import { UsersService } from 'modules/user';
+import { KeyStoreService } from 'modules/key-store/key-store.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     readonly configService: ConfigService,
     private readonly usersService: UsersService,
+    private readonly keyStoreService: KeyStoreService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -16,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate({ iat, exp, id }: JwtPayload, done) {
+  async validate({ iat, exp, id, prm }: JwtPayload, done) {
     const timeDiff = exp - iat;
     if (timeDiff <= 0) {
       throw new UnauthorizedException();
@@ -33,6 +35,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException();
     }
+
+    const keystore = await this.keyStoreService.findforKey(user, prm);
+
+    if (!keystore) throw new UnauthorizedException();
 
     delete user.password;
     done(null, user);

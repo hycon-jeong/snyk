@@ -24,6 +24,7 @@ import { AuthModule } from 'modules/auth';
 import { Role } from 'modules/entities/role.entity';
 import { RoleService } from 'modules/auth/role.service';
 import CrudsConsumerService from 'modules/api.mobile/v1/consumer/consumer.service';
+import { KeyStoreModule } from 'modules/key-store/key-store.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import CrudsConsumerService from 'modules/api.mobile/v1/consumer/consumer.servic
     UserMappingModule,
     AuthModule,
     UserModule,
+    KeyStoreModule,
   ],
   providers: [
     CrudsProviderAuthService,
