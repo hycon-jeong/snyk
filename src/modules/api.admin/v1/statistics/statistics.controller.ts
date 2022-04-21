@@ -75,6 +75,7 @@ export class StatisticsController {
     const { today, type } = query;
     const startDate = moment(today).subtract(1, 'day').format('YYYY-MM-DD');
     const endDate = moment(today).add(1, 'day').format('YYYY-MM-DD');
+    console.log(startDate, endDate);
     let data = [];
     switch (type) {
       case 'user':

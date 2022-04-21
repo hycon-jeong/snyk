@@ -59,10 +59,11 @@ config();
           cli: {
             migrationsDir: 'src/migration',
           },
+          timezone: 'UTC',
+          // timezone: '-09:00',
           migrationsTableName: 'migrations_typeorm',
           migrationsRun: true,
           keepConnectionAlive: configService.get('DB_CONNECTION_ALIVE'),
-          dateStrings: 'date',
           // logging: true,
         } as TypeOrmModuleAsyncOptions;
       },
