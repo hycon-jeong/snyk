@@ -200,9 +200,13 @@ export class CrudEventController implements CrudController<Event> {
     };
 
     if (tokensArray && tokensArray.length > 0) {
-      this.firebaseMessage.sendToDevice(tokensArray, {
-        data: pushData,
-      });
+      this.firebaseMessage.sendToDevice(
+        tokensArray,
+        {
+          data: pushData,
+        },
+        { priority: 'high' },
+      );
     }
     this.logger.debug(
       `push data from web >>>>>>>>>> ${JSON.stringify(pushData)}`,

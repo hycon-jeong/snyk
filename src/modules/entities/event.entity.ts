@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -82,6 +83,13 @@ export class Event {
     default: EventStatus.SENDING,
   })
   status: EventStatus;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  public createdAt: Date;
 
   // @ApiProperty()
   // @ManyToOne(() => UserMapping, (userMapping) => userMapping.id, {
