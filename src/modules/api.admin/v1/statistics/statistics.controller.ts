@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  HttpException,
   Param,
   Query,
   UseGuards,
@@ -59,6 +60,44 @@ export class StatisticsController {
       event: allPromise[1] || 0,
       message: allPromise[2] || 0,
       user: allPromise[3] || 0,
+    };
+  }
+
+  @Get('user/registering/byDate')
+  @ApiQuery({ name: 'startDate', description: 'startDate', type: String })
+  @ApiQuery({ name: 'endDate', description: 'endDate', type: String })
+  @ApiQuery({
+    name: 'providerId',
+    description: 'providerId',
+    type: String,
+    required: false,
+  })
+  async getUserRegistering(@Query() query): Promise<any> {
+    const { providerId, endDate, startDate } = query;
+    if (!endDate || !startDate)
+      throw new BadRequestException('endDate and startDate is mandantory');
+    const res = await this.statisticsService.getUserRegisteringByDate(
+      startDate,
+      endDate,
+      providerId,
+    );
+    return {
+      data: res,
+    };
+  }
+
+  @Get('total/event/byOEM')
+  @ApiQuery({
+    name: 'providerId',
+    description: 'providerId',
+    type: String,
+    required: false,
+  })
+  async getTotalEventByOEM(@Query() query): Promise<any> {
+    const { providerId } = query;
+    const res = await this.statisticsService.getTotalEventByOEM(providerId);
+    return {
+      data: res,
     };
   }
 

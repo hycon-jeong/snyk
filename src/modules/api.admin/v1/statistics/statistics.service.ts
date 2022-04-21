@@ -44,6 +44,35 @@ export class StatisticsService {
     return this.userRepository.count(params);
   }
 
+  async getUserRegisteringByDate(startDate, endDate, providerId) {
+    const params = [startDate, endDate];
+    if (providerId) params.push(providerId);
+    return this.userRepository.query(
+      `SELECT count(*) as count, DATE_FORMAT(u.created_at,'%Y-%m-%d') as createdAt , u.provider_id as providerId, p.provider_name as providerName
+  FROM users as u
+    LEFT JOIN provider p on p.id = u.provider_id
+    WHERE DATE_FORMAT(u.created_at,'%Y-%m-%d') >= ? AND DATE_FORMAT(u.created_at,'%Y-%m-%d') < ? AND u.provider_id IS NOT NULL
+    ${providerId ? ' AND u.provider_id = ?' : ''}
+    GROUP BY DATE_FORMAT(u.created_at,'%Y-%m-%d'),u.provider_id
+    ORDER BY u.created_at DESC`,
+      params,
+    );
+  }
+
+  async getTotalEventByOEM(providerId) {
+    const params = [];
+    if (providerId) params.push(providerId);
+    return this.userRepository.query(
+      `SELECT count(*) as count, e.provider_id as providerId, p.provider_name as providerName
+  FROM event as e
+    LEFT JOIN provider p on p.id = e.provider_id
+    WHERE p.status= 'ACTIVE'
+    ${providerId ? ' AND e.provider_id = ?' : ''}
+    GROUP BY e.provider_id`,
+      params,
+    );
+  }
+
   async getUserRank(startDate, today, endDate) {
     return this.userRepository.query(
       `SELECT COUNT(*) AS curr,u.name as userName ,u.id as userId,
