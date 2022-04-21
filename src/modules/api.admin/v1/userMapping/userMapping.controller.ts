@@ -70,10 +70,10 @@ import { Roles } from 'modules/common/constants/roles';
     },
   },
 })
-@Controller('api/user-mapping')
+@Controller('api/admin/v1/user-mapping')
 @ApiTags('userMapping')
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
-@RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+@RolesAllowed(Roles.ADMIN, Roles.PROVIDER, Roles.MANAGER)
 @CrudAuth({
   property: 'user',
   persist: (user: User) => {

@@ -77,7 +77,7 @@ import { UsersService } from './user.service';
 @Controller('api/admin/v1/user')
 @ApiTags('user')
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
-@RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+@RolesAllowed(Roles.ADMIN, Roles.PROVIDER, Roles.MANAGER)
 @CrudAuth({
   property: 'user',
   persist: (user: User) => {
@@ -94,6 +94,7 @@ export class CrudUserController implements CrudController<User> {
   ) {}
 
   @Post('register')
+  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
   @ApiResponse({ status: 201, description: 'Successful Registration' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -137,6 +138,7 @@ export class CrudUserController implements CrudController<User> {
   }
 
   @Patch('update/:id')
+  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
   async updateUserWithAuthority(
     @Body() payload: UpdatePayload,
     @Req() req,
@@ -205,6 +207,7 @@ export class CrudUserController implements CrudController<User> {
   }
 
   @Override()
+  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
   async deleteOne(@ParsedRequest() req: CrudRequest, @Param('id') id) {
     const {
       authPersist: { user },

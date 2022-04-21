@@ -13,6 +13,7 @@ import { RoleAuthorityMappingModule } from './role/map/role-authority-mapping.mo
 import { RoleModule } from './role/role.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { UserModule } from './user';
+import { UserMappingModule } from './userMapping/userMapping.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { UserModule } from './user';
     RoleModule,
     RoleAuthorityMappingModule,
     UserAuthorityMappingModule,
+    UserMappingModule,
   ],
 })
 export class AdminV1Module {}

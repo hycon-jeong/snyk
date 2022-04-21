@@ -27,7 +27,7 @@ enum RankType {
  */
 @ApiBearerAuth()
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
-@RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+@RolesAllowed(Roles.ADMIN, Roles.PROVIDER, Roles.MANAGER)
 @Controller('api/admin/v1/statistics')
 @ApiTags('statistics')
 export class StatisticsController {
@@ -63,6 +63,7 @@ export class StatisticsController {
   }
 
   @Get('today/rank')
+  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
   @ApiQuery({ name: 'today', description: 'today', type: String })
   @ApiQuery({
     name: 'type',
@@ -106,6 +107,7 @@ export class StatisticsController {
   }
 
   @Get('total/rank')
+  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
   @ApiQuery({
     name: 'type',
     description: 'rank type in [user,provider,consumer]',

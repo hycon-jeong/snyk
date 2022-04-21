@@ -84,7 +84,7 @@ import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
   },
 })
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
-@RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+@RolesAllowed(Roles.ADMIN, Roles.PROVIDER, Roles.MANAGER)
 @Controller('api/admin/v1/event')
 @ApiTags('event')
 @CrudAuth({
