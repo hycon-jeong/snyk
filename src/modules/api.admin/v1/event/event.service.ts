@@ -13,13 +13,19 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
     super(eventRepository);
   }
 
-  async getProviderApiCalls(): Promise<any> {
+  async getProviderApiCalls(params): Promise<any> {
     const query = this.eventRepository
       .createQueryBuilder('event')
       .select(
-        'count(*) as provider_count, provider.provider_name, event.provider_id as provider_id',
+        'count(*) as count, provider.provider_name as providerName, event.provider_id as providerId',
       )
       .leftJoin('provider', 'provider', 'provider.id = event.provider_id');
+
+    if (params.providerId) {
+      query.where('event.provider_id = :providerId', {
+        providerId: params.providerId,
+      });
+    }
     return query.groupBy('event.provider_id').getRawMany();
   }
   async getEventByProvider(provider_id) {
@@ -37,18 +43,18 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
   async getProviderApiCallsByMonthly({
     start_date,
     end_date,
-    oem,
-    csm,
+    providerId,
+    consumerId,
   }: {
     start_date?: string;
     end_date?: string;
-    oem?: number;
-    csm?: number;
+    providerId?: number;
+    consumerId?: number;
   }): Promise<any> {
     const query = this.eventRepository
       .createQueryBuilder('event')
       .select(
-        'count(*) as provider_count, provider.provider_name, event.provider_id as provider_id, date_format(event.issued_at,"%Y-%m") as issued_at',
+        'count(*) as count, provider.provider_name as providerName, event.provider_id as providerId, date_format(event.issued_at,"%Y-%m") as issuedAt',
       )
       .leftJoin('provider', 'provider', 'provider.id = event.provider_id');
     if (start_date) {
@@ -57,8 +63,8 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
     if (end_date) {
       query.andWhere('event.issued_at < :end_date', { end_date });
     }
-    if (oem) {
-      query.andWhere('event.provider_id = :oem', { oem });
+    if (providerId) {
+      query.andWhere('event.provider_id = :providerId', { providerId });
     }
     // if (csm) {
     //   query.andWhere('');
@@ -69,20 +75,30 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
       .getRawMany();
   }
 
-  async getConsumerApiCalls(): Promise<any> {
-    return this.eventRepository
-      .createQueryBuilder()
+  async getConsumerApiCalls(params): Promise<any> {
+    const query = this.eventRepository
+      .createQueryBuilder('event')
       .select(
-        'count(*) as consumer_count, consumer.consumer_name, userMapping.consumer_id as consumer_id',
+        'count(*) as count, consumer.consumer_name as consumerName, userMapping.consumer_id as consumerId',
       )
       .leftJoin(
         'user-mapping',
         'userMapping',
         'userMapping.id = user_mapping_id',
       )
-      .leftJoin('consumer', 'consumer', 'consumer.id = userMapping.consumer_id')
-      .groupBy('userMapping.consumer_id')
-      .getRawMany();
+      .leftJoin(
+        'consumer',
+        'consumer',
+        'consumer.id = userMapping.consumer_id',
+      );
+
+    if (params.providerId) {
+      query.where('event.provider_id = :providerId', {
+        providerId: params.providerId,
+      });
+    }
+
+    return query.groupBy('userMapping.consumer_id').getRawMany();
   }
 
   async getEventByConsumer(consumer_id) {

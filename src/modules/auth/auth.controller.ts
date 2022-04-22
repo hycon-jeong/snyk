@@ -79,6 +79,9 @@ export class AuthController {
     });
 
     if (!user) {
+      // todo
+      // name -> providerName + userCount
+      const num = await this.userService.count();
       user = await this.userService.moCreate({
         userId,
         roleId: roleData.id,
@@ -87,6 +90,7 @@ export class AuthController {
         status: 'ACTIVE',
         providerId: providerData.id,
         userKey: this.generateUserKey(),
+        name: providerData.providerName + '_' + num,
       });
     }
     try {

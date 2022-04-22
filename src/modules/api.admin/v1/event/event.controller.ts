@@ -160,21 +160,16 @@ export class CrudEventController implements CrudController<Event> {
   }
 
   @Get('provider/manage')
-  @ApiResponse({ status: 201, description: 'Successful Login' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getProviderApiCalls(): Promise<any> {
-    const providerList = await this.service.getProviderApiCalls();
-    const newProviderList = await Promise.all(
-      providerList.map(async (provider) => {
-        const events = await this.service.getEventByProvider(
-          provider.provider_id,
-        );
-        provider.events = events;
-        return provider;
-      }),
-    );
-    return newProviderList;
+  @ApiQuery({
+    name: 'providerId',
+    description: 'providerId',
+    type: String,
+    required: false,
+  })
+  async getProviderApiCalls(@Query() query): Promise<any> {
+    const { providerId } = query;
+    const providerList = await this.service.getProviderApiCalls({ providerId });
+    return providerList;
   }
 
   @Get('provider/monthly/manage')
@@ -195,42 +190,38 @@ export class CrudEventController implements CrudController<Event> {
   })
   @ApiQuery({
     description: 'provider id',
-    name: 'oem',
+    name: 'providerId',
     type: String,
     required: false,
   })
   @ApiQuery({
     description: 'consumer id',
-    name: 'csm',
+    name: 'consumerId',
     type: String,
     required: false,
   })
   async getProviderApiCallsByMonthly(@Query() query): Promise<any> {
-    const { start_date, end_date, oem, csm } = query;
+    const { start_date, end_date, providerId, consumerId } = query;
     const providerList = await this.service.getProviderApiCallsByMonthly({
       start_date,
       end_date,
-      oem,
-      csm,
+      providerId,
+      consumerId,
     });
     return providerList;
   }
 
   @Get('consumer/manage')
-  @ApiResponse({ status: 201, description: 'Successful Login' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getConsumerApiCalls(): Promise<any> {
-    const consumerList = await this.service.getConsumerApiCalls();
-    const newConsumerList = await Promise.all(
-      consumerList.map(async (consumer) => {
-        const events = await this.service.getEventByConsumer(
-          consumer.consumer_id,
-        );
-        consumer.events = events;
-        return consumer;
-      }),
-    );
-    return newConsumerList;
+  @ApiQuery({
+    name: 'providerId',
+    description: 'providerId',
+    type: String,
+    required: false,
+  })
+  async getConsumerApiCalls(@Query() query): Promise<any> {
+    const { providerId } = query;
+    const consumerList = await this.service.getConsumerApiCalls({ providerId });
+
+    return consumerList;
   }
 }
