@@ -9,10 +9,10 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
-import { RolesGuard } from 'modules/auth/roles.guard';
 import { Roles } from 'modules/common/constants/roles';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
+import { RolesGuard } from 'modules/common/guard/roles.guard';
 import { UserLog } from 'modules/entities';
 import { SystemLog } from 'modules/entities/systemLog.entity';
 import { CrudSystemLogService } from './systemLog.service';

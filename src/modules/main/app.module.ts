@@ -64,7 +64,7 @@ config();
           migrationsTableName: 'migrations_typeorm',
           migrationsRun: true,
           keepConnectionAlive: configService.get('DB_CONNECTION_ALIVE'),
-          // logging: true,
+          logging: true,
         } as TypeOrmModuleAsyncOptions;
       },
     }),

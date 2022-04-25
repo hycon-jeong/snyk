@@ -11,10 +11,10 @@ import 'moment-timezone';
 import * as moment from 'moment';
 import { ProviderModule } from 'modules/api.mobile/v1/provider';
 import { TvDeviceModule } from 'modules/api.tvapp/v1/device/tv.device.module';
-import { RoleService } from './role.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from 'modules/entities/role.entity';
 import { KeyStoreModule } from 'modules/key-store/key-store.module';
+import { CrudRoleService } from 'modules/api.admin/v1/role/role.service';
 moment.tz.setDefault('Asia/Seoul');
 
 @Module({
@@ -48,7 +48,7 @@ moment.tz.setDefault('Asia/Seoul');
   providers: [
     AuthService,
     JwtStrategy,
-    RoleService,
+    CrudRoleService,
     { provide: 'MomentWrapper', useValue: moment },
   ],
   exports: [PassportModule.register({ defaultStrategy: 'jwt' }), AuthService],

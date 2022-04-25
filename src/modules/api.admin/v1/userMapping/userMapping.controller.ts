@@ -27,9 +27,9 @@ import CrudsProviderService from 'modules/api.mobile/v1/provider/provider.servic
 import { UsersService } from 'modules/user';
 import { UserMappingService } from './userMapping.service';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
-import { RolesGuard } from '../auth/roles.guard';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
 import { Roles } from 'modules/common/constants/roles';
+import { RolesGuard } from 'modules/common/guard/roles.guard';
 
 @ApiBearerAuth()
 @Crud({
@@ -169,6 +169,10 @@ export class UserMappingController implements CrudController<UserMapping> {
     @ParsedBody() dto: UserMapping,
     @Param('id') id,
   ) {
+    const {
+      authPersist: { user },
+    } = req.parsed;
+
     if (dto.providerId) {
       const providerData = await this.providerService.findOne({
         id: dto.providerId,
@@ -209,22 +213,17 @@ export class UserMappingController implements CrudController<UserMapping> {
     });
 
     if (dto.mappingStatus === 'INACTIVE') {
-      // 맵핑 삭제
+      // 연결된 tv 삭제 노티
       this.firebaseMessage.sendToDevice(
         [userMapping?.tvDevice?.tvDeviceToken],
         {
-          // notification: {
-          //   title: '차량 알림',
-          //   body:
-          //     dto.messageContent ||
-          //     '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
-          // },
           data: {
             isConnected: 'false',
           },
         },
       );
     }
+    delete req.parsed.authPersist;
     return this.base.updateOneBase(req, dto);
   }
 }

@@ -11,11 +11,11 @@ import 'moment-timezone';
 import * as moment from 'moment';
 import { ProviderModule } from 'modules/api.mobile/v1/provider';
 import { TvDeviceModule } from 'modules/api.tvapp/v1/device/tv.device.module';
-import { RoleService } from './role.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from 'modules/entities/role.entity';
 import { UserAuthorityMapping } from 'modules/entities/userAuthorityMapping.entity';
 import { KeyStoreModule } from 'modules/key-store/key-store.module';
+import { RoleService } from 'modules/common/services/RoleService';
 moment.tz.setDefault('Asia/Seoul');
 
 @Module({

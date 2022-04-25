@@ -19,10 +19,10 @@ import {
   Override,
   ParsedRequest,
 } from '@nestjsx/crud';
-import { RolesGuard } from 'modules/auth/roles.guard';
 import { Roles } from 'modules/common/constants/roles';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
+import { RolesGuard } from 'modules/common/guard/roles.guard';
 import { LogService } from 'modules/common/services/LogService';
 import { User } from 'modules/entities';
 import { Not } from 'typeorm';

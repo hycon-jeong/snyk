@@ -60,10 +60,10 @@ import {
 import { AuthService, JwtAuthGuard } from 'modules/auth';
 import { MoRegisterPayload } from './dto/moRegister.payload';
 import { generateUserKey } from 'utils/String';
-import { RoleService } from 'modules/auth/role.service';
 import CrudsConsumerService from 'modules/api.mobile/v1/consumer/consumer.service';
 import { randomBytes } from 'crypto';
 import { KeyStoreService } from 'modules/key-store/key-store.service';
+import { RoleService } from 'modules/common/services/RoleService';
 
 @ApiBearerAuth()
 @Crud({

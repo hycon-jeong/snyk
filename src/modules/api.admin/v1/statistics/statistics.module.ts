@@ -12,6 +12,7 @@ import {
   Provider,
   User,
 } from 'modules/entities';
+import { RoleModule } from '../role/role.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import {
       Message,
     ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    RoleModule,
   ],
   controllers: [StatisticsController],
   providers: [StatisticsService],

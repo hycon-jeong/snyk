@@ -31,9 +31,9 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import CrudsEventService from './event.service';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
-import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from 'modules/common/constants/roles';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
+import { RolesGuard } from 'modules/common/guard/roles.guard';
 
 @ApiBearerAuth()
 @Crud({

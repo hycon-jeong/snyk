@@ -13,9 +13,10 @@ import { ConsumerStatistics, TotalStatistics } from './statistics.interface';
 import { StatisticsService } from './statistics.service';
 import * as moment from 'moment';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
-import { RolesGuard } from '../auth/roles.guard';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
 import { Roles } from 'modules/common/constants/roles';
+import { RolesGuard } from 'modules/common/guard/roles.guard';
+import { RoleService } from 'modules/common/services/RoleService';
 
 enum RankType {
   'user' = 'user',
@@ -32,7 +33,10 @@ enum RankType {
 @Controller('api/admin/v1/statistics')
 @ApiTags('statistics')
 export class StatisticsController {
-  constructor(private readonly statisticsService: StatisticsService) {}
+  constructor(
+    private readonly statisticsService: StatisticsService,
+    private readonly roleService: RoleService,
+  ) {}
 
   /**
    * Retrieves a total statistics data
@@ -43,12 +47,16 @@ export class StatisticsController {
   @ApiResponse({ status: 400, description: 'Fetch Profile Request Failed' })
   async getTotal(@Query() query): Promise<TotalStatistics> {
     const { providerId } = query;
+    const role = await this.roleService.findOne({ code: 'USER' });
     const totalProvider = this.statisticsService.getTotalProvider({
       providerId,
     });
     const totalEvent = this.statisticsService.getTotalEvent({ providerId });
     const totalMessage = this.statisticsService.getTotalMessage({ providerId });
-    const totalUser = this.statisticsService.getTotalUser({ providerId });
+    const totalUser = this.statisticsService.getTotalUser({
+      providerId,
+      roleId: role.id,
+    });
     const allPromise = await Promise.all([
       totalProvider,
       totalEvent,

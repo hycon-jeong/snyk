@@ -13,9 +13,9 @@ import {
 import { Roles } from 'modules/common/constants/roles';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
+import { RolesGuard } from 'modules/common/guard/roles.guard';
 import { FcmToken, User } from 'modules/entities';
 import { FirebaseMessagingService } from 'modules/firebase';
-import { RolesGuard } from '../auth/roles.guard';
 import CrudsFcmTokenService from './fcmToken.service';
 
 @ApiBearerAuth()

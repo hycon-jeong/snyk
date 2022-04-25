@@ -17,15 +17,10 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
-import { RolesGuard } from 'modules/auth/roles.guard';
-import { Roles } from 'modules/common/constants/roles';
-import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
-import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { LogService } from 'modules/common/services/LogService';
 import { Provider, User } from 'modules/entities';
 import { Not } from 'typeorm';
-import { CreateProviderDto } from './dto/create-provider.dto';
-import { UpdateProviderDto } from './dto/update-provider.dto';
+
 import CrudsProviderService from './provider.service';
 
 @ApiBearerAuth()

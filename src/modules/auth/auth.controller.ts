@@ -27,9 +27,10 @@ import CrudsProviderService from 'modules/api.mobile/v1/provider/provider.servic
 import { TvDeviceService } from 'modules/api.tvapp/v1/device/tv.device.service';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { LogService } from 'modules/common/services/LogService';
-import { RoleService } from './role.service';
 import { randomBytes } from 'crypto';
 import { KeyStoreService } from 'modules/key-store/key-store.service';
+import { CrudRoleService } from 'modules/api.admin/v1/role/role.service';
+import { RoleService } from 'modules/common/services/RoleService';
 
 @Controller('api/auth')
 @ApiTags('authentication')

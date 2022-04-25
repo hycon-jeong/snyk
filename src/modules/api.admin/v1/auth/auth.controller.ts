@@ -19,10 +19,10 @@ import { AuthService, LoginPayload } from '.';
 import { randomBytes } from 'crypto';
 import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { LogService } from 'modules/common/services/LogService';
-import { RoleService } from './role.service';
 import { UsersService } from 'modules/user';
 import { ChangePwPayload } from './changePw.payload';
 import { KeyStoreService } from 'modules/key-store/key-store.service';
+import { RoleService } from 'modules/common/services/RoleService';
 
 @Controller('api/admin/v1/auth')
 @ApiTags('authentication')

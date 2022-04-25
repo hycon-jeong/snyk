@@ -38,10 +38,13 @@ export class StatisticsService {
     return totalMessage;
   }
 
-  async getTotalUser({ providerId }) {
+  async getTotalUser({ providerId, roleId }) {
     const params = {};
     if (providerId) params['providerId'] = providerId;
-    return this.userRepository.count(params);
+    if (roleId) params['roleId'] = roleId;
+    const totalUser = await this.userRepository.count(params);
+
+    return totalUser;
   }
 
   async getUserRegisteringByDate(startDate, endDate, providerId) {
