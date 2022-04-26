@@ -1,0 +1,147 @@
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { TvAuthService } from 'modules/api.tvapp/v1/auth/tv.auth.service';
+import { User } from 'modules/entities/user.entity';
+import 'moment-timezone';
+import * as moment from 'moment';
+moment.tz.setDefault('Asia/Seoul');
+
+import { LessThan, MoreThan } from 'typeorm';
+import { AuthService, LoginPayload, RegisterPayload } from './';
+import { MoRegisterPayload } from './moRegister.payload';
+import CrudsProviderService from 'modules/api.mobile/v1/provider/provider.service';
+import { TvDeviceService } from 'modules/api.tvapp/v1/device/tv.device.service';
+import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
+import { LogService } from 'modules/common/services/LogService';
+import { randomBytes } from 'crypto';
+import { KeyStoreService } from 'modules/key-store/key-store.service';
+import { CrudRoleService } from 'modules/api.admin/v1/role/role.service';
+import { RoleService } from 'modules/common/services/RoleService';
+import { UsersService } from 'modules/user';
+import { CurrentUser } from 'modules/common/decorator/current-user.decorator';
+
+@Controller('api/mobile/v1/auth')
+@ApiTags('authentication')
+export class AuthController {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UsersService,
+    private readonly tvDeviceService: TvDeviceService,
+    private readonly tvAuthService: TvAuthService,
+    private readonly providerService: CrudsProviderService,
+    private readonly logService: LogService,
+    private readonly roleService: RoleService,
+    private readonly keyStoreService: KeyStoreService,
+  ) {}
+
+  @Post('register/mo')
+  @ApiResponse({ status: 201, description: 'Successful Registration' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async moRegister(@Body() payload: MoRegisterPayload): Promise<any> {
+    const { userId, role, password, tvCertCode, ...rest } = payload;
+    const roleData = await this.roleService.findOne({
+      code: role,
+      status: 'ACTIVE',
+    });
+    const providerData = await this.providerService.findOne({
+      providerCode: payload.provider_id,
+    });
+    if (!providerData || !providerData.id) {
+      throw new BadRequestException('Provider not found');
+    }
+
+    // 인증번호 확인
+    const tvCert = await this.tvAuthService.getTvCertCodeOne({
+      where: {
+        tvCertCode,
+        expireDt: MoreThan(moment().format('YYYY-MM-DD HH:mm:ss')),
+      },
+    });
+
+    if (!tvCert || !tvCert.id) {
+      throw new BadRequestException('인증번호가 일치하지 않습니다.');
+    }
+
+    let user = await this.userService.findOne({
+      where: { userId: userId, status: 'ACTIVE', providerId: providerData.id },
+    });
+
+    if (!user) {
+      // todo
+      // name -> providerName + userCount
+      const num = await this.userService.count();
+      user = await this.userService.moCreate({
+        userId,
+        roleId: roleData.id,
+        password,
+        // tvCertCode,
+        status: 'ACTIVE',
+        providerId: providerData.id,
+        userKey: this.generateUserKey(),
+        name: providerData.providerName + '_' + num,
+      });
+    }
+    try {
+      await this.userService.createUserMapping({
+        userId: user.id,
+        mappingStatus: 'ACTIVE',
+        providerId: providerData.id,
+        consumerId: payload.consumer_id,
+        tvDeviceId: tvCert.tvDeviceId,
+        name: user.name,
+        ...rest,
+      });
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+    try {
+      await this.tvAuthService.deleteOne(tvCert.id);
+    } catch (err) {
+      console.log(err);
+    }
+
+    const accessTokenKey = randomBytes(64).toString('hex');
+    const refreshTokenKey = randomBytes(64).toString('hex');
+    await this.keyStoreService.create(user, accessTokenKey, refreshTokenKey);
+    const token = await this.authService.createToken(
+      user,
+      accessTokenKey,
+      refreshTokenKey,
+    );
+
+    return {
+      accessToken: token.accessToken,
+      expireIn: token.expiresIn,
+      user: token.user,
+    };
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Get('me')
+  @ApiResponse({ status: 200, description: 'Successful Response' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getLoggedInUser(@CurrentUser() user: User): Promise<User> {
+    return user;
+  }
+
+  generateUserKey() {
+    const prefix = 'MYCAR';
+    const datetime = Date.now();
+    return prefix + datetime;
+  }
+}

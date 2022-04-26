@@ -33,7 +33,7 @@ import CrudsProviderService from './provider.service';
   },
 })
 // @UseGuards(AuthGuard())
-@Controller('api/provider')
+@Controller('api/mobile/v1/provider')
 @ApiTags('provider')
 @CrudAuth({
   property: 'user',

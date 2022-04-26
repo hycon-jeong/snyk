@@ -30,7 +30,7 @@ import CrudsConsumerService from './consumer.service';
     only: ['getOneBase', 'getManyBase'],
   },
 })
-@Controller('api/consumer')
+@Controller('api/mobile/v1/consumer')
 @ApiTags('consumer')
 @CrudAuth({
   property: 'user',
