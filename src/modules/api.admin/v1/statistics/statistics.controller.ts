@@ -179,20 +179,42 @@ export class StatisticsController {
   @ApiResponse({ status: 400, description: 'Fetch Profile Request Failed' })
   async getTotalRank(@Query() query): Promise<any> {
     const { type, providerId } = query;
-    let data = [];
+    const role = await this.roleService.findOne({ code: Roles.USER });
+
+    const result = {};
     switch (type) {
       case 'user':
-        data = await this.statisticsService.getUserTotalRank(providerId);
+        result['eventType'] =
+          await this.statisticsService.getUserEventCountGroupByEventType(
+            role.id,
+            providerId,
+          );
+        result['rank'] = await this.statisticsService.getUserTotalRank(
+          role.id,
+          providerId,
+        );
         break;
       case 'provider':
-        data = await this.statisticsService.getProviderTotalRank(providerId);
+        result['rank'] = await this.statisticsService.getProviderTotalRank(
+          providerId,
+        );
+        result['eventType'] =
+          await this.statisticsService.getProviderEventCountGroupByEventType(
+            providerId,
+          );
         break;
       case 'consumer':
-        data = await this.statisticsService.getConsumerTotalRank(providerId);
+        result['rank'] = await this.statisticsService.getConsumerTotalRank(
+          providerId,
+        );
+        result['eventType'] =
+          await this.statisticsService.getConsumerEventCountGroupByEventType(
+            providerId,
+          );
         break;
       default:
         break;
     }
-    return data;
+    return result;
   }
 }

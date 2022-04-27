@@ -17,12 +17,12 @@ import { UserMappingModule } from './userMapping/userMapping.module';
 
 @Module({
   imports: [
+    AuthModule,
     BlockerModule,
     AuthorityModule,
     UserLogModule,
     EventLogModule,
     SystemLogModule,
-    AuthModule,
     ConsumerModule,
     ProviderModule,
     UserModule,

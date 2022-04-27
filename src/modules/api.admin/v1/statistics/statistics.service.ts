@@ -95,21 +95,42 @@ export class StatisticsService {
       [startDate, today, today, endDate, providerId],
     );
   }
-  async getUserTotalRank(providerId) {
+  async getUserTotalRank(roleId, providerId) {
     return this.userRepository.query(
       `SELECT 
-        COUNT(*) AS curr,
+        (select count(*) from event e where e.user_mapping_id = um.id) as totalCount,
         u.name as userName,
         u.id as userId
-          FROM event as e
-            LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
-            LEFT JOIN users AS u ON u.id = um.user_id
-            WHERE 1=1
-            ${providerId ? ' AND e.provider_id = ? ' : ''}
+          FROM users as u
+            left join \`user-mapping\` um ON um.user_id  = u.id
+          WHERE 1=1     
+            AND u.role_id = ?    
+            ${providerId ? ' AND u.provider_id = ? ' : ''}
           GROUP BY u.id
-          ORDER BY curr desc
+          ORDER BY totalCount desc
       LIMIT 10`,
-      [providerId],
+      [roleId, providerId],
+    );
+  }
+
+  async getUserEventCountGroupByEventType(roleId, providerId) {
+    return this.userRepository.query(
+      `SELECT 
+        u.id  as id,
+        u.name as name,
+        (select count(*) from event e where e.user_mapping_id = um.id) as totalCount,
+        (select count(*) from event e where e.user_mapping_id = um.id and e.event_type = 'normal') as normalCount,
+        (select count(*) from event e where e.user_mapping_id = um.id and e.event_type = 'important') as importantCount,
+        (select count(*) from event e where e.user_mapping_id = um.id and e.event_type = 'advertise') as advertiseCount
+      from users u
+        left join \`user-mapping\` um ON um.user_id  = u.id
+        WHERE 1=1     
+        AND u.role_id = ?    
+        ${providerId ? ' AND u.provider_id = ? ' : ''}
+      group by u.id
+      order by totalCount desc
+      limit 10`,
+      [roleId, providerId],
     );
   }
 
@@ -134,16 +155,32 @@ export class StatisticsService {
   async getProviderTotalRank(providerId) {
     return this.userRepository.query(
       `SELECT 
-        COUNT(*) AS curr, 
+        (select count(*) from event e where e.provider_id = p.id) as totalCount,
         p.provider_name as providerName,
         p.id as providerId
-          FROM event as e
-            LEFT JOIN provider AS p ON p.id = e.provider_id
-          WHERE 1=1
-            ${providerId ? ' AND e.provider_id = ? ' : ''}
-          GROUP BY p.id
-          ORDER BY curr desc
+          FROM provider as p
+            WHERE 1=1
+              ${providerId ? ' AND p.id = ? ' : ''}
+          ORDER BY totalCount desc
       LIMIT 10`,
+      [providerId],
+    );
+  }
+
+  async getProviderEventCountGroupByEventType(providerId) {
+    return this.userRepository.query(
+      `SELECT 
+        p.id  as providerId,
+        p.provider_name as providerName,
+        (select count(*) from event e where e.provider_id = p.id) as totalCount,
+        (select count(*) from event e where e.provider_id = p.id and e.event_type = 'normal') as normalCount,
+        (select count(*) from event e where e.provider_id = p.id and e.event_type = 'important') as importantCount,
+        (select count(*) from event e where e.provider_id = p.id and e.event_type = 'advertise') as advertiseCount
+      from provider p
+        WHERE 1=1     
+        ${providerId ? ' AND p.id = ? ' : ''}
+      order by totalCount desc
+      limit 10`,
       [providerId],
     );
   }
@@ -171,18 +208,59 @@ export class StatisticsService {
   async getConsumerTotalRank(providerId) {
     return this.userRepository.query(
       `SELECT 
-        COUNT(*) AS curr,
+        (select count(*) from event e
+          LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
+            where c.id = um.consumer_id
+            ${providerId ? ' AND um.provider_id = ? ' : ''}
+        ) as totalCount,
         c.consumer_name as consumerName ,
         c.id as consumerId
-        FROM event as e
-          LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
-          LEFT JOIN consumer AS c ON c.id = um.consumer_id
-        WHERE 1=1
-          ${providerId ? ' AND e.provider_id = ? ' : ''}
+        FROM consumer as c
+          WHERE 1=1
         GROUP BY c.id
-        ORDER BY curr desc
+        ORDER BY totalCount desc
       LIMIT 10`,
       [providerId],
+    );
+  }
+
+  async getConsumerEventCountGroupByEventType(providerId) {
+    return this.userRepository.query(
+      `SELECT 
+        c.id  as consumerId,
+        c.consumer_name as consumerName,
+        (
+          select count(*) from event e 
+            LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
+              where c.id = um.consumer_id
+              ${providerId ? ' AND um.provider_id = ? ' : ''}
+        ) as totalCount,
+        (
+          select count(*) from event e 
+            LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
+              where c.id = um.consumer_id
+              ${providerId ? ' AND um.provider_id = ? ' : ''}
+              and e.event_type = 'normal'
+        ) as normalCount,
+        (
+          select count(*) from event e 
+            LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
+              where c.id = um.consumer_id
+              ${providerId ? ' AND um.provider_id = ? ' : ''}
+              and e.event_type = 'important'
+        ) as importantCount,
+        (
+          select count(*) from event e 
+            LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
+              where c.id = um.consumer_id
+              ${providerId ? ' AND um.provider_id = ? ' : ''}
+              and e.event_type = 'advertise'
+        ) as advertiseCount
+      from consumer c
+        WHERE 1=1     
+      order by totalCount desc
+      limit 10`,
+      [providerId, providerId, providerId, providerId],
     );
   }
 }

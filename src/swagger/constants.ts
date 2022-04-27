@@ -1,10 +1,13 @@
 export const TVAPP_VERSION = 'v1';
 export const PROVIDER_VERSION = 'v1';
+export const MOBILE_VERSION = 'v1';
+export const ADMIN_VERSION = 'v1';
 
-export const SWAGGER_API_ROOT = 'api/hycon/docs';
-export const SWAGGER_API_NAME = 'MyCarService API';
-export const SWAGGER_API_DESCRIPTION = 'MyCarService API Description';
-export const SWAGGER_API_CURRENT_VERSION = '1.0.0';
+export const SWAGGER_ADMIN_API_ROOT = `api/admin/${ADMIN_VERSION}/docs`;
+export const SWAGGER_ADMIN_API_NAME = 'MyCarService Admin API';
+export const SWAGGER_ADMIN_API_DESCRIPTION =
+  'MyCarService Admin API Description';
+export const SWAGGER_ADMIN_API_CURRENT_VERSION = '1.0.0';
 
 export const SWAGGER_PROVIDER_API_ROOT = `api/provider/${PROVIDER_VERSION}/docs`;
 export const SWAGGER_PROVIDER_API_NAME = 'MyCarService Provider API';
@@ -19,3 +22,9 @@ export const SWAGGER_TVAPP_API_NAME = 'MyCarService TvApp API';
 export const SWAGGER_TVAPP_API_DESCRIPTION =
   'MyCarService TvApp API Description';
 export const SWAGGER_TVAPP_API_CURRENT_VERSION = TVAPP_VERSION;
+
+export const SWAGGER_MOBILE_API_ROOT = `api/mobile/${MOBILE_VERSION}/docs`;
+export const SWAGGER_MOBILE_API_NAME = 'MyCarService Mobile API';
+export const SWAGGER_MOBILE_API_DESCRIPTION =
+  'MyCarService Mobile API Description';
+export const SWAGGER_MOBILE_API_CURRENT_VERSION = '1.0.0';

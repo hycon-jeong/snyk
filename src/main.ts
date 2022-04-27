@@ -5,8 +5,9 @@ import { TrimStringsPipe } from './modules/common/transformer/trim-strings.pipe'
 import { AppModule } from './modules/main/app.module';
 import {
   setupProviderSwagger,
-  setupSwagger,
+  setupAdminSwagger,
   setupTvAppSwagger,
+  setupMobileSwagger,
 } from './swagger';
 import * as dotenv from 'dotenv';
 import { WinstonModule } from 'nest-winston';
@@ -26,6 +27,8 @@ import { ProviderEventModule } from 'modules/api.provider/v1/event/provider.even
 import { TvDeviceModule } from 'modules/api.tvapp/v1/device/tv.device.module';
 import { TvTestModule } from 'modules/api.tvapp/v1/test/tv.test.module';
 import { TvAppV1ApiModule } from 'modules/api.tvapp/v1/tvapp.v1.module';
+import { AdminV1Module } from 'modules/api.admin/v1/admin.v1.module';
+import { MobileV1Module } from 'modules/api.mobile/v1/mobile.v1.module';
 
 dotenv.config();
 
@@ -40,7 +43,16 @@ async function bootstrap() {
     logger: logger,
   };
   const app = await NestFactory.create(AppModule, nestAppOptions);
-  setupSwagger(app);
+  setupAdminSwagger(app, {
+    include: [AdminV1Module],
+    deepScanRoutes: true,
+  });
+
+  setupMobileSwagger(app, {
+    include: [MobileV1Module],
+    deepScanRoutes: true,
+  });
+
   // provider api docs
   setupProviderSwagger(app, {
     include: [ProviderApiModule],
