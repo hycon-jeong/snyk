@@ -188,7 +188,30 @@ export class CrudEventController implements CrudController<Event> {
       (dto.eventType as any) = 'normal';
     }
 
+    // event insert
+    const event = await this.base.createOneBase(req, {
+      userMappingId: userMappings[0].id,
+      // category: categoryData,
+      status: EventStatus.SENDING,
+      imageUrl: dto.imageUrl,
+      providerKey: '',
+      issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
+      provider: providerData,
+      messageContent: dto.messageContent,
+      // message: messageData,
+      subMessageContent: subMessage,
+      messageTitle: dto.messageTitle,
+      eventType: dto.eventType,
+      redirectUrl: dto.redirectUrl,
+      callbackUrl: dto.callbackUrl,
+      languageCode: dto.languageCode,
+      optMsgContent: dto.optMsgContent,
+      optMsgTitle: dto.optMsgTitle,
+      optMsgSubContent: subMessage,
+    } as Event);
+
     const pushData = {
+      id: event.id + '',
       position: 'center',
       imageUrl: dto.imageUrl || 'https://i.ibb.co/71YvfCK/image.png',
       subMessage: subMessage,
@@ -198,6 +221,10 @@ export class CrudEventController implements CrudController<Event> {
         dto.messageContent ||
         '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
       type: dto.eventType,
+      languageCode: dto.languageCode,
+      optMsgContent: dto.optMsgContent,
+      optMsgTitle: dto.optMsgTitle,
+      optMsgSubContent: subMessage,
     };
 
     // send to user
@@ -256,23 +283,7 @@ export class CrudEventController implements CrudController<Event> {
     this.logger.debug(
       `push data from web >>>>>>>>>> ${JSON.stringify(pushData)}`,
     );
-    const event = await this.base.createOneBase(req, {
-      userMappingId: userMappings[0].id,
-      // category: categoryData,
-      status: EventStatus.SENDING,
-      imageUrl: dto.imageUrl,
-      providerKey: '',
-      issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
-      provider: providerData,
-      messageContent: dto.messageContent,
-      // message: messageData,
-      subMessageContent: subMessage,
-      messageTitle: dto.messageTitle,
-      eventType: dto.eventType,
-      redirectUrl: dto.redirectUrl,
-      callbackUrl: dto.callbackUrl,
-      languageCode: dto.languageCode,
-    } as Event);
+
     const { messageContent, issuedAt, imageUrl, status } = event;
     try {
       await this.logService.createEventrLog({

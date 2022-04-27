@@ -47,6 +47,26 @@ export class Event {
   subMessageContent: string | null;
 
   @ApiProperty()
+  @Column('varchar', { name: 'opt_message_title', nullable: true, length: 500 })
+  optMsgTitle: string | null;
+
+  @ApiProperty()
+  @Column('varchar', {
+    name: 'opt_message_content',
+    nullable: true,
+    length: 500,
+  })
+  optMsgContent: string | null;
+
+  @ApiProperty()
+  @Column('varchar', {
+    name: 'opt_sub_message_content',
+    nullable: true,
+    length: 500,
+  })
+  optMsgSubContent: string | null;
+
+  @ApiProperty()
   @Column('varchar', { name: 'image_url', nullable: true })
   imageUrl: string | null;
 
