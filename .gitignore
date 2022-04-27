@@ -26,3 +26,7 @@ yarn-error.log
 build/config\.gypi
 
 sqlite-example.sql
+
+swagger-admin.yaml
+swagger-provider.yaml
+swagger-tvapp.yaml
