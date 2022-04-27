@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User, UserMapping } from 'modules/entities';
-import { AuthModule, AuthService } from '../auth';
+import { AuthModule } from '../auth';
 import { CrudUserController } from './user.controller';
 import { UsersService } from './user.service';
 

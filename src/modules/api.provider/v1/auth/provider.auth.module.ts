@@ -20,11 +20,11 @@ import { UserModule, UsersService } from 'modules/user';
 import { UserMappingModule } from 'modules/userMapping/userMapping.module';
 import CrudsProviderAuthService from './provider.auth.service';
 import { CrudProviderAuthController } from './provider.auth.controller';
-import { AuthModule } from 'modules/auth';
 import { Role } from 'modules/entities/role.entity';
 import CrudsConsumerService from 'modules/api.mobile/v1/consumer/consumer.service';
 import { KeyStoreModule } from 'modules/key-store/key-store.module';
 import { CrudRoleService } from 'modules/api.admin/v1/role/role.service';
+import { AuthModule } from 'modules/api.mobile/v1/auth';
 
 @Module({
   imports: [

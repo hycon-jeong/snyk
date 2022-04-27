@@ -49,11 +49,24 @@ export class KeyStoreService {
     primaryKey: string,
     secondaryKey: string,
   ): Promise<KeyStores> {
-    const keystore = await this.keyStoreRepository.save({
+    let keyStore = await this.keyStoreRepository.findOne({
       userId: client.id,
-      primaryKey: primaryKey,
-      secondaryKey: secondaryKey,
     });
-    return keystore;
+    if (keyStore) {
+      keyStore = await this.keyStoreRepository.save({
+        id: keyStore.id,
+        userId: client.id,
+        primaryKey: primaryKey,
+        secondaryKey: secondaryKey,
+      });
+    } else {
+      keyStore = await this.keyStoreRepository.save({
+        userId: client.id,
+        primaryKey: primaryKey,
+        secondaryKey: secondaryKey,
+      });
+    }
+
+    return keyStore;
   }
 }

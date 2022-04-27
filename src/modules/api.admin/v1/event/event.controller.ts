@@ -147,10 +147,10 @@ export class CrudEventController implements CrudController<Event> {
       });
     }
     return this.base.createOneBase(req, {
-      user_mapping_id: dto.userMappingId,
+      userMappingId: dto.userMappingId,
       message: messageData,
       category: categoryData,
-      status: EventStatus.COMPLETE,
+      status: EventStatus.SENDING,
       imageUrl: dto.imageUrl,
       providerKey: '',
       issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),

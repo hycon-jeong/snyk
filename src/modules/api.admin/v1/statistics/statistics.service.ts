@@ -76,7 +76,7 @@ export class StatisticsService {
     );
   }
 
-  async getUserRank(startDate, today, endDate) {
+  async getUserRank(startDate, today, endDate, providerId) {
     return this.userRepository.query(
       `SELECT COUNT(*) AS curr,u.name as userName ,u.id as userId,
       IFNULL((SELECT COUNT(*) FROM event AS ie
@@ -88,13 +88,14 @@ export class StatisticsService {
     LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
     LEFT JOIN users AS u ON u.id = um.user_id
     WHERE e.issued_at > ? AND e.issued_at <= ?
+    ${providerId ? ' AND e.provider_id = ? ' : ''}
     GROUP BY u.id
     ORDER BY curr desc
   LIMIT 10`,
-      [startDate, today, today, endDate],
+      [startDate, today, today, endDate, providerId],
     );
   }
-  async getUserTotalRank() {
+  async getUserTotalRank(providerId) {
     return this.userRepository.query(
       `SELECT 
         COUNT(*) AS curr,
@@ -103,14 +104,16 @@ export class StatisticsService {
           FROM event as e
             LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
             LEFT JOIN users AS u ON u.id = um.user_id
+            WHERE 1=1
+            ${providerId ? ' AND e.provider_id = ? ' : ''}
           GROUP BY u.id
           ORDER BY curr desc
       LIMIT 10`,
-      [],
+      [providerId],
     );
   }
 
-  async getProviderRank(startDate, today, endDate) {
+  async getProviderRank(startDate, today, endDate, providerId) {
     return this.userRepository.query(
       `SELECT COUNT(*) AS curr,p.provider_name as providerName, p.id as providerId,
       IFNULL((SELECT COUNT(*) FROM event AS ie
@@ -120,14 +123,15 @@ export class StatisticsService {
     FROM event as e
       LEFT JOIN \`provider\` AS p ON p.id = e.provider_id
       WHERE e.issued_at > ? AND e.issued_at <= ?
+      ${providerId ? ' AND e.provider_id = ? ' : ''}
       GROUP BY p.id
       ORDER BY curr desc
     LIMIT 10`,
-      [startDate, today, today, endDate],
+      [startDate, today, today, endDate, providerId],
     );
   }
 
-  async getProviderTotalRank() {
+  async getProviderTotalRank(providerId) {
     return this.userRepository.query(
       `SELECT 
         COUNT(*) AS curr, 
@@ -135,14 +139,16 @@ export class StatisticsService {
         p.id as providerId
           FROM event as e
             LEFT JOIN provider AS p ON p.id = e.provider_id
+          WHERE 1=1
+            ${providerId ? ' AND e.provider_id = ? ' : ''}
           GROUP BY p.id
           ORDER BY curr desc
       LIMIT 10`,
-      [],
+      [providerId],
     );
   }
 
-  async getConsumerRank(startDate, today, endDate) {
+  async getConsumerRank(startDate, today, endDate, providerId) {
     return this.userRepository.query(
       `SELECT COUNT(*) AS curr,c.consumer_name as consumerName ,c.id as consumerId,
       IFNULL((SELECT COUNT(*) FROM event AS ie
@@ -154,14 +160,15 @@ export class StatisticsService {
       LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
       LEFT JOIN consumer AS c ON c.id = um.consumer_id
       WHERE e.issued_at > ? AND e.issued_at <= ?
+      ${providerId ? ' AND e.provider_id = ? ' : ''}
       GROUP BY c.id
       ORDER BY curr desc
     LIMIT 10`,
-      [startDate, today, today, endDate],
+      [startDate, today, today, endDate, providerId],
     );
   }
 
-  async getConsumerTotalRank() {
+  async getConsumerTotalRank(providerId) {
     return this.userRepository.query(
       `SELECT 
         COUNT(*) AS curr,
@@ -170,10 +177,12 @@ export class StatisticsService {
         FROM event as e
           LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
           LEFT JOIN consumer AS c ON c.id = um.consumer_id
+        WHERE 1=1
+          ${providerId ? ' AND e.provider_id = ? ' : ''}
         GROUP BY c.id
         ORDER BY curr desc
       LIMIT 10`,
-      [],
+      [providerId],
     );
   }
 }

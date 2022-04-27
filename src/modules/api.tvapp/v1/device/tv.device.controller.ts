@@ -36,8 +36,7 @@ export interface IResponse {
 }
 
 @ApiBearerAuth()
-// @UseGuards(AuthGuard())
-@Controller(`api/tvapp/${TVAPP_VERSION}/device`)
+@Controller(`api/tvapp/v1/device`)
 @ApiTags('Device')
 export class TvDeviceController {
   constructor(

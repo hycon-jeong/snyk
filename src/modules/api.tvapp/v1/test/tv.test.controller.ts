@@ -47,7 +47,7 @@ export enum EventType {
 
 @ApiBearerAuth()
 // @UseGuards(AuthGuard())
-@Controller(`api/tvapp/${TVAPP_VERSION}/test`)
+@Controller(`api/tvapp/v1/test`)
 @ApiTags('Test')
 export class TvTestController {
   constructor(

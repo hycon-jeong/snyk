@@ -19,6 +19,7 @@ import { UsersService } from 'modules/user';
 import { UserMappingModule } from 'modules/userMapping/userMapping.module';
 import { CrudEventController } from './provider.event.controller';
 import CrudsEventService from './provider.event.service';
+import { RoleService } from 'modules/common/services/RoleService';
 
 @Module({
   imports: [

@@ -4,7 +4,6 @@ import { ConfigService } from 'modules/config';
 import { User } from 'modules/entities/user.entity';
 import { UsersService } from 'modules/user';
 import { Hash } from 'utils/Hash';
-import { LoginPayload } from './login.payload';
 
 @Injectable()
 export class AuthService {
@@ -34,14 +33,5 @@ export class AuthService {
 
       user,
     };
-  }
-
-  async validateUser(payload: LoginPayload): Promise<any> {
-    const user = await this.userService.getByUserId(payload.userId);
-    if (!user || !Hash.compare(payload.password, user.password)) {
-      this.logger.log('Invalid credentials!');
-      throw new UnauthorizedException('Invalid credentials!');
-    }
-    return user;
   }
 }

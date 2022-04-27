@@ -40,7 +40,7 @@ import { UsersService } from 'modules/user';
 import { UserMappingService } from 'modules/userMapping/userMapping.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { PROVIDER_VERSION } from 'swagger/constants';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Logger } from 'winston';
 import {
   createEventDescriptionHtml,
@@ -56,9 +56,9 @@ import {
 } from 'swagger/swagger.response';
 import { ILamdaReponse } from './type/providerEvent.interface';
 import { EventType } from 'modules/api.tvapp/v1/test/tv.test.controller';
-import { JwtAuthGuard } from 'modules/auth';
-import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { LogService } from 'modules/common/services/LogService';
+import { RoleService } from 'modules/common/services/RoleService';
+import { Roles } from 'modules/common/constants/roles';
 
 // @ApiBearerAuth()
 @Crud({
@@ -91,6 +91,7 @@ export class CrudEventController implements CrudController<Event> {
     public readonly categoryService: CategoryService,
     public readonly userMappingService: UserMappingService,
     public readonly logService: LogService,
+    public readonly roleService: RoleService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
   ) {}
   get base(): CrudController<Event> {
@@ -199,6 +200,7 @@ export class CrudEventController implements CrudController<Event> {
       type: dto.eventType,
     };
 
+    // send to user
     if (tokensArray && tokensArray.length > 0) {
       this.firebaseMessage.sendToDevice(
         tokensArray,
@@ -208,13 +210,56 @@ export class CrudEventController implements CrudController<Event> {
         { priority: 'high' },
       );
     }
+
+    // send to admin
+    try {
+      const adminRole = await this.roleService.getRoleListByCodeList([
+        Roles.ADMIN,
+      ]);
+      const providerManagerRole = await this.roleService.getRoleListByCodeList([
+        Roles.MANAGER,
+        Roles.PROVIDER,
+      ]);
+      const adminList = await this.usersService.find({
+        where: {
+          roleId: In(adminRole.map((r) => r.id)),
+          status: 'ACTIVE',
+        },
+      });
+      const providerManagerList = await this.usersService.find({
+        where: {
+          roleId: In(providerManagerRole.map((r) => r.id)),
+          status: 'ACTIVE',
+          providerId: providerData.id,
+        },
+      });
+      const userIds = adminList
+        .map((u) => u.id)
+        .concat(providerManagerList.map((u) => u.id));
+      const fcmTokens = await this.fcmTokenService.find({
+        userId: In(userIds),
+      });
+      const tokensArray = fcmTokens.map((item) => item.token);
+      if (tokensArray && tokensArray.length > 0) {
+        this.firebaseMessage.sendToDevice(
+          tokensArray,
+          {
+            data: pushData,
+          },
+          { priority: 'high' },
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+
     this.logger.debug(
       `push data from web >>>>>>>>>> ${JSON.stringify(pushData)}`,
     );
     const event = await this.base.createOneBase(req, {
-      user_mapping_id: userMappings[0].id,
+      userMappingId: userMappings[0].id,
       // category: categoryData,
-      status: EventStatus.COMPLETE,
+      status: EventStatus.SENDING,
       imageUrl: dto.imageUrl,
       providerKey: '',
       issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
@@ -323,15 +368,15 @@ export class CrudEventController implements CrudController<Event> {
     await Promise.all(
       userMappings.map(async (userMapping) => {
         return await this.service.insertOne({
-          user_mapping_id: userMapping.id,
-          status: EventStatus.COMPLETE,
+          userMappingId: userMapping.id,
+          status: EventStatus.SENDING,
           imageUrl: data.imageUrl,
           providerKey: '',
           issuedAt: new Date(),
           messageContent: data.body,
           subMessageContent: data.subMessage,
           category_id: parseInt(body.msgCode),
-          message_id: 1,
+          messageId: 1,
           provider: provider,
         } as Event);
       }),

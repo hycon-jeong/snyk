@@ -31,8 +31,7 @@ export default class CrudsFcmTokenService extends TypeOrmCrudService<FcmToken> {
         ],
       },
     }).query();
-    console.log('queryString 11111');
-    console.log(queryString);
+
     return token;
   }
 }

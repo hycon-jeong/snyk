@@ -18,6 +18,10 @@ export class FcmToken {
   token: string;
 
   @ApiProperty()
+  @Column({ name: 'user_id' })
+  userId: number;
+
+  @ApiProperty()
   @Column('varchar', { name: 'client_id', nullable: false })
   client_id: string;
 

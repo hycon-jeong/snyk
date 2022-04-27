@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { TvAuthModule } from 'modules/api.tvapp/v1/auth/tv.auth.module';
 import 'moment-timezone';
@@ -47,7 +46,6 @@ moment.tz.setDefault('Asia/Seoul');
   controllers: [AuthController],
   providers: [
     AuthService,
-    JwtStrategy,
     CrudRoleService,
     { provide: 'MomentWrapper', useValue: moment },
   ],

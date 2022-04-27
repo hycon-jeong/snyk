@@ -4,14 +4,22 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Provider } from 'modules/entities';
 import { Blocker } from 'modules/entities/blocker.entity';
 import { Role } from 'modules/entities/role.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import { Roles } from '../constants/roles';
 
 @Injectable()
 export class RoleService extends TypeOrmCrudService<Role> {
   constructor(
     @InjectRepository(Role)
-    roleRepository: Repository<Role>,
+    private roleRepository: Repository<Role>,
   ) {
     super(roleRepository);
+  }
+
+  async getRoleListByCodeList(codeList: Array<Roles>): Promise<Array<Role>> {
+    return this.roleRepository.find({
+      code: In(codeList),
+      status: 'ACTIVE',
+    });
   }
 }

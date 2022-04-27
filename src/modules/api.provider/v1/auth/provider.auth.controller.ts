@@ -10,7 +10,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Controller, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -57,13 +56,14 @@ import {
   CreateRequestErrorResponseDto,
   CreateServerErrorResponseDto,
 } from 'swagger/swagger.response';
-import { AuthService, JwtAuthGuard } from 'modules/auth';
 import { MoRegisterPayload } from './dto/moRegister.payload';
 import { generateUserKey } from 'utils/String';
 import CrudsConsumerService from 'modules/api.mobile/v1/consumer/consumer.service';
 import { randomBytes } from 'crypto';
 import { KeyStoreService } from 'modules/key-store/key-store.service';
 import { RoleService } from 'modules/common/services/RoleService';
+import { AuthService } from 'modules/api.mobile/v1/auth';
+import { JwtAuthGuard } from 'modules/common/guard/jwtAuth.guard';
 
 @ApiBearerAuth()
 @Crud({

@@ -25,6 +25,7 @@ import { ProviderAuthModule } from 'modules/api.provider/v1/auth/provider.auth.m
 import { ProviderEventModule } from 'modules/api.provider/v1/event/provider.event.module';
 import { TvDeviceModule } from 'modules/api.tvapp/v1/device/tv.device.module';
 import { TvTestModule } from 'modules/api.tvapp/v1/test/tv.test.module';
+import { TvAppV1ApiModule } from 'modules/api.tvapp/v1/tvapp.v1.module';
 
 dotenv.config();
 
@@ -42,11 +43,13 @@ async function bootstrap() {
   setupSwagger(app);
   // provider api docs
   setupProviderSwagger(app, {
-    include: [ProviderEventModule, ProviderAuthModule],
+    include: [ProviderApiModule],
+    deepScanRoutes: true,
   });
   // tvapp api docs
   setupTvAppSwagger(app, {
-    include: [TvAuthModule, TvDeviceModule, TvTestModule],
+    include: [TvAppV1ApiModule],
+    deepScanRoutes: true,
   });
 
   app.use(morgan('combined'));

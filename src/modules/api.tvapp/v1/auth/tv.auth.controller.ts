@@ -38,7 +38,7 @@ export class IResponse {
 
 @ApiBearerAuth()
 // @UseGuards(AuthGuard())
-@Controller(`api/tvapp/${TVAPP_VERSION}/auth`)
+@Controller(`api/tvapp/v1/auth`)
 @ApiTags('Auth')
 export class TvAuthController {
   constructor(

@@ -117,10 +117,16 @@ export class StatisticsController {
     description: 'rank type in [user,provider,consumer]',
     enum: RankType,
   })
+  @ApiQuery({
+    name: 'providerId',
+    description: 'providerId',
+    type: String,
+    required: false,
+  })
   @ApiResponse({ status: 200, description: 'Fetch Profile Request Received' })
   @ApiResponse({ status: 400, description: 'Fetch Profile Request Failed' })
   async getTodayRank(@Query() query): Promise<any> {
-    const { today, type } = query;
+    const { today, type, providerId } = query;
     const startDate = moment(today).subtract(1, 'day').format('YYYY-MM-DD');
     const endDate = moment(today).add(1, 'day').format('YYYY-MM-DD');
     console.log(startDate, endDate);
@@ -131,6 +137,7 @@ export class StatisticsController {
           startDate,
           today,
           endDate,
+          providerId,
         );
         break;
       case 'provider':
@@ -138,6 +145,7 @@ export class StatisticsController {
           startDate,
           today,
           endDate,
+          providerId,
         );
         break;
       case 'consumer':
@@ -145,6 +153,7 @@ export class StatisticsController {
           startDate,
           today,
           endDate,
+          providerId,
         );
         break;
       default:
@@ -160,20 +169,26 @@ export class StatisticsController {
     description: 'rank type in [user,provider,consumer]',
     enum: RankType,
   })
+  @ApiQuery({
+    name: 'providerId',
+    description: 'providerId',
+    type: String,
+    required: false,
+  })
   @ApiResponse({ status: 200, description: 'Fetch Profile Request Received' })
   @ApiResponse({ status: 400, description: 'Fetch Profile Request Failed' })
   async getTotalRank(@Query() query): Promise<any> {
-    const { type } = query;
+    const { type, providerId } = query;
     let data = [];
     switch (type) {
       case 'user':
-        data = await this.statisticsService.getUserTotalRank();
+        data = await this.statisticsService.getUserTotalRank(providerId);
         break;
       case 'provider':
-        data = await this.statisticsService.getProviderTotalRank();
+        data = await this.statisticsService.getProviderTotalRank(providerId);
         break;
       case 'consumer':
-        data = await this.statisticsService.getConsumerTotalRank();
+        data = await this.statisticsService.getConsumerTotalRank(providerId);
         break;
       default:
         break;

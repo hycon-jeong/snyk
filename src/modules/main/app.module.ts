@@ -5,7 +5,6 @@ import { HealthModule } from 'modules/health/health.module';
 import { MessageModule } from 'modules/message/message.module';
 import { SentryModule } from 'modules/sentry/sentry.module';
 import * as path from 'path';
-import { AuthModule } from './../auth';
 import { CommonModule } from './../common';
 import { ConfigModule, ConfigService } from './../config';
 import { AppController } from './app.controller';
@@ -32,11 +31,13 @@ import { AllExceptionsFilter } from 'modules/common/HttpExeption';
 import { ProviderLogModule } from 'modules/providerLog';
 import { ConsumerLogModule } from 'modules/consumerLog';
 import { UserMappingLogModule } from 'modules/userMappingLog';
-import { TvAppApiModule } from 'modules/api.tvapp/v1/auth/tvapp.module';
+import { TvAppV1ApiModule } from 'modules/api.tvapp/v1/tvapp.v1.module';
 import { ProviderApiModule } from 'modules/api.provider/v1/provider.module';
-import { TvAppV0ApiModule } from 'modules/api.tvapp/v0/auth/tvapp.module';
+import { TvAppV0ApiModule } from 'modules/api.tvapp/v0/tvapp.module';
 import { AdminV1Module } from 'modules/api.admin/v1/admin.v1.module';
 import { MobileV1Module } from 'modules/api.mobile/v1/mobile.v1.module';
+import { AuthModule } from 'modules/api.mobile/v1/auth';
+import { PassportModule } from '@nestjs/passport';
 
 var serviceAccount = require('../../../firebase.json');
 
@@ -60,7 +61,6 @@ config();
             migrationsDir: 'src/migration',
           },
           timezone: 'UTC',
-          // timezone: '-09:00',
           migrationsTableName: 'migrations_typeorm',
           migrationsRun: true,
           keepConnectionAlive: configService.get('DB_CONNECTION_ALIVE'),
@@ -105,8 +105,8 @@ config();
       ],
     }),
     HealthModule,
-    AuthModule,
     CommonModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     EventModule,
     ConsumerLogModule,
     ProviderLogModule,
@@ -115,11 +115,11 @@ config();
     CategoryModule,
     UserMappingModule,
     UserMappingLogModule,
-    TvAppApiModule,
     ProviderApiModule,
     TvAppV0ApiModule,
     AdminV1Module,
     MobileV1Module,
+    TvAppV1ApiModule,
   ],
   controllers: [AppController],
   providers: [

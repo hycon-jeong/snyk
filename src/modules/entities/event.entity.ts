@@ -23,9 +23,8 @@ export class Event {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  // @ManyToOne(() => User, (users) => users.id, {})
-  // @JoinColumn({ name: 'user_id' })
-  // user: User;
+  @Column({ name: 'user_mapping_id' })
+  userMappingId: number;
 
   @ApiProperty()
   @Column('varchar', { name: 'provider_key', nullable: true, length: 255 })
@@ -52,7 +51,12 @@ export class Event {
   imageUrl: string | null;
 
   @ApiProperty()
-  @Column('varchar', { name: 'language_code', nullable: true, length: 16 })
+  @Column('varchar', {
+    name: 'language_code',
+    nullable: true,
+    length: 16,
+    default: 'ko',
+  })
   languageCode: string | null;
 
   @ApiProperty()
@@ -72,8 +76,36 @@ export class Event {
   eventType: string | null;
 
   @ApiProperty()
-  @Column('datetime', { name: 'issued_at', nullable: true })
+  @Column('timestamp', {
+    name: 'issued_at',
+    nullable: true,
+    comment: '이벤트 발행일(프로바이더에서 받은 이벤트 발행일)',
+  })
   issuedAt: Date | null;
+
+  @ApiProperty()
+  @Column('timestamp', {
+    name: 'received_at',
+    nullable: true,
+    comment: 'tv앱에서 이벤트 수신일',
+  })
+  receivedAt: Date | null;
+
+  @ApiProperty()
+  @Column('timestamp', {
+    name: 'completed_at',
+    nullable: true,
+    comment: 'tv앱에서 이벤트 확인일',
+  })
+  completedAt: Date | null;
+
+  @ApiProperty()
+  @Column('timestamp', {
+    name: 'failed_at',
+    nullable: true,
+    comment: '이벤트 오류일',
+  })
+  failedAt: Date | null;
 
   @ApiProperty()
   @Column({
@@ -90,14 +122,6 @@ export class Event {
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   public createdAt: Date;
-
-  // @ApiProperty()
-  // @ManyToOne(() => UserMapping, (userMapping) => userMapping.id, {
-  //   onDelete: 'NO ACTION',
-  //   onUpdate: 'NO ACTION',
-  // })
-  // @JoinColumn({ name: 'user_mapping_id' })
-  // userMapping: UserMapping;
 
   @OneToMany(() => EventLog, (eventLog) => eventLog.event)
   eventLogs: EventLog[];
@@ -120,6 +144,7 @@ export class Event {
   @ManyToOne(() => Category, (category) => category.events, {})
   @JoinColumn({ name: 'category_id' })
   category: Category;
+
   @Column({ name: 'category_id', nullable: true })
   category_id: number;
 
@@ -127,9 +152,5 @@ export class Event {
   providerId: number;
 
   @Column({ name: 'message_id', nullable: true })
-  message_id: number;
-  @Column({ name: 'user_mapping_id' })
-  user_mapping_id: number;
-  // @Column({ name: 'user_id' })
-  // user_id: number;
+  messageId: number;
 }
