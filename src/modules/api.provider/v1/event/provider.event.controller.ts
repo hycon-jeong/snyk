@@ -187,7 +187,7 @@ export class CrudEventController implements CrudController<Event> {
     }
 
     if (!dto.optMsgContent) dto.optMsgContent = dto.messageContent;
-    if (!dto.optMsgTitle) dto.optMsgTitle = dto.optMsgTitle;
+    if (!dto.optMsgTitle) dto.optMsgTitle = dto.messageTitle;
 
     // event insert
     const event = await this.base.createOneBase(req, {
