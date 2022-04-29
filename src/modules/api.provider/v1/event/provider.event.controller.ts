@@ -221,10 +221,10 @@ export class CrudEventController implements CrudController<Event> {
         dto.messageContent ||
         '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
       type: dto.eventType,
-      languageCode: dto.languageCode,
-      optMsgContent: dto.optMsgContent,
-      optMsgTitle: dto.optMsgTitle,
-      optMsgSubContent: subMessage,
+      // languageCode: dto.languageCode,
+      // optMsgContent: dto.optMsgContent,
+      // optMsgTitle: dto.optMsgTitle,
+      // optMsgSubContent: subMessage,
     };
 
     // send to user
