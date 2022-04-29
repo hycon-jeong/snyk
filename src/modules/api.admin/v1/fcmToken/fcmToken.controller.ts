@@ -72,7 +72,7 @@ export class CrudFcmTokenController implements CrudController<FcmToken> {
     } else {
       return this.base.createOneBase(req, {
         ...dto,
-        user: req.parsed.authPersist.user,
+        userId: req.parsed.authPersist.user.id,
       });
     }
   }
