@@ -32,6 +32,7 @@ import { ChangeEventPayload } from './changeEvent.payload';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import { Event } from 'modules/entities';
 import { TvDeviceService } from '../device/tv.device.service';
+import { LogService } from 'modules/common/services/LogService';
 
 export interface IResponse {
   statusCode: number;
@@ -47,6 +48,7 @@ export class TvEventController {
     private readonly service: TvEventService,
     private readonly userMappingService: UserMappingService,
     private readonly tvDeviceService: TvDeviceService,
+    private readonly logService: LogService,
   ) {}
 
   @Post('/:id/status')
@@ -101,7 +103,7 @@ export class TvEventController {
     @Query() query,
   ): Promise<any> {
     const { deviceToken } = query;
-    const { status } = body;
+    const { status, date } = body;
     let device = await this.tvDeviceService.getTvDeviceOne({
       tvDeviceToken: deviceToken,
     });
@@ -120,24 +122,49 @@ export class TvEventController {
     const payload: Partial<Event> = {
       status,
     };
+    let logMethod = 'Patch';
     switch (status) {
       case EventStatus.COMPLETE:
-        payload['completedAt'] = new Date();
+        logMethod = 'Complete';
+        payload['completedAt'] = date;
         break;
 
       case EventStatus.RECEIVE:
-        payload['receivedAt'] = new Date();
+        logMethod = 'Receive';
+        payload['receivedAt'] = date;
         break;
 
       case EventStatus.FAIL:
-        payload['failedAt'] = new Date();
+        logMethod = 'Fail';
+        payload['failedAt'] = date;
         break;
 
       default:
-        payload['failedAt'] = new Date();
+        logMethod = 'Patch';
+        payload['failedAt'] = date;
         break;
     }
     await this.service.update({ id, userMappingId: userMapping.id }, payload);
+
+    try {
+      const event = await this.service.findOne({ id });
+      const userMapping = await this.userMappingService.findOne({
+        where: { id: event.userMappingId },
+        join: { alias: 'mapping', leftJoinAndSelect: { user: 'mapping.user' } },
+      });
+
+      await this.logService.createEventrLog({
+        actionMessage: this.logService.eventLogMessageTemplate(
+          logMethod as any,
+          userMapping.user,
+          event,
+        ),
+        actionData: 'Event',
+        eventId: id,
+      });
+    } catch (err) {
+      console.log(err);
+    }
     return {
       statusCode: 200,
       isSuccess: true,

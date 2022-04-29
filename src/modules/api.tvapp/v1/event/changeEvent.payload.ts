@@ -7,4 +7,8 @@ export class ChangeEventPayload {
   @IsNotEmpty()
   @IsEnum(EventStatus, { each: true })
   status: EventStatus;
+
+  @ApiProperty({ type: Date, required: true })
+  @IsNotEmpty()
+  date: Date;
 }

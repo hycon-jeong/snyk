@@ -213,7 +213,11 @@ export class CrudEventController implements CrudController<Event> {
 
     try {
       await this.logService.createEventrLog({
-        actionMessage: `[생성] 유저 : ${user.userKey} , '${event.messageTitle}' 이벤트 생성`,
+        actionMessage: this.logService.eventLogMessageTemplate(
+          'Patch',
+          user,
+          event,
+        ),
         actionData: 'Event',
         eventId: event.id,
         userId: user.id,
@@ -257,7 +261,11 @@ export class CrudEventController implements CrudController<Event> {
         );
         try {
           await this.logService.createEventrLog({
-            actionMessage: `[오류] 유저 : ${user.userKey} , '${event.messageTitle}' 이벤트 오류`,
+            actionMessage: this.logService.eventLogMessageTemplate(
+              'Fail',
+              user,
+              event,
+            ),
             actionData: 'Event',
             eventId: event.id,
             userId: user.id,
