@@ -143,7 +143,7 @@ export class CrudEventController implements CrudController<Event> {
       userMappingId: dto.userMappingId,
       message: messageData,
       category: categoryData,
-      status: EventStatus.SENDING,
+      status: EventStatus.COMPLETE,
       imageUrl: dto.imageUrl,
       providerKey: '',
       issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),

@@ -192,7 +192,7 @@ export class CrudEventController implements CrudController<Event> {
     const event = await this.base.createOneBase(req, {
       userMappingId: userMappings[0].id,
       // category: categoryData,
-      status: EventStatus.SENDING,
+      status: EventStatus.COMPLETE,
       imageUrl: dto.imageUrl,
       providerKey: '',
       issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
@@ -380,7 +380,7 @@ export class CrudEventController implements CrudController<Event> {
       userMappings.map(async (userMapping) => {
         return await this.service.insertOne({
           userMappingId: userMapping.id,
-          status: EventStatus.SENDING,
+          status: EventStatus.COMPLETE,
           imageUrl: data.imageUrl,
           providerKey: '',
           issuedAt: new Date(),
