@@ -68,7 +68,11 @@ export class CrudFcmTokenController implements CrudController<FcmToken> {
 
     // this.firebaseMessage.subscribeToTopic([dto.token], '/topics/all')
     if (existsFcmToken && existsFcmToken.id) {
-      return this.base.updateOneBase(req, { ...existsFcmToken, ...dto });
+      return this.base.updateOneBase(req, {
+        ...existsFcmToken,
+        ...dto,
+        userId: req.parsed.authPersist.user.id,
+      });
     } else {
       return this.base.createOneBase(req, {
         ...dto,
