@@ -221,7 +221,7 @@ export class CrudEventController implements CrudController<Event> {
         dto.messageContent ||
         '마이카 알람서비스로부터 사고감지 알람이 도착했습니다.',
       type: dto.eventType,
-      languageCode: dto.languageCode,
+      languageCode: dto.languageCode || 'ko',
       optMsgContent: dto.optMsgContent,
       optMsgTitle: dto.optMsgTitle,
       optMsgSubContent: subMessage,
@@ -238,6 +238,25 @@ export class CrudEventController implements CrudController<Event> {
           { priority: 'high' },
         );
       } catch (err) {
+        await this.service.update(
+          { id: event.id },
+          { failedAt: new Date(), status: EventStatus.FAIL },
+        );
+        try {
+          await this.logService.createEventrLog({
+            actionMessage: `[오류] 유저 : ${user.userKey} , '${event.messageTitle}' 이벤트 오류`,
+            actionData: 'Event',
+            eventId: event.id,
+            userId: user.id,
+            providerId: providerData.id,
+            rawData: JSON.stringify({
+              fail: err,
+            }),
+          });
+        } catch (err) {
+          console.log(err);
+        }
+
         console.log(err);
       }
     }

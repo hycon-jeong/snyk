@@ -29,11 +29,11 @@ export class SystemLog {
   userId: number;
 
   @ApiProperty()
-  @Column({ name: 'action_message', nullable: true, length: 255 })
+  @Column({ name: 'action_message', nullable: true, length: 1024 })
   actionMessage: string | null;
 
   @ApiProperty()
-  @Column({ name: 'action_data', nullable: true, length: 2000 })
+  @Column({ name: 'action_data', nullable: true, length: 256 })
   actionData: string | null;
 
   @ApiProperty()

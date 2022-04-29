@@ -105,4 +105,8 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
       .groupBy('category_id')
       .getRawMany();
   }
+
+  async update(criteria, payload) {
+    return this.eventRepository.update(criteria, payload);
+  }
 }
