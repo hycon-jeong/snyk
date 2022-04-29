@@ -230,7 +230,7 @@ export class CrudEventController implements CrudController<Event> {
     // send to user
     if (tokensArray && tokensArray.length > 0) {
       try {
-        this.firebaseMessage.sendToDevice(
+        await this.firebaseMessage.sendToDevice(
           tokensArray,
           {
             data: pushData,
