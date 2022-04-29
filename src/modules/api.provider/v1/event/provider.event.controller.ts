@@ -176,8 +176,6 @@ export class CrudEventController implements CrudController<Event> {
         : // : `연결된 장치 : ${providerData.providerName} / 블랙박스`;
           `연결된 장치 : 현대 소나타`;
 
-    // dto.eventType = EventType.IMPORTANT;
-
     if (dto.eventType === EventType.ADVERTISE) {
       (dto.eventType as any) = 'advertise';
     }
@@ -187,6 +185,9 @@ export class CrudEventController implements CrudController<Event> {
     if (dto.eventType === EventType.INFO) {
       (dto.eventType as any) = 'normal';
     }
+
+    if (!dto.optMsgContent) dto.optMsgContent = dto.messageContent;
+    if (!dto.optMsgTitle) dto.optMsgTitle = dto.optMsgTitle;
 
     // event insert
     const event = await this.base.createOneBase(req, {
@@ -209,6 +210,18 @@ export class CrudEventController implements CrudController<Event> {
       optMsgTitle: dto.optMsgTitle,
       optMsgSubContent: subMessage,
     } as Event);
+
+    try {
+      await this.logService.createEventrLog({
+        actionMessage: `[생성] 유저 : ${user.userKey} , '${event.messageTitle}' 이벤트 생성`,
+        actionData: 'Event',
+        eventId: event.id,
+        userId: user.id,
+        providerId: providerData.id,
+      });
+    } catch (err) {
+      console.log(err);
+    }
 
     const pushData = {
       id: event.id + '',
@@ -308,17 +321,6 @@ export class CrudEventController implements CrudController<Event> {
     );
 
     const { messageContent, issuedAt, imageUrl, status } = event;
-    try {
-      await this.logService.createEventrLog({
-        actionMessage: `[생성] 유저 : ${user.userKey} , '${event.messageTitle}' 이벤트 생성`,
-        actionData: 'Event',
-        eventId: event.id,
-        userId: user.id,
-        providerId: providerData.id,
-      });
-    } catch (err) {
-      console.log(err);
-    }
 
     return {
       statusCode: 201,

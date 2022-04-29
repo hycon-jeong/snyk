@@ -104,7 +104,7 @@ export class CreateEventDto {
   })
   @MaxLength(80)
   @IsOptional()
-  readonly optMsgTitle: string;
+  optMsgTitle: string;
 
   @ApiProperty({
     type: String,
@@ -117,7 +117,7 @@ export class CreateEventDto {
   @IsString()
   @MaxLength(80)
   @IsOptional()
-  readonly optMsgContent: string;
+  optMsgContent: string;
 
   readonly status: EventStatus;
 }
