@@ -1,4 +1,11 @@
-import { Global, Module, Scope } from '@nestjs/common';
+import {
+  Global,
+  MiddlewareConsumer,
+  Module,
+  NestMiddleware,
+  NestModule,
+  Scope,
+} from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { EventModule } from 'modules/event';
 import { HealthModule } from 'modules/health/health.module';
@@ -38,6 +45,7 @@ import { AdminV1Module } from 'modules/api.admin/v1/admin.v1.module';
 import { MobileV1Module } from 'modules/api.mobile/v1/mobile.v1.module';
 import { AuthModule } from 'modules/api.mobile/v1/auth';
 import { PassportModule } from '@nestjs/passport';
+import { HttpsRedirectMiddleware } from 'modules/common/middleware/HttpsRedirect.middleware';
 
 var serviceAccount = require('../../../firebase.json');
 
@@ -64,7 +72,7 @@ config();
           migrationsTableName: 'migrations_typeorm',
           migrationsRun: true,
           keepConnectionAlive: configService.get('DB_CONNECTION_ALIVE'),
-          logging: true,
+          // logging: true,
         } as TypeOrmModuleAsyncOptions;
       },
     }),
