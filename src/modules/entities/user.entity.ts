@@ -16,7 +16,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Roles } from 'modules/common/constants/roles';
 import { UserAuthorityMapping } from './userAuthorityMapping.entity';
 import { SystemLog } from './systemLog.entity';
-import { EventLog, Provider } from '.';
+import { EventLog, FcmToken, Provider } from '.';
 import { Role } from './role.entity';
 import { KeyStores } from './keyStores.entity';
 
@@ -100,6 +100,9 @@ export class User {
 
   @OneToMany(() => KeyStores, (keyStores) => keyStores.user)
   keyStores: KeyStores[];
+
+  @OneToMany(() => FcmToken, (FcmToken) => FcmToken.user)
+  fcmTokens: FcmToken[];
 
   @Column({
     name: 'password',

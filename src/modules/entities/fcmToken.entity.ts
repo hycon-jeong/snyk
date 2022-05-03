@@ -17,16 +17,16 @@ export class FcmToken {
   @Column('varchar', { name: 'token', unique: true, nullable: false })
   token: string;
 
-  @ApiProperty()
-  @Column({ name: 'user_id' })
+  @Column('int', { name: 'user_id' })
   userId: number;
 
   @ApiProperty()
   @Column('varchar', { name: 'client_id', nullable: false })
   client_id: string;
 
-  @ManyToOne(() => User, (users) => users.id, {
-    onDelete: 'CASCADE',
+  @ManyToOne(() => User, (user) => user.fcmTokens, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT',
   })
   @JoinColumn({ name: 'user_id' })
   user: User;

@@ -41,7 +41,7 @@ import CrudsFcmTokenService from './fcmToken.service';
   property: 'user',
   persist: (user: User) => {
     return {
-      user: user.id,
+      user: user,
     };
   },
 })
@@ -65,19 +65,13 @@ export class CrudFcmTokenController implements CrudController<FcmToken> {
       // client_id: dto.client_id,
       token: dto.token,
     });
-
-    // this.firebaseMessage.subscribeToTopic([dto.token], '/topics/all')
+    dto.userId = req.parsed.authPersist.user.id;
+    // this.firebaseMessage.subscribeToTopic([dto.token], '/topics/all');
     if (existsFcmToken && existsFcmToken.id) {
-      return this.base.updateOneBase(req, {
-        ...existsFcmToken,
-        ...dto,
-        userId: req.parsed.authPersist.user.id,
-      });
+      dto.id = existsFcmToken.id;
+      return this.base.updateOneBase(req, dto);
     } else {
-      return this.base.createOneBase(req, {
-        ...dto,
-        userId: req.parsed.authPersist.user.id,
-      });
+      return this.base.createOneBase(req, dto);
     }
   }
 }

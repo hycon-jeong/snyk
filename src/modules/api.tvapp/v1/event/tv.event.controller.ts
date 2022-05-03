@@ -144,7 +144,7 @@ export class TvEventController {
         payload['failedAt'] = date;
         break;
     }
-    await this.service.update({ id, userMappingId: userMapping.id }, payload);
+    await this.service.update({ id }, payload);
 
     try {
       const event = await this.service.findOne({ id });

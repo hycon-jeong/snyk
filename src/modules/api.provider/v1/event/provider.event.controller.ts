@@ -193,7 +193,7 @@ export class CrudEventController implements CrudController<Event> {
     const event = await this.base.createOneBase(req, {
       userMappingId: userMappings[0].id,
       // category: categoryData,
-      status: EventStatus.COMPLETE,
+      status: EventStatus.SENDING,
       imageUrl: dto.imageUrl,
       providerKey: '',
       issuedAt: dto.issuedAt ? dto.issuedAt : new Date(),
