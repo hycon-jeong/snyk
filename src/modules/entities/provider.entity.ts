@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Thema } from 'modules/common/constants/provider';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Event, EventLog, User, UserLog } from '.';
 import { Blocker } from './blocker.entity';
@@ -58,6 +59,15 @@ export class Provider {
     default: '#ffffff',
   })
   providerTextColor: string;
+
+  @ApiProperty()
+  @Column({
+    type: 'enum',
+    name: 'thema',
+    enum: Thema,
+    default: Thema.DARK,
+  })
+  thema: Thema;
 
   @ApiProperty()
   @Column('varchar', {
