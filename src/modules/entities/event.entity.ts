@@ -27,6 +27,10 @@ export class Event {
   userMappingId: number;
 
   @ApiProperty()
+  @Column({ name: 'user_id', nullable: true })
+  userId: number;
+
+  @ApiProperty()
   @Column('varchar', { name: 'provider_key', nullable: true, length: 255 })
   providerKey: string | null;
 
@@ -173,4 +177,8 @@ export class Event {
 
   @Column({ name: 'message_id', nullable: true })
   messageId: number;
+
+  @ManyToOne(() => User, (user) => user.events)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }
