@@ -53,6 +53,14 @@ export class Provider {
 
   @ApiProperty()
   @Column('varchar', {
+    name: 'provider_text_color',
+    length: 32,
+    default: '#ffffff',
+  })
+  providerTextColor: string;
+
+  @ApiProperty()
+  @Column('varchar', {
     name: 'provider_logo_url',
     length: 255,
   })

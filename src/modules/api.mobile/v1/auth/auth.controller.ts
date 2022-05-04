@@ -6,6 +6,8 @@ import {
   HttpException,
   HttpStatus,
   Inject,
+  Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -29,6 +31,7 @@ import { KeyStoreService } from 'modules/key-store/key-store.service';
 import { RoleService } from 'modules/common/services/RoleService';
 import { UsersService } from 'modules/user';
 import { CurrentUser } from 'modules/common/decorator/current-user.decorator';
+import { MoUpdatePayload } from './moUpdate.payload';
 
 @Controller('api/mobile/v1/auth')
 @ApiTags('authentication')
@@ -76,11 +79,9 @@ export class AuthController {
     let user = await this.userService.findOne({
       where: { userId: userId, status: 'ACTIVE', providerId: providerData.id },
     });
-
+    let isFirst = false;
     if (!user) {
-      // todo
-      // name -> providerName + userCount
-      const num = await this.userService.count();
+      isFirst = true;
       user = await this.userService.moCreate({
         userId,
         roleId: roleData.id,
@@ -89,7 +90,7 @@ export class AuthController {
         status: 'ACTIVE',
         providerId: providerData.id,
         userKey: this.generateUserKey(),
-        name: providerData.providerName + '_' + num,
+        name: providerData.providerName + '_' + Date.now(),
       });
     }
     try {
@@ -112,29 +113,48 @@ export class AuthController {
       console.log(err);
     }
 
-    const accessTokenKey = randomBytes(64).toString('hex');
-    const refreshTokenKey = randomBytes(64).toString('hex');
-    await this.keyStoreService.create(user, accessTokenKey, refreshTokenKey);
-    const token = await this.authService.createToken(
-      user,
-      accessTokenKey,
-      refreshTokenKey,
-    );
-
     return {
-      accessToken: token.accessToken,
-      expireIn: token.expiresIn,
-      user: token.user,
+      statusCode: 200,
+      data: {
+        user: user,
+        isFirst,
+      },
+      message: 'success',
+      // accessToken: token.accessToken,
+      // expireIn: token.expiresIn,
     };
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard())
-  @Get('me')
-  @ApiResponse({ status: 200, description: 'Successful Response' })
+  @Patch('user/:id')
+  @ApiResponse({ status: 201, description: 'Successful Registration' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getLoggedInUser(@CurrentUser() user: User): Promise<User> {
-    return user;
+  async updateUser(
+    @Body() payload: Partial<MoUpdatePayload>,
+    @Param('id') id,
+  ): Promise<any> {
+    const { name, provider_id, ...rest } = payload;
+
+    if (provider_id) {
+      const providerData = await this.providerService.findOne({
+        providerCode: payload.provider_id,
+      });
+      if (!providerData || !providerData.id) {
+        throw new BadRequestException('Provider not found');
+      }
+    }
+
+    await this.userService.updateUser({ id, status: 'ACTIVE' }, payload);
+
+    const user = await this.userService.findOne(id);
+    return {
+      statusCode: 200,
+      isSuccess: true,
+      message: 'success',
+      data: {
+        user: user,
+      },
+    };
   }
 
   generateUserKey() {

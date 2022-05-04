@@ -227,16 +227,30 @@ export class CrudProviderAuthController implements CrudController<User> {
 
     const userMappings = await this.userMappingService.find({
       where: { userId: user.id, mappingStatus: 'ACTIVE' },
+      join: {
+        leftJoinAndSelect: { tvDevice: 'mapping.tvDevice' },
+        alias: 'mapping',
+      },
     });
 
     await this.usersService.updateUser({ id: user.id }, { status: 'INACTIVE' });
 
-    const promArr = userMappings.map((map) => {
-      return this.userMappingService.updateUserMappings(
-        { mappingStatus: 'INACTIVE' },
-        { id: map.id },
+    const promArr = userMappings.reduce((acc, val) => {
+      // 맵핑 삭제
+      const fcm = this.firebaseMessage.sendToDevice(
+        [val?.tvDevice?.tvDeviceToken],
+        {
+          data: {
+            isConnected: 'false',
+          },
+        },
       );
-    });
+      const upt = this.userMappingService.updateUserMappings(
+        { mappingStatus: 'INACTIVE' },
+        { id: val.id },
+      );
+      return acc.concat(fcm).concat(upt);
+    }, []);
     await Promise.all(promArr);
 
     return {

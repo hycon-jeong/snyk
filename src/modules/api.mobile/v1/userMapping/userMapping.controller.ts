@@ -109,7 +109,22 @@ export class UserMappingController implements CrudController<UserMapping> {
         },
       },
     });
-    return userMappings;
+
+    const user = await this.userService.findOne({
+      providerId: provider.id,
+      userId: userKey,
+      status: 'ACTIVE',
+    });
+
+    return {
+      statusCode: 200,
+      isSuccess: true,
+      message: 'success',
+      data: {
+        userMappings,
+        user,
+      },
+    };
   }
 
   @Get('/testv1/myCarUserKey')
@@ -212,6 +227,24 @@ export class UserMappingController implements CrudController<UserMapping> {
         },
       );
     }
-    return this.base.updateOneBase(req, dto);
+
+    await this.base.updateOneBase(req, dto);
+
+    const mappingList = await this.service.find({
+      userId: userMapping.userId,
+      mappingStatus: 'ACTIVE',
+    });
+
+    if (!mappingList.length) {
+      await this.userService.updateUser(
+        { id: userMapping.userId },
+        { status: 'INACTIVE' },
+      );
+    }
+
+    return {
+      statusCode: 200,
+      isSuccess: true,
+    };
   }
 }
