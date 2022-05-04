@@ -209,6 +209,7 @@ export class CrudEventController implements CrudController<Event> {
       optMsgContent: dto.optMsgContent,
       optMsgTitle: dto.optMsgTitle,
       optMsgSubContent: subMessage,
+      userId: user.id,
     } as Event);
 
     try {
@@ -422,6 +423,7 @@ export class CrudEventController implements CrudController<Event> {
           category_id: parseInt(body.msgCode),
           messageId: 1,
           provider: provider,
+          userId: user.id,
         } as Event);
       }),
     );

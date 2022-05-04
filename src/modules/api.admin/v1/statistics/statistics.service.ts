@@ -80,16 +80,14 @@ export class StatisticsService {
     return this.userRepository.query(
       `SELECT COUNT(*) AS curr,u.name as userName ,u.id as userId,
       IFNULL((SELECT COUNT(*) FROM event AS ie
-      LEFT JOIN \`user-mapping\` AS ium on ium.id = ie.user_mapping_id
-      LEFT JOIN users AS iu ON iu.id = ium.user_id
+      LEFT JOIN users AS iu ON iu.id = ie.user_id
           WHERE iu.id = u.id AND ie.issued_at > ? AND ie.issued_at <= ?
-        GROUP BY iu.id),0) AS prev
+        GROUP BY ie.user_id),0) AS prev
   FROM event as e
-    LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
-    LEFT JOIN users AS u ON u.id = um.user_id
+    LEFT JOIN users AS u ON u.id = e.user_id
     WHERE e.issued_at > ? AND e.issued_at <= ?
     ${providerId ? ' AND e.provider_id = ? ' : ''}
-    GROUP BY u.id
+    GROUP BY e.user_id
     ORDER BY curr desc
   LIMIT 10`,
       [startDate, today, today, endDate, providerId],
@@ -98,11 +96,10 @@ export class StatisticsService {
   async getUserTotalRank(roleId, providerId) {
     return this.userRepository.query(
       `SELECT 
-        (select count(*) from event e where e.user_mapping_id = um.id) as totalCount,
+        (select count(*) from event e where e.user_id = u.id) as totalCount,
         u.name as userName,
         u.id as userId
           FROM users as u
-            left join \`user-mapping\` um ON um.user_id  = u.id
           WHERE 1=1     
             AND u.role_id = ?    
             ${providerId ? ' AND u.provider_id = ? ' : ''}
@@ -118,12 +115,11 @@ export class StatisticsService {
       `SELECT 
         u.id  as id,
         u.name as name,
-        (select count(*) from event e where e.user_mapping_id = um.id) as totalCount,
-        (select count(*) from event e where e.user_mapping_id = um.id and e.event_type = 'normal') as normalCount,
-        (select count(*) from event e where e.user_mapping_id = um.id and e.event_type = 'important') as importantCount,
-        (select count(*) from event e where e.user_mapping_id = um.id and e.event_type = 'advertise') as advertiseCount
+        (select count(*) from event e where e.user_id = u.id) as totalCount,
+        (select count(*) from event e where e.user_id = u.id and e.event_type = 'normal') as normalCount,
+        (select count(*) from event e where e.user_id = u.id and e.event_type = 'important') as importantCount,
+        (select count(*) from event e where e.user_id = u.id and e.event_type = 'advertise') as advertiseCount
       from users u
-        left join \`user-mapping\` um ON um.user_id  = u.id
         WHERE 1=1     
         AND u.role_id = ?    
         ${providerId ? ' AND u.provider_id = ? ' : ''}
