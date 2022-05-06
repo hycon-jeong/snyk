@@ -108,6 +108,8 @@ export class UserMappingController implements CrudController<UserMapping> {
           consumer: 'userMapping.consumer',
         },
       },
+
+      order: { id: 'DESC' },
     });
 
     const user = await this.userService.findOne({
@@ -230,14 +232,10 @@ export class UserMappingController implements CrudController<UserMapping> {
 
     await this.base.updateOneBase(req, dto);
 
-    console.log(userMapping);
-
     const mappingList = await this.service.find({
       userId: userMapping.userId,
       mappingStatus: 'ACTIVE',
     });
-
-    console.log(mappingList);
 
     if (!mappingList.length) {
       await this.userService.updateUser(

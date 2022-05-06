@@ -259,4 +259,32 @@ export class StatisticsService {
       [providerId, providerId, providerId, providerId],
     );
   }
+
+  async getProviderApiCallsByRange({
+    startDate,
+    endDate,
+    providerId,
+  }: {
+    startDate?: string;
+    endDate?: string;
+    providerId?: number;
+  }): Promise<any> {
+    const params = [startDate, endDate];
+    if (providerId) params.push(providerId + '');
+    return this.eventRepository.query(
+      `SELECT 
+        count(*) as totalCount,
+        p.provider_name as providerName,
+        p.id as providerId
+      FROM provider as p
+        LEFT JOIN event e ON e.provider_id = p.id
+          WHERE 1=1
+          ${startDate ? ' AND e.issued_at >= ?' : ''}
+          ${endDate ? ' AND e.issued_at < ?' : ''}
+        ${providerId ? 'AND p.id = ?' : ''}
+        GROUP BY p.id
+      LIMIT 10`,
+      params,
+    );
+  }
 }

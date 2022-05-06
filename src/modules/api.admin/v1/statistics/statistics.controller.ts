@@ -217,4 +217,43 @@ export class StatisticsController {
     }
     return result;
   }
+
+  // dashboard
+  @Get('/event/byMinutes')
+  @ApiQuery({
+    name: 'providerId',
+    description: 'providerId',
+    type: String,
+    required: false,
+  })
+  async getEventCount(@Query() query): Promise<any> {
+    const currDate = moment().utc();
+    const endDate = currDate.format('YYYY-MM-DD HH:mm:ss');
+    const startDate = currDate
+      .subtract(10, 'minutes')
+      .format('YYYY-MM-DD HH:mm:ss');
+    const start60Date = currDate
+      .subtract(60, 'minutes')
+      .format('YYYY-MM-DD HH:mm:ss');
+    const { providerId } = query;
+    const last10m = await this.statisticsService.getProviderApiCallsByRange({
+      startDate,
+      endDate,
+      providerId,
+    });
+    const last60m = await this.statisticsService.getProviderApiCallsByRange({
+      startDate: start60Date,
+      endDate,
+      providerId,
+    });
+    return {
+      statusCode: 200,
+      isSuccess: true,
+      message: 'success',
+      data: {
+        list: last10m,
+        list60: last60m,
+      },
+    };
+  }
 }
