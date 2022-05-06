@@ -46,7 +46,7 @@ import CrudsProviderService from './provider.service';
 @Controller('api/admin/v1/provider')
 @ApiTags('provider')
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
-@RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+@RolesAllowed(Roles.ADMIN, Roles.PROVIDER, Roles.MANAGER)
 @CrudAuth({
   property: 'user',
   persist: (user: User) => {
@@ -79,6 +79,7 @@ export class CrudProviderController implements CrudController<Provider> {
   }
 
   @Override()
+  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
   async createOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: CreateProviderDto,
@@ -112,6 +113,7 @@ export class CrudProviderController implements CrudController<Provider> {
   }
 
   @Override()
+  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
   async updateOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: UpdateProviderDto,

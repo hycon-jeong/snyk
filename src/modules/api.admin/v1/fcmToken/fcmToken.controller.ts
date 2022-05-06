@@ -34,7 +34,7 @@ import CrudsFcmTokenService from './fcmToken.service';
   },
 })
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
-@RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+@RolesAllowed(Roles.ADMIN, Roles.PROVIDER, Roles.MANAGER)
 @Controller('api/admin/v1/fcm-token')
 @ApiTags('fcmToken')
 @CrudAuth({
