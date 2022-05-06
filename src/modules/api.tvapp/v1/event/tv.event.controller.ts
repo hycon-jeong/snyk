@@ -50,6 +50,7 @@ export class TvEventController {
     private readonly userMappingService: UserMappingService,
     private readonly tvDeviceService: TvDeviceService,
     private readonly logService: LogService,
+    private readonly userService: UsersService,
   ) {}
 
   @Post('/:id/status')
@@ -149,15 +150,13 @@ export class TvEventController {
 
     try {
       const event = await this.service.findOne({ id });
-      const userMapping = await this.userMappingService.findOne({
-        where: { id: event.userMappingId },
-        join: { alias: 'mapping', leftJoinAndSelect: { user: 'mapping.user' } },
+      const user = await this.userService.findOne({
+        where: { id: event.userId },
       });
-
       await this.logService.createEventrLog({
         actionMessage: this.logService.eventLogMessageTemplate(
           logMethod as any,
-          userMapping.user,
+          user,
           event,
         ),
         actionData: 'Event',

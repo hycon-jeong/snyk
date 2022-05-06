@@ -14,6 +14,7 @@ import { TvEventService } from './tv.event.service';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     UserMappingModule,
     TvDeviceModule,
+    UserModule,
   ],
   controllers: [TvEventController],
   providers: [TvEventService],
