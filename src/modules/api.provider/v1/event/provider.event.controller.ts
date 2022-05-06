@@ -215,7 +215,7 @@ export class CrudEventController implements CrudController<Event> {
     try {
       await this.logService.createEventrLog({
         actionMessage: this.logService.eventLogMessageTemplate(
-          'Patch',
+          'Post',
           user,
           event,
         ),
