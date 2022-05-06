@@ -24,13 +24,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
         .status(status)
         .send({ ...rest, isSuccess: false, issuedAt });
     }
-    let message;
+    let message = errorData;
     if (typeof errorData === 'object') {
       message = await this._i18n.translate(errorData?.messageCode, {
         lang: ctx.getRequest().i18nLang,
       });
     }
-    message = errorData;
+
     response.status(status).send({
       message,
       statusCode: status,
