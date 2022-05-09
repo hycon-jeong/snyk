@@ -1,37 +1,35 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, MinLength } from 'class-validator';
-import { Unique } from 'modules/common';
-import { Roles } from 'modules/common/constants/roles';
-import { SameAs } from 'modules/common/validator/same-as.validator';
-import { User } from 'modules/entities/user.entity';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsEmpty,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  MinLength,
+} from 'class-validator';
+import { Password } from 'modules/common/validator/password.validator';
+import { RegisterPayload } from './register.payload';
 
-export class UpdatePayload {
+export class UpdatePayload extends PickType(RegisterPayload, [
+  'name',
+  'email',
+]) {
   @ApiProperty({
     required: true,
   })
   userId: string;
 
   @ApiProperty({
-    required: true,
-  })
-  providerId: number;
-
-  @ApiProperty({
-    required: true,
-  })
-  @IsEmail()
-  email: string;
-
-  @ApiProperty({
     required: false,
   })
+  @Password()
+  @IsOptional()
   password: string;
 
   @ApiProperty({
     required: true,
   })
-  @IsNotEmpty()
-  name: string;
+  providerId: number;
 
   @ApiProperty({
     required: true,
