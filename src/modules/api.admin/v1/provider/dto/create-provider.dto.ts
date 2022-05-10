@@ -31,6 +31,7 @@ export class CreateProviderDto {
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   readonly providerBackgroundUrl: string;
 
   @ApiProperty()

@@ -97,6 +97,16 @@ export class UserMappingController implements CrudController<UserMapping> {
       throw new BadRequestException('Provider not found');
     }
     const userMappings = await this.service.find({
+      select: [
+        'consumerId',
+        'id',
+        'key',
+        'mappingStatus',
+        'providerId',
+        'tvDeviceId',
+        'createdAt',
+        'name',
+      ],
       where: {
         providerId: provider.id,
         mappingStatus: 'ACTIVE',

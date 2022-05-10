@@ -56,10 +56,22 @@ export class CrudProviderController implements CrudController<Provider> {
   @Get('/code')
   async getProviderByCode(@ParsedRequest() req: CrudRequest, @Query() query) {
     const { providerId } = query;
-    const provider = await this.service.findOne({
-      providerCode: providerId,
-      status: 'ACTIVE',
-    });
+    const provider = await this.service.findOne(
+      {
+        providerCode: providerId,
+        status: 'ACTIVE',
+      },
+      {
+        select: [
+          'id',
+          'providerBackgroundUrl',
+          'providerCode',
+          'providerTextColor',
+          'providerName',
+          'providerLogoUrl',
+        ],
+      },
+    );
     if (!provider) {
       throw new BadRequestException('Provider not found');
     }
