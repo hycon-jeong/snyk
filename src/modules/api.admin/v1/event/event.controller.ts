@@ -67,15 +67,15 @@ import { RolesGuard } from 'modules/common/guard/roles.guard';
         alias: 'userMapping_query',
         eager: true,
       },
+      user: {
+        alias: 'user_query',
+        eager: true,
+      },
       eventType: {
         alias: 'eventType_query',
         // eager: true,
       },
-      'userMapping.user': {
-        eager: true,
-        alias: 'user_query',
-        exclude: ['password'],
-      },
+
       'userMapping.consumer': {
         eager: true,
         alias: 'consumer_query',
