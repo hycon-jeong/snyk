@@ -69,6 +69,7 @@ export class CrudProviderController implements CrudController<Provider> {
           'providerTextColor',
           'providerName',
           'providerLogoUrl',
+          'thema',
         ],
       },
     );
