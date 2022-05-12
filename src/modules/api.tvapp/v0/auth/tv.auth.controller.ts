@@ -109,7 +109,7 @@ export class TvAuthController {
 
     const certCode = await this.getUniqueCertCode();
 
-    const expireDt = moment().add(5, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    const expireDt = moment().utc().add(5, 'minutes').toISOString();
 
     const res = await this.service.createTvCertCode({
       tvCertCode: certCode,
