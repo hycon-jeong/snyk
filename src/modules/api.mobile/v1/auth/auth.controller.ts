@@ -61,7 +61,7 @@ export class AuthController {
     if (!providerData || !providerData.id) {
       throw new BadRequestException('Provider not found');
     }
-
+    console.log(moment().utc().toISOString());
     // 인증번호 확인
     const tvCert = await this.tvAuthService.getTvCertCodeOne({
       where: {
