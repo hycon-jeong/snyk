@@ -16,6 +16,7 @@ import { Role } from 'modules/entities/role.entity';
 import { UserAuthorityMapping } from 'modules/entities/userAuthorityMapping.entity';
 import { KeyStoreModule } from 'modules/key-store/key-store.module';
 import { RoleService } from 'modules/common/services/RoleService';
+import { MailService } from 'modules/common/services/MailerService';
 moment.tz.setDefault('Asia/Seoul');
 
 @Module({
@@ -47,6 +48,7 @@ moment.tz.setDefault('Asia/Seoul');
     AuthService,
     JwtStrategy,
     RoleService,
+    MailService,
     { provide: 'MomentWrapper', useValue: moment },
   ],
   exports: [PassportModule.register({ defaultStrategy: 'jwt' }), AuthService],

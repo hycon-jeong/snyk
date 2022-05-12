@@ -46,6 +46,7 @@ import { MobileV1Module } from 'modules/api.mobile/v1/mobile.v1.module';
 import { AuthModule } from 'modules/api.mobile/v1/auth';
 import { PassportModule } from '@nestjs/passport';
 import { HttpsRedirectMiddleware } from 'modules/common/middleware/HttpsRedirect.middleware';
+import { BatchModule } from 'modules/batch/batch.module';
 
 var serviceAccount = require('../../../firebase.json');
 
@@ -128,6 +129,7 @@ config();
     AdminV1Module,
     MobileV1Module,
     TvAppV1ApiModule,
+    BatchModule,
   ],
   controllers: [AppController],
   providers: [

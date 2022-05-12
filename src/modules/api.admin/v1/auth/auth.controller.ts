@@ -23,6 +23,7 @@ import { UsersService } from 'modules/user';
 import { ChangePwPayload } from './changePw.payload';
 import { KeyStoreService } from 'modules/key-store/key-store.service';
 import { RoleService } from 'modules/common/services/RoleService';
+import { MailService } from 'modules/common/services/MailerService';
 
 @Controller('api/admin/v1/auth')
 @ApiTags('authentication')
@@ -33,6 +34,7 @@ export class AuthController {
     private readonly logService: LogService,
     private readonly roleService: RoleService,
     private readonly keyStoreService: KeyStoreService,
+    private readonly mailService: MailService,
   ) {}
 
   @Post('login')
@@ -105,6 +107,16 @@ export class AuthController {
       statusCode: 200,
       message: 'change password successfully',
     };
+  }
+
+  @Post('email')
+  @UseGuards(IpBlockerGuard)
+  @ApiResponse({ status: 201, description: 'Successful Login' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async sendEmail(@Req() req): Promise<any> {
+    const res = await this.mailService.sendEmail();
+    return res;
   }
 
   generateUserKey() {

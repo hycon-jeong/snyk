@@ -21,8 +21,6 @@ import {
 import * as crypto from 'crypto';
 import { TvAuthService } from './tv.auth.service';
 import * as moment from 'moment';
-import 'moment-timezone';
-import 'moment/locale/ko';
 
 import { Between } from 'typeorm';
 import { TvDeviceService } from '../device/tv.device.service';
@@ -109,7 +107,7 @@ export class TvAuthController {
 
     const certCode = await this.getUniqueCertCode();
 
-    const expireDt = moment().add(5, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    const expireDt = moment().utc().add(5, 'minutes').toISOString();
 
     const res = await this.service.createTvCertCode({
       tvCertCode: certCode,

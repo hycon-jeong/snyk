@@ -45,4 +45,12 @@ export class MoRegisterPayload extends PickType(RegisterPayload, [
   })
   @IsNotEmpty()
   key: string;
+
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'name',
+  })
+  @IsNotEmpty()
+  name: string;
 }

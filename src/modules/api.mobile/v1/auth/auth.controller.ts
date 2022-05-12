@@ -16,9 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TvAuthService } from 'modules/api.tvapp/v1/auth/tv.auth.service';
 import { User } from 'modules/entities/user.entity';
-import 'moment-timezone';
 import * as moment from 'moment';
-moment.tz.setDefault('Asia/Seoul');
 
 import { LessThan, MoreThan } from 'typeorm';
 import { AuthService } from './';
@@ -52,7 +50,7 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async moRegister(@Body() payload: MoRegisterPayload): Promise<any> {
-    const { userId, role, password, tvCertCode, ...rest } = payload;
+    const { userId, role, password, tvCertCode, name, ...rest } = payload;
     const roleData = await this.roleService.findOne({
       code: role,
       status: 'ACTIVE',
@@ -68,7 +66,7 @@ export class AuthController {
     const tvCert = await this.tvAuthService.getTvCertCodeOne({
       where: {
         tvCertCode,
-        expireDt: MoreThan(moment().format('YYYY-MM-DD HH:mm:ss')),
+        expireDt: MoreThan(moment().utc().toISOString()),
       },
     });
 
@@ -77,9 +75,10 @@ export class AuthController {
     }
 
     let user = await this.userService.findOne({
-      where: { userId: userId, status: 'ACTIVE', providerId: providerData.id },
+      where: { userId: userId, providerId: providerData.id },
     });
     let isFirst = false;
+
     if (!user) {
       isFirst = true;
       user = await this.userService.moCreate({
@@ -90,8 +89,27 @@ export class AuthController {
         status: 'ACTIVE',
         providerId: providerData.id,
         userKey: this.generateUserKey(),
-        name: providerData.providerName + '_' + Date.now(),
+        name: name,
       });
+    }
+
+    if (user.status === 'INACTIVE') {
+      isFirst = true;
+      await this.userService.updateUser(
+        { id: user.id },
+        {
+          userId,
+          roleId: roleData.id,
+          password,
+          // tvCertCode,
+          status: 'ACTIVE',
+          providerId: providerData.id,
+          userKey: this.generateUserKey(),
+          name: name,
+          // name: providerData.providerName + '_' + Date.now(),
+        },
+      );
+      user.status = 'ACTIVE';
     }
     try {
       await this.userService.createUserMapping({
@@ -120,6 +138,7 @@ export class AuthController {
         isFirst,
       },
       message: 'success',
+      isSuccess: true,
       // accessToken: token.accessToken,
       // expireIn: token.expiresIn,
     };
