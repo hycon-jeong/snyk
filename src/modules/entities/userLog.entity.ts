@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Provider } from '.';
+import { LogActionType } from './logActionType.entity';
 import { User } from './user.entity';
 
 @Entity('user_log', { schema: 'mycar' })
@@ -19,6 +20,10 @@ export class UserLog {
   @ApiProperty()
   @Column({ name: 'user_id' })
   userId: number;
+
+  @ApiProperty()
+  @Column({ name: 'log_type_id', nullable: true })
+  logTypeId: number;
 
   @ApiProperty()
   @Column({ name: 'provider_id', nullable: true })
@@ -49,6 +54,13 @@ export class UserLog {
   @ManyToOne(() => User, (user) => user.userLogs)
   @JoinColumn({ name: 'user_id' })
   public user: User;
+
+  @ManyToOne(
+    () => LogActionType,
+    (logActionType) => logActionType.logActionTypes,
+  )
+  @JoinColumn({ name: 'log_type_id' })
+  public logActionType: LogActionType;
 
   @ManyToOne(() => Provider, (provider) => provider.providerLogs)
   @JoinColumn({ name: 'provider_id' })

@@ -32,7 +32,10 @@ import { ChangeEventPayload } from './changeEvent.payload';
 import { EventStatus } from 'modules/common/constants/eventStatus';
 import { Event } from 'modules/entities';
 import { TvDeviceService } from '../device/tv.device.service';
-import { LogService } from 'modules/common/services/LogService';
+import {
+  EventLogActionType,
+  LogService,
+} from 'modules/common/services/LogService';
 import { UsersService } from 'modules/user';
 
 export interface IResponse {
@@ -124,25 +127,25 @@ export class TvEventController {
     const payload: Partial<Event> = {
       status,
     };
-    let logMethod = 'Patch';
+    let logMethod: EventLogActionType = 'event.patch';
     switch (status) {
       case EventStatus.COMPLETE:
-        logMethod = 'Complete';
+        logMethod = 'event.complete';
         payload['completedAt'] = date;
         break;
 
       case EventStatus.RECEIVE:
-        logMethod = 'Receive';
+        logMethod = 'event.receive';
         payload['receivedAt'] = date;
         break;
 
       case EventStatus.FAIL:
-        logMethod = 'Fail';
+        logMethod = 'event.fail';
         payload['failedAt'] = date;
         break;
 
       default:
-        logMethod = 'Patch';
+        logMethod = 'event.fail';
         payload['failedAt'] = date;
         break;
     }
@@ -153,16 +156,20 @@ export class TvEventController {
       const user = await this.userService.findOne({
         where: { id: event.userId },
       });
-      await this.logService.createEventrLog({
-        actionMessage: this.logService.eventLogMessageTemplate(
-          logMethod as any,
-          user,
-          event,
-        ),
-        actionData: 'Event',
-        eventId: id,
-        userId: event.userId,
-      });
+      await this.logService.createEventrLog(
+        {
+          actionMessage: this.logService.eventLogMessageTemplate(
+            logMethod as any,
+            user,
+            event,
+          ),
+          actionData: 'Event',
+          eventId: id,
+          userId: event.userId,
+          dateAt: date,
+        },
+        logMethod,
+      );
     } catch (err) {
       console.log(err);
     }

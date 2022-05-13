@@ -79,15 +79,18 @@ export class CrudBlockerController implements CrudController<Blocker> {
     } = req.parsed;
     const newBlocker = await this.base.createOneBase(req, dto);
     try {
-      await this.logService.createUserLog({
-        actionMessage: `[생성] 유저 : ${user.name} , '${newBlocker.ipAddress}' 생성`,
-        actionData: 'Blocker',
-        userId: user.id,
-        providerId: user.providerId,
-        rawData: JSON.stringify({
-          create: newBlocker,
-        }),
-      });
+      await this.logService.createUserLog(
+        {
+          actionMessage: `[생성] 유저 : ${user.name} , '${newBlocker.ipAddress}' 생성`,
+          actionData: 'Blocker',
+          userId: user.id,
+          providerId: user.providerId,
+          rawData: JSON.stringify({
+            create: newBlocker,
+          }),
+        },
+        'user.post',
+      );
     } catch (err) {
       console.log(err);
     }
@@ -105,18 +108,21 @@ export class CrudBlockerController implements CrudController<Blocker> {
     } = req.parsed;
     try {
       const _blocker = await this.service.findOne(id);
-      await this.logService.createUserLog({
-        actionMessage: `[수정] 유저 : ${user.name} , '${dto.ipAddress}' 수정`,
-        actionData: 'Blocker',
-        userId: user.id,
-        providerId: user.providerId,
-        rawData: JSON.stringify({
-          update: {
-            before: _blocker,
-            after: dto,
-          },
-        }),
-      });
+      await this.logService.createUserLog(
+        {
+          actionMessage: `[수정] 유저 : ${user.name} , '${dto.ipAddress}' 수정`,
+          actionData: 'Blocker',
+          userId: user.id,
+          providerId: user.providerId,
+          rawData: JSON.stringify({
+            update: {
+              before: _blocker,
+              after: dto,
+            },
+          }),
+        },
+        'user.patch',
+      );
     } catch (err) {
       console.log(err);
     }
@@ -131,12 +137,15 @@ export class CrudBlockerController implements CrudController<Blocker> {
     } = req.parsed;
     try {
       const blocker = await this.service.findOne(id);
-      await this.logService.createUserLog({
-        actionMessage: `[삭제] 유저 : ${user.name} , '${blocker.ipAddress}' 삭제`,
-        actionData: 'Blocker',
-        userId: user.id,
-        providerId: user.providerId,
-      });
+      await this.logService.createUserLog(
+        {
+          actionMessage: `[삭제] 유저 : ${user.name} , '${blocker.ipAddress}' 삭제`,
+          actionData: 'Blocker',
+          userId: user.id,
+          providerId: user.providerId,
+        },
+        'user.delete',
+      );
     } catch (err) {
       console.log(err);
     }

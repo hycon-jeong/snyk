@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Provider, User } from '.';
 import { Consumer } from './consumer.entity';
+import { LogActionType } from './logActionType.entity';
 
 @Entity('system_log', { schema: 'mycar' })
 export class SystemLog {
@@ -19,6 +20,10 @@ export class SystemLog {
   @ApiProperty()
   @Column({ name: 'consumer_id', nullable: true })
   consumerId: number;
+
+  @ApiProperty()
+  @Column({ name: 'log_type_id', nullable: true })
+  logTypeId: number;
 
   @ApiProperty()
   @Column({ name: 'provider_id', nullable: true })
@@ -58,4 +63,11 @@ export class SystemLog {
   @ManyToOne(() => User, (user) => user.userLogs)
   @JoinColumn({ name: 'user_id' })
   public user: User;
+
+  @ManyToOne(
+    () => LogActionType,
+    (logActionType) => logActionType.logActionTypes,
+  )
+  @JoinColumn({ name: 'log_type_id' })
+  public logActionType: LogActionType;
 }

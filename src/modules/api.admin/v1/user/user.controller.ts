@@ -128,12 +128,15 @@ export class CrudUserController implements CrudController<User> {
     });
     await Promise.all(promArr);
 
-    await this.logService.createUserLog({
-      userId: userLogined.id,
-      providerId: userLogined.providerId,
-      actionData: 'User',
-      actionMessage: `'${user.name}' register by '${userLogined.name}'`,
-    });
+    await this.logService.createUserLog(
+      {
+        userId: userLogined.id,
+        providerId: userLogined.providerId,
+        actionData: 'User',
+        actionMessage: `'${user.name}' register by '${userLogined.name}'`,
+      },
+      'user.register',
+    );
     return { statusCode: 200, message: 'success' };
   }
 
@@ -196,12 +199,15 @@ export class CrudUserController implements CrudController<User> {
     });
     await Promise.all(promArr);
 
-    await this.logService.createUserLog({
-      userId: userLogined.id,
-      providerId: userLogined.providerId,
-      actionData: 'User',
-      actionMessage: `'${user.name}' was updated by '${userLogined.name}'`,
-    });
+    await this.logService.createUserLog(
+      {
+        userId: userLogined.id,
+        providerId: userLogined.providerId,
+        actionData: 'User',
+        actionMessage: `'${user.name}' was updated by '${userLogined.name}'`,
+      },
+      'user.patch',
+    );
 
     return { statusCode: 200, message: 'success' };
   }
@@ -214,12 +220,15 @@ export class CrudUserController implements CrudController<User> {
     } = req.parsed;
     try {
       const _user = await this.service.findOne(id);
-      await this.logService.createUserLog({
-        actionMessage: `'${_user.name}' was deleted by '${user.name}' 삭제`,
-        actionData: 'User',
-        userId: user.id,
-        providerId: user.providerId,
-      });
+      await this.logService.createUserLog(
+        {
+          actionMessage: `'${_user.name}' was deleted by '${user.name}' 삭제`,
+          actionData: 'User',
+          userId: user.id,
+          providerId: user.providerId,
+        },
+        'user.delete',
+      );
     } catch (err) {
       console.log(err);
     }

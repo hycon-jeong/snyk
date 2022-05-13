@@ -99,15 +99,18 @@ export class CrudProviderController implements CrudController<Provider> {
       req,
       dto as unknown as Provider,
     );
-    await this.logService.createSystemLog({
-      providerId: newProvider.id,
-      actionMessage: `[생성] 유저 : ${user.name} , '${newProvider.providerName}' OEM 생성`,
-      actionData: 'OEM',
-      userId: user.id,
-      rawData: JSON.stringify({
-        create: newProvider,
-      }),
-    });
+    await this.logService.createSystemLog(
+      {
+        providerId: newProvider.id,
+        actionMessage: `[생성] 유저 : ${user.name} , '${newProvider.providerName}' OEM 생성`,
+        actionData: 'OEM',
+        userId: user.id,
+        rawData: JSON.stringify({
+          create: newProvider,
+        }),
+      },
+      'system.post',
+    );
 
     return newProvider;
   }
@@ -137,18 +140,21 @@ export class CrudProviderController implements CrudController<Provider> {
         id: id,
       },
     });
-    await this.logService.createSystemLog({
-      providerId: id,
-      actionMessage: `[수정] 유저 : ${user.name} , '${dto.providerName}' OEM 수정`,
-      actionData: 'OEM',
-      userId: user.id,
-      rawData: JSON.stringify({
-        update: {
-          before: _provider,
-          after: dto,
-        },
-      }),
-    });
+    await this.logService.createSystemLog(
+      {
+        providerId: id,
+        actionMessage: `[수정] 유저 : ${user.name} , '${dto.providerName}' OEM 수정`,
+        actionData: 'OEM',
+        userId: user.id,
+        rawData: JSON.stringify({
+          update: {
+            before: _provider,
+            after: dto,
+          },
+        }),
+      },
+      'system.patch',
+    );
     return this.base.updateOneBase(req, dto as unknown as Provider);
   }
 }

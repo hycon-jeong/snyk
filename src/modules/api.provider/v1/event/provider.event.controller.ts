@@ -213,17 +213,20 @@ export class CrudEventController implements CrudController<Event> {
     } as Event);
 
     try {
-      await this.logService.createEventrLog({
-        actionMessage: this.logService.eventLogMessageTemplate(
-          'Post',
-          user,
-          event,
-        ),
-        actionData: 'Event',
-        eventId: event.id,
-        userId: user.id,
-        providerId: providerData.id,
-      });
+      await this.logService.createEventrLog(
+        {
+          actionMessage: this.logService.eventLogMessageTemplate(
+            'event.post',
+            user,
+            event,
+          ),
+          actionData: 'Event',
+          eventId: event.id,
+          userId: user.id,
+          providerId: providerData.id,
+        },
+        'event.post',
+      );
     } catch (err) {
       console.log(err);
     }
@@ -261,20 +264,23 @@ export class CrudEventController implements CrudController<Event> {
           { failedAt: new Date(), status: EventStatus.FAIL },
         );
         try {
-          await this.logService.createEventrLog({
-            actionMessage: this.logService.eventLogMessageTemplate(
-              'Fail',
-              user,
-              event,
-            ),
-            actionData: 'Event',
-            eventId: event.id,
-            userId: user.id,
-            providerId: providerData.id,
-            rawData: JSON.stringify({
-              fail: err,
-            }),
-          });
+          await this.logService.createEventrLog(
+            {
+              actionMessage: this.logService.eventLogMessageTemplate(
+                'event.fail',
+                user,
+                event,
+              ),
+              actionData: 'Event',
+              eventId: event.id,
+              userId: user.id,
+              providerId: providerData.id,
+              rawData: JSON.stringify({
+                fail: err,
+              }),
+            },
+            'event.fail',
+          );
         } catch (err) {
           console.log(err);
         }

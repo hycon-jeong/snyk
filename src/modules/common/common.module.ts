@@ -13,11 +13,19 @@ import { ExistsValidator } from './validator/exists.validator';
 import { UniqueValidator } from './validator/unique.validator';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigModule, ConfigService } from 'modules/config';
+import { LogActionType } from 'modules/entities/logActionType.entity';
 
 @Global()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Blocker, UserLog, SystemLog, EventLog, Role]),
+    TypeOrmModule.forFeature([
+      Blocker,
+      UserLog,
+      SystemLog,
+      EventLog,
+      Role,
+      LogActionType,
+    ]),
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

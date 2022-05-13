@@ -49,12 +49,15 @@ export class AuthController {
     const refreshTokenKey = randomBytes(64).toString('hex');
     await this.keyStoreService.create(user, accessTokenKey, refreshTokenKey);
 
-    await this.logService.createUserLog({
-      userId: user.id,
-      providerId: user.providerId,
-      actionData: 'Login',
-      actionMessage: `'${user.name}' login`,
-    });
+    await this.logService.createUserLog(
+      {
+        userId: user.id,
+        providerId: user.providerId,
+        actionData: 'Login',
+        actionMessage: `'${user.name}' login`,
+      },
+      'user.login',
+    );
     return await this.authService.createToken(
       user,
       accessTokenKey,
@@ -70,12 +73,15 @@ export class AuthController {
   async logout(@Req() req): Promise<any> {
     const { id } = req.user;
     const user = await this.userService.findOne({ id });
-    await this.logService.createUserLog({
-      userId: user.id,
-      providerId: user.providerId,
-      actionData: 'Logout',
-      actionMessage: `'${user.name}' logout`,
-    });
+    await this.logService.createUserLog(
+      {
+        userId: user.id,
+        providerId: user.providerId,
+        actionData: 'Logout',
+        actionMessage: `'${user.name}' logout`,
+      },
+      'user.logout',
+    );
     return {};
   }
 
@@ -97,12 +103,15 @@ export class AuthController {
       );
     }
 
-    await this.logService.createUserLog({
-      userId: user.id,
-      providerId: user.providerId,
-      actionData: 'Password',
-      actionMessage: `'${user.name}' change password`,
-    });
+    await this.logService.createUserLog(
+      {
+        userId: user.id,
+        providerId: user.providerId,
+        actionData: 'Password',
+        actionMessage: `'${user.name}' change password`,
+      },
+      'user.patch',
+    );
     return {
       statusCode: 200,
       message: 'change password successfully',

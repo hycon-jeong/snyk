@@ -8,9 +8,32 @@ import {
   User,
   UserLog,
 } from 'modules/entities';
+import { LogActionType } from 'modules/entities/logActionType.entity';
 import { SystemLog } from 'modules/entities/systemLog.entity';
 import { Repository } from 'typeorm';
 
+type SystemLogActionType =
+  | 'system.get'
+  | 'system.post'
+  | 'system.patch'
+  | 'system.delete';
+type UserLogActionType =
+  | 'user.get'
+  | 'user.post'
+  | 'user.patch'
+  | 'user.delete'
+  | 'user.login'
+  | 'user.register'
+  | 'user.logout';
+export type EventLogActionType =
+  | 'event.get'
+  | 'event.post'
+  | 'event.patch'
+  | 'event.delete'
+  | 'event.sending'
+  | 'event.receive'
+  | 'event.complete'
+  | 'event.fail';
 @Injectable()
 export class LogService {
   constructor(
@@ -20,34 +43,54 @@ export class LogService {
     private eventLogRepository: Repository<EventLog>,
     @InjectRepository(UserLog)
     private userLogRepository: Repository<UserLog>,
+    @InjectRepository(LogActionType)
+    private logActionTypeRepository: Repository<LogActionType>,
   ) {}
 
-  async createSystemLog(log: Partial<SystemLog>) {
-    const newLog = await this.systemLogRepository.save(log);
+  async getLogActionType(
+    type: SystemLogActionType | EventLogActionType | UserLogActionType,
+  ) {
+    return this.logActionTypeRepository.findOne({ code: type });
+  }
+
+  async createSystemLog(log: Partial<SystemLog>, type: SystemLogActionType) {
+    const actionType = await this.getLogActionType(type);
+    const newLog = await this.systemLogRepository.save({
+      ...log,
+      logTypeId: actionType.id,
+    });
     return newLog;
   }
-  async createEventrLog(log: Partial<EventLog>) {
-    const newLog = await this.eventLogRepository.save(log);
+  async createEventrLog(log: Partial<EventLog>, type: EventLogActionType) {
+    const actionType = await this.getLogActionType(type);
+    const newLog = await this.eventLogRepository.save({
+      ...log,
+      logTypeId: actionType.id,
+    });
     return newLog;
   }
 
-  async createUserLog(log: Partial<UserLog>) {
-    const newLog = await this.userLogRepository.save(log);
+  async createUserLog(log: Partial<UserLog>, type: UserLogActionType) {
+    const actionType = await this.getLogActionType(type);
+    const newLog = await this.userLogRepository.save({
+      ...log,
+      logTypeId: actionType.id,
+    });
     return newLog;
   }
 
   eventMethod = {
-    Get: '읽기',
-    Post: '생성',
-    Patch: '수정',
-    Delete: '삭제',
-    Receive: '수신',
-    Complete: '확인',
-    Fail: '오류',
+    'event.get': '읽기',
+    'event.post': '생성',
+    'event.patch': '수정',
+    'event.delete': '삭제',
+    'event.receive': '수신',
+    'event.complete': '확인',
+    'event.fail': '오류',
   };
 
   eventLogMessageTemplate = (
-    type: 'Get' | 'Post' | 'Patch' | 'Delete' | 'Receive' | 'Complete' | 'Fail',
+    type: EventLogActionType,
     user: User,
     event: Event,
     optMessage?: string,

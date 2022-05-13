@@ -80,15 +80,18 @@ export class CrudConsumerController implements CrudController<Consumer> {
       throw new BadRequestException('consumer code가 중복되었습니다.');
     }
     const newConsumer = await this.base.createOneBase(req, dto as Consumer);
-    await this.logService.createSystemLog({
-      consumerId: newConsumer.id,
-      actionMessage: `[생성] 유저 : ${user.name} , '${newConsumer.consumerName}' 매체 생성`,
-      actionData: 'Consumer',
-      userId: user.id,
-      rawData: JSON.stringify({
-        create: newConsumer,
-      }),
-    });
+    await this.logService.createSystemLog(
+      {
+        consumerId: newConsumer.id,
+        actionMessage: `[생성] 유저 : ${user.name} , '${newConsumer.consumerName}' 매체 생성`,
+        actionData: 'Consumer',
+        userId: user.id,
+        rawData: JSON.stringify({
+          create: newConsumer,
+        }),
+      },
+      'system.post',
+    );
 
     return newConsumer;
   }
@@ -118,18 +121,21 @@ export class CrudConsumerController implements CrudController<Consumer> {
       },
     });
 
-    await this.logService.createSystemLog({
-      consumerId: id,
-      actionMessage: `[수정] 유저 : ${user.name} , '${dto.consumerName}' 매체 수정`,
-      actionData: 'Consumer',
-      userId: user.id,
-      rawData: JSON.stringify({
-        update: {
-          before: _consumer,
-          after: dto,
-        },
-      }),
-    });
+    await this.logService.createSystemLog(
+      {
+        consumerId: id,
+        actionMessage: `[수정] 유저 : ${user.name} , '${dto.consumerName}' 매체 수정`,
+        actionData: 'Consumer',
+        userId: user.id,
+        rawData: JSON.stringify({
+          update: {
+            before: _consumer,
+            after: dto,
+          },
+        }),
+      },
+      'system.patch',
+    );
 
     return this.base.updateOneBase(req, dto as Consumer);
   }
