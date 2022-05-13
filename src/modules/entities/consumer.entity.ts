@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { EventLog } from '.';
 import { ConsumerLog } from './consumerLog.entity';
@@ -87,6 +89,21 @@ export class Consumer {
   @ApiProperty()
   @Column('varchar', { name: 'status', length: 255 })
   status: string | null;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  public createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    name: 'updated_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  public updatedAt: Date;
 
   @OneToMany(() => ConsumerLog, (consumerLog) => consumerLog.consumer)
   consumerLogs: ConsumerLog[];

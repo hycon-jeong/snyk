@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Thema } from 'modules/common/constants/provider';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Event, EventLog, User, UserLog } from '.';
 import { Blocker } from './blocker.entity';
 import { ProviderLog } from './providerLog.entity';
@@ -104,6 +111,21 @@ export class Provider {
   @ApiProperty()
   @Column('varchar', { name: 'status', length: 255, default: 'ACTIVE' })
   status: string;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  public createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    name: 'updated_at',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  public updatedAt: Date;
 
   @OneToMany(() => ProviderLog, (providerLog) => providerLog.provider)
   providerLogs: ProviderLog[];

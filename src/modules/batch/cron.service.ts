@@ -17,7 +17,7 @@ export class CronService {
   async handleCron() {
     const current = moment().utc();
 
-    const list = await this.repository.delete({
+    await this.repository.delete({
       expireDt: LessThan(current.toISOString()),
     });
     this.logger.warn('Delete tvCertCode expired');
