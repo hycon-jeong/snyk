@@ -3,4 +3,5 @@ export enum EventStatus {
   COMPLETE = 'COMPLETE',
   RECEIVE = 'RECEIVE',
   FAIL = 'FAIL',
+  DISPLAY = 'DISPLAY',
 }
