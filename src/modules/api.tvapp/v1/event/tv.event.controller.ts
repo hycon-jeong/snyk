@@ -139,6 +139,10 @@ export class TvEventController {
         payload['receivedAt'] = date;
         break;
 
+      case EventStatus.DISPLAY:
+        logMethod = 'event.display';
+        break;
+
       case EventStatus.FAIL:
         logMethod = 'event.fail';
         payload['failedAt'] = date;

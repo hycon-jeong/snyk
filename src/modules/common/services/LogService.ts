@@ -33,6 +33,7 @@ export type EventLogActionType =
   | 'event.sending'
   | 'event.receive'
   | 'event.complete'
+  | 'event.display'
   | 'event.fail';
 @Injectable()
 export class LogService {
@@ -85,6 +86,7 @@ export class LogService {
     'event.patch': '수정',
     'event.delete': '삭제',
     'event.receive': '수신',
+    'event.display': '노출',
     'event.complete': '확인',
     'event.fail': '오류',
   };
