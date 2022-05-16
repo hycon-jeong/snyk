@@ -290,46 +290,46 @@ export class CrudEventController implements CrudController<Event> {
     }
 
     // send to admin
-    try {
-      const adminRole = await this.roleService.getRoleListByCodeList([
-        Roles.ADMIN,
-      ]);
-      const providerManagerRole = await this.roleService.getRoleListByCodeList([
-        Roles.MANAGER,
-        Roles.PROVIDER,
-      ]);
-      const adminList = await this.usersService.find({
-        where: {
-          roleId: In(adminRole.map((r) => r.id)),
-          status: 'ACTIVE',
-        },
-      });
-      const providerManagerList = await this.usersService.find({
-        where: {
-          roleId: In(providerManagerRole.map((r) => r.id)),
-          status: 'ACTIVE',
-          providerId: providerData.id,
-        },
-      });
-      const userIds = adminList
-        .map((u) => u.id)
-        .concat(providerManagerList.map((u) => u.id));
-      const fcmTokens = await this.fcmTokenService.find({
-        userId: In(userIds),
-      });
-      const tokensArray = fcmTokens.map((item) => item.token);
-      if (tokensArray && tokensArray.length > 0) {
-        this.firebaseMessage.sendToDevice(
-          tokensArray,
-          {
-            data: pushData,
-          },
-          { priority: 'high' },
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   const adminRole = await this.roleService.getRoleListByCodeList([
+    //     Roles.ADMIN,
+    //   ]);
+    //   const providerManagerRole = await this.roleService.getRoleListByCodeList([
+    //     Roles.MANAGER,
+    //     Roles.PROVIDER,
+    //   ]);
+    //   const adminList = await this.usersService.find({
+    //     where: {
+    //       roleId: In(adminRole.map((r) => r.id)),
+    //       status: 'ACTIVE',
+    //     },
+    //   });
+    //   const providerManagerList = await this.usersService.find({
+    //     where: {
+    //       roleId: In(providerManagerRole.map((r) => r.id)),
+    //       status: 'ACTIVE',
+    //       providerId: providerData.id,
+    //     },
+    //   });
+    //   const userIds = adminList
+    //     .map((u) => u.id)
+    //     .concat(providerManagerList.map((u) => u.id));
+    //   const fcmTokens = await this.fcmTokenService.find({
+    //     userId: In(userIds),
+    //   });
+    //   const tokensArray = fcmTokens.map((item) => item.token);
+    //   if (tokensArray && tokensArray.length > 0) {
+    //     this.firebaseMessage.sendToDevice(
+    //       tokensArray,
+    //       {
+    //         data: pushData,
+    //       },
+    //       { priority: 'high' },
+    //     );
+    //   }
+    // } catch (err) {
+    //   console.log(err);
+    // }
 
     this.logger.debug(
       `push data from web >>>>>>>>>> ${JSON.stringify(pushData)}`,
