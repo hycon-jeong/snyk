@@ -42,6 +42,11 @@ export class IpBlockerGuard implements CanActivate {
     if (ip === '::1' || ipv4 === '127.0.0.1') {
       return true;
     }
+    // ip release in dev
+    if (APP_ENV === 'development') {
+      return true;
+    }
+
     return allowedIps.includes(ipv4);
   }
 }
