@@ -1,4 +1,9 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from 'modules/config';
@@ -45,7 +50,10 @@ export class AuthService {
     const user = await this.userService.getByUserId(payload.userId);
     if (!user || !Hash.compare(payload.password, user.password)) {
       this.logger.log('Invalid credentials!');
-      throw new UnauthorizedException('Invalid credentials!');
+      throw new HttpException(
+        { message: 'Invalid credentials!', statusCode: 1001 },
+        401,
+      );
     }
     return user;
   }

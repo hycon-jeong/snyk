@@ -1,6 +1,10 @@
 import { ExtractJwt, Strategy, JwtPayload } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from 'modules/config';
 import { UsersService } from 'modules/user';
 import { KeyStoreService } from 'modules/key-store/key-store.service';
@@ -38,7 +42,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     const keystore = await this.keyStoreService.findforKey(user, prm);
 
-    if (!keystore) throw new UnauthorizedException();
+    if (!keystore) {
+      throw new HttpException('DuplicatedLogin', 401);
+    }
 
     delete user.password;
     done(null, user);
