@@ -34,6 +34,7 @@ import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { Roles } from 'modules/common/constants/roles';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
 import { RolesGuard } from 'modules/common/guard/roles.guard';
+import { isPermission } from 'utils/Permission';
 
 @ApiBearerAuth()
 @Crud({
@@ -108,6 +109,18 @@ export class CrudEventController implements CrudController<Event> {
   ) {}
   get base(): CrudController<Event> {
     return this;
+  }
+
+  @Override()
+  async getMany(@ParsedRequest() req: CrudRequest) {
+    const {
+      authPersist: { user },
+    } = req.parsed;
+    const isAdmin = isPermission(user, [Roles.ADMIN]);
+    if (!isAdmin) {
+      req.parsed.search.$and.push({ providerId: user.providerId });
+    }
+    return this.service.getMany(req);
   }
 
   @Override()

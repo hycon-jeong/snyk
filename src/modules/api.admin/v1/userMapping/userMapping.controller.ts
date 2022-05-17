@@ -30,6 +30,7 @@ import { IpBlockerGuard } from 'modules/common/guard/IpBlocker.guard';
 import { RolesAllowed } from 'modules/common/decorator/roles.decorator';
 import { Roles } from 'modules/common/constants/roles';
 import { RolesGuard } from 'modules/common/guard/roles.guard';
+import { isPermission } from 'utils/Permission';
 
 @ApiBearerAuth()
 @Crud({
@@ -95,33 +96,16 @@ export class UserMappingController implements CrudController<UserMapping> {
     return this;
   }
 
-  @Get('/byProvider')
-  async getUserMappingsByProvider(
-    @ParsedRequest() req: CrudRequest,
-    @Query() query,
-  ) {
-    const { providerId, userKey } = query;
-    const provider = await this.providerService.findOne({
-      providerCode: providerId,
-      status: 'ACTIVE',
-    });
-    if (!provider) {
-      throw new BadRequestException('Provider not found');
+  @Override()
+  async getMany(@ParsedRequest() req: CrudRequest) {
+    const {
+      authPersist: { user },
+    } = req.parsed;
+    const isAdmin = isPermission(user, [Roles.ADMIN]);
+    if (!isAdmin) {
+      req.parsed.search.$and.push({ providerId: user.providerId });
     }
-    const userMappings = await this.service.find({
-      where: {
-        providerId: provider.id,
-        mappingStatus: 'ACTIVE',
-        key: userKey,
-      },
-      join: {
-        alias: 'userMapping',
-        leftJoinAndSelect: {
-          consumer: 'userMapping.consumer',
-        },
-      },
-    });
-    return userMappings;
+    return this.service.getMany(req);
   }
 
   @Override()

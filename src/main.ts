@@ -29,7 +29,9 @@ import { TvTestModule } from 'modules/api.tvapp/v1/test/tv.test.module';
 import { TvAppV1ApiModule } from 'modules/api.tvapp/v1/tvapp.v1.module';
 import { AdminV1Module } from 'modules/api.admin/v1/admin.v1.module';
 import { MobileV1Module } from 'modules/api.mobile/v1/mobile.v1.module';
-
+import { SWAGGER_ADMIN_API_ROOT } from 'swagger/constants';
+import * as basicAuth from 'express-basic-auth';
+import { ExpressBasicAuthMiddleware } from 'modules/common/middleware/ExpressBasicAuth.middleware';
 dotenv.config();
 
 const { APP_PORT, APP_ENV } = process.env;
@@ -43,6 +45,15 @@ async function bootstrap() {
     logger: logger,
   };
   const app = await NestFactory.create(AppModule, nestAppOptions);
+
+  // app.use(
+  //   SWAGGER_ADMIN_API_ROOT + '/',
+  //   basicAuth({
+  //     challenge: true,
+  //     users: { jason: '1234' },
+  //   }),
+  // );
+
   setupAdminSwagger(app, {
     include: [AdminV1Module],
     deepScanRoutes: true,

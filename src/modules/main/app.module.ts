@@ -4,6 +4,7 @@ import {
   Module,
   NestMiddleware,
   NestModule,
+  RequestMethod,
   Scope,
 } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
@@ -45,8 +46,14 @@ import { AdminV1Module } from 'modules/api.admin/v1/admin.v1.module';
 import { MobileV1Module } from 'modules/api.mobile/v1/mobile.v1.module';
 import { AuthModule } from 'modules/api.mobile/v1/auth';
 import { PassportModule } from '@nestjs/passport';
-import { HttpsRedirectMiddleware } from 'modules/common/middleware/HttpsRedirect.middleware';
 import { BatchModule } from 'modules/batch/batch.module';
+import { ExpressBasicAuthMiddleware } from 'modules/common/middleware/ExpressBasicAuth.middleware';
+import {
+  SWAGGER_ADMIN_API_ROOT,
+  SWAGGER_MOBILE_API_ROOT,
+  SWAGGER_PROVIDER_API_ROOT,
+  SWAGGER_TVAPP_API_ROOT,
+} from '../../swagger/constants';
 
 var serviceAccount = require('../../../firebase.json');
 
@@ -140,4 +147,30 @@ config();
     AppService,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    console.log(SWAGGER_ADMIN_API_ROOT);
+    consumer.apply(ExpressBasicAuthMiddleware).forRoutes(
+      {
+        path: 'test',
+        method: RequestMethod.ALL,
+      },
+      {
+        path: 'api/admin/v1/docs',
+        method: RequestMethod.ALL,
+      },
+      {
+        path: SWAGGER_MOBILE_API_ROOT + '/',
+        method: RequestMethod.GET,
+      },
+      {
+        path: SWAGGER_PROVIDER_API_ROOT + '/',
+        method: RequestMethod.GET,
+      },
+      {
+        path: SWAGGER_TVAPP_API_ROOT + '/',
+        method: RequestMethod.GET,
+      },
+    );
+  }
+}

@@ -30,11 +30,12 @@ export const setupAdminSwagger = (app: INestApplication, config?) => {
     .build();
   const document = SwaggerModule.createDocument(app, options, config);
   const yamlString: string = YAML.stringify(document);
-  fs.writeFileSync('./swagger-admin.yaml', yamlString);
+  // fs.writeFileSync('./swagger-admin.yaml', yamlString);
 
-  SwaggerModule.setup(SWAGGER_ADMIN_API_ROOT, app, document, {
-    swaggerOptions: { defaultModelsExpandDepth: -1 },
-  });
+  return () =>
+    SwaggerModule.setup(SWAGGER_ADMIN_API_ROOT, app, document, {
+      swaggerOptions: { defaultModelsExpandDepth: -1 },
+    });
 };
 
 export const setupProviderSwagger = (app: INestApplication, config?) => {
@@ -46,7 +47,7 @@ export const setupProviderSwagger = (app: INestApplication, config?) => {
     .build();
   const document = SwaggerModule.createDocument(app, options, config);
   const yamlString: string = YAML.stringify(document);
-  fs.writeFileSync('./swagger-provider.yaml', yamlString);
+  // fs.writeFileSync('./swagger-provider.yaml', yamlString);
 
   SwaggerModule.setup(SWAGGER_PROVIDER_API_ROOT, app, document, {
     swaggerOptions: { defaultModelsExpandDepth: -1 },
@@ -62,7 +63,7 @@ export const setupTvAppSwagger = (app: INestApplication, config?) => {
     .build();
   const document = SwaggerModule.createDocument(app, options, config);
   const yamlString: string = YAML.stringify(document);
-  fs.writeFileSync('./swagger-tvapp.yaml', yamlString);
+  // fs.writeFileSync('./swagger-tvapp.yaml', yamlString);
 
   SwaggerModule.setup(SWAGGER_TVAPP_API_ROOT, app, document, {
     swaggerOptions: { defaultModelsExpandDepth: -1 },
@@ -78,7 +79,7 @@ export const setupMobileSwagger = (app: INestApplication, config?) => {
     .build();
   const document = SwaggerModule.createDocument(app, options, config);
   const yamlString: string = YAML.stringify(document);
-  fs.writeFileSync('./swagger-tvapp.yaml', yamlString);
+  // fs.writeFileSync('./swagger-tvapp.yaml', yamlString);
 
   SwaggerModule.setup(SWAGGER_MOBILE_API_ROOT, app, document, {
     swaggerOptions: { defaultModelsExpandDepth: -1 },

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Param,
@@ -8,6 +9,7 @@ import {
   Post,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -16,6 +18,7 @@ import {
   CrudAuth,
   CrudController,
   CrudRequest,
+  CrudRequestInterceptor,
   Override,
   ParsedRequest,
 } from '@nestjsx/crud';
@@ -26,6 +29,7 @@ import { RolesGuard } from 'modules/common/guard/roles.guard';
 import { LogService } from 'modules/common/services/LogService';
 import { User } from 'modules/entities';
 import { Not } from 'typeorm';
+import { isPermission } from 'utils/Permission';
 import { AuthService } from '../auth';
 import { RegisterPayload } from './register.payload';
 import { UpdatePayload } from './update.payload';
@@ -92,6 +96,42 @@ export class CrudUserController implements CrudController<User> {
     public readonly authService: AuthService,
     public readonly logService: LogService,
   ) {}
+
+  get base(): CrudController<User> {
+    return this;
+  }
+
+  @UseInterceptors(CrudRequestInterceptor)
+  @Get('/app')
+  async getUserList(@ParsedRequest() req: CrudRequest) {
+    const {
+      authPersist: { user },
+    } = req.parsed;
+    const isAdmin = isPermission(user, [Roles.ADMIN]);
+    if (!isAdmin) {
+      req.parsed.search.$and.push({ providerId: user.providerId });
+    }
+
+    req.parsed.search.$and.push({ 'role.code': Roles.USER });
+
+    return await this.service.getMany(req);
+  }
+
+  @UseInterceptors(CrudRequestInterceptor)
+  @Get('/admin')
+  async getAdminList(@ParsedRequest() req: CrudRequest) {
+    const {
+      authPersist: { user },
+    } = req.parsed;
+
+    req.parsed.search.$and.push(
+      { 'role.code': { $ne: Roles.USER } },
+      { status: 'ACTIVE' },
+      { 'userAuthorityMapping.mappingStatus': 'ACTIVE' },
+    );
+
+    return await this.service.getMany(req);
+  }
 
   @Post('register')
   @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
