@@ -175,10 +175,22 @@ export class StatisticsController {
     type: String,
     required: false,
   })
+  @ApiQuery({
+    name: 'startDate',
+    description: 'start date',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'endDate',
+    description: 'end date',
+    type: String,
+    required: false,
+  })
   @ApiResponse({ status: 200, description: 'Fetch Profile Request Received' })
   @ApiResponse({ status: 400, description: 'Fetch Profile Request Failed' })
   async getTotalRank(@Query() query): Promise<any> {
-    const { type, providerId } = query;
+    const { type, providerId, startDate, endDate } = query;
     const role = await this.roleService.findOne({ code: Roles.USER });
 
     const result = {};
@@ -188,28 +200,40 @@ export class StatisticsController {
           await this.statisticsService.getUserEventCountGroupByEventType(
             role.id,
             providerId,
+            startDate,
+            endDate,
           );
         result['rank'] = await this.statisticsService.getUserTotalRank(
           role.id,
           providerId,
+          startDate,
+          endDate,
         );
         break;
       case 'provider':
         result['rank'] = await this.statisticsService.getProviderTotalRank(
           providerId,
+          startDate,
+          endDate,
         );
         result['eventType'] =
           await this.statisticsService.getProviderEventCountGroupByEventType(
             providerId,
+            startDate,
+            endDate,
           );
         break;
       case 'consumer':
         result['rank'] = await this.statisticsService.getConsumerTotalRank(
           providerId,
+          startDate,
+          endDate,
         );
         result['eventType'] =
           await this.statisticsService.getConsumerEventCountGroupByEventType(
             providerId,
+            startDate,
+            endDate,
           );
         break;
       default:

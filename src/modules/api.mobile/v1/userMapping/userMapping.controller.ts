@@ -123,9 +123,12 @@ export class UserMappingController implements CrudController<UserMapping> {
     });
 
     const user = await this.userService.findOne({
-      providerId: provider.id,
-      userId: userKey,
-      status: 'ACTIVE',
+      select: ['name', 'id', 'userId', 'userKey', 'providerId'],
+      where: {
+        providerId: provider.id,
+        userId: userKey,
+        status: 'ACTIVE',
+      },
     });
 
     return {

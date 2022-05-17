@@ -93,40 +93,75 @@ export class StatisticsService {
       [startDate, today, today, endDate, providerId],
     );
   }
-  async getUserTotalRank(roleId, providerId) {
+  async getUserTotalRank(roleId, providerId, startDate?, endDate?) {
+    const params = [];
+    if (startDate && endDate) params.push(startDate, endDate);
+    params.push(roleId);
+    if (providerId) params.push(providerId + '');
     return this.userRepository.query(
       `SELECT 
-        (select count(*) from event e where e.user_id = u.id) as totalCount,
+        (select count(*) from event e where e.user_id = u.id  ${
+          startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''
+        }) as totalCount,
         u.name as userName,
         u.id as userId
           FROM users as u
           WHERE 1=1     
             AND u.role_id = ?    
             ${providerId ? ' AND u.provider_id = ? ' : ''}
+           
           GROUP BY u.id
           ORDER BY totalCount desc
       LIMIT 10`,
-      [roleId, providerId],
+      params,
     );
   }
 
-  async getUserEventCountGroupByEventType(roleId, providerId) {
+  async getUserEventCountGroupByEventType(
+    roleId,
+    providerId,
+    startDate?,
+    endDate?,
+  ) {
+    const params = [];
+    if (startDate && endDate)
+      params.push(
+        startDate,
+        endDate,
+        startDate,
+        endDate,
+        startDate,
+        endDate,
+        startDate,
+        endDate,
+      );
+    params.push(roleId);
+    if (providerId) params.push(providerId + '');
     return this.userRepository.query(
       `SELECT 
         u.id  as id,
         u.name as name,
-        (select count(*) from event e where e.user_id = u.id) as totalCount,
-        (select count(*) from event e where e.user_id = u.id and e.event_type = 'normal') as normalCount,
-        (select count(*) from event e where e.user_id = u.id and e.event_type = 'important') as importantCount,
-        (select count(*) from event e where e.user_id = u.id and e.event_type = 'advertise') as advertiseCount
+        (select count(*) from event e where e.user_id = u.id  ${
+          startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''
+        }) as totalCount,
+        (select count(*) from event e where e.user_id = u.id and e.event_type = 'normal'  ${
+          startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''
+        }) as normalCount,
+        (select count(*) from event e where e.user_id = u.id and e.event_type = 'important'  ${
+          startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''
+        }) as importantCount,
+        (select count(*) from event e where e.user_id = u.id and e.event_type = 'advertise'  ${
+          startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''
+        }) as advertiseCount
       from users u
         WHERE 1=1     
         AND u.role_id = ?    
         ${providerId ? ' AND u.provider_id = ? ' : ''}
+        
       group by u.id
       order by totalCount desc
       limit 10`,
-      [roleId, providerId],
+      params,
     );
   }
 
@@ -148,10 +183,15 @@ export class StatisticsService {
     );
   }
 
-  async getProviderTotalRank(providerId) {
+  async getProviderTotalRank(providerId, startDate?, endDate?) {
+    const params = [];
+    if (startDate && endDate) params.push(startDate, endDate);
+    if (providerId) params.push(providerId + '');
     return this.userRepository.query(
       `SELECT 
-        (select count(*) from event e where e.provider_id = p.id) as totalCount,
+        (select count(*) from event e where e.provider_id = p.id ${
+          startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''
+        }) as totalCount,
         p.provider_name as providerName,
         p.id as providerId
           FROM provider as p
@@ -159,25 +199,51 @@ export class StatisticsService {
               ${providerId ? ' AND p.id = ? ' : ''}
           ORDER BY totalCount desc
       LIMIT 10`,
-      [providerId],
+      params,
     );
   }
 
-  async getProviderEventCountGroupByEventType(providerId) {
+  async getProviderEventCountGroupByEventType(
+    providerId,
+    startDate?,
+    endDate?,
+  ) {
+    const params = [];
+
+    if (startDate && endDate)
+      params.push(
+        startDate,
+        endDate,
+        startDate,
+        endDate,
+        startDate,
+        endDate,
+        startDate,
+        endDate,
+      );
+    if (providerId) params.push(providerId + '');
     return this.userRepository.query(
       `SELECT 
         p.id  as providerId,
         p.provider_name as providerName,
-        (select count(*) from event e where e.provider_id = p.id) as totalCount,
-        (select count(*) from event e where e.provider_id = p.id and e.event_type = 'normal') as normalCount,
-        (select count(*) from event e where e.provider_id = p.id and e.event_type = 'important') as importantCount,
-        (select count(*) from event e where e.provider_id = p.id and e.event_type = 'advertise') as advertiseCount
+        (select count(*) from event e where e.provider_id = p.id ${
+          startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''
+        }) as totalCount,
+        (select count(*) from event e where e.provider_id = p.id and e.event_type = 'normal' ${
+          startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''
+        }) as normalCount,
+        (select count(*) from event e where e.provider_id = p.id and e.event_type = 'important' ${
+          startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''
+        }) as importantCount,
+        (select count(*) from event e where e.provider_id = p.id and e.event_type = 'advertise' ${
+          startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''
+        }) as advertiseCount
       from provider p
         WHERE 1=1     
         ${providerId ? ' AND p.id = ? ' : ''}
       order by totalCount desc
       limit 10`,
-      [providerId],
+      params,
     );
   }
 
@@ -201,13 +267,17 @@ export class StatisticsService {
     );
   }
 
-  async getConsumerTotalRank(providerId) {
+  async getConsumerTotalRank(providerId, startDate?, endDate?) {
+    const params = [];
+    if (providerId) params.push(providerId + '');
+    if (startDate && endDate) params.push(startDate, endDate);
     return this.userRepository.query(
       `SELECT 
         (select count(*) from event e
           LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
             where c.id = um.consumer_id
             ${providerId ? ' AND um.provider_id = ? ' : ''}
+            ${startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''}
         ) as totalCount,
         c.consumer_name as consumerName ,
         c.id as consumerId
@@ -216,11 +286,23 @@ export class StatisticsService {
         GROUP BY c.id
         ORDER BY totalCount desc
       LIMIT 10`,
-      [providerId],
+      params,
     );
   }
 
-  async getConsumerEventCountGroupByEventType(providerId) {
+  async getConsumerEventCountGroupByEventType(
+    providerId,
+    startDate?,
+    endDate?,
+  ) {
+    const params = [];
+    Array(4)
+      .fill(1)
+      .map(() => {
+        if (providerId) params.push(providerId);
+        if (startDate && endDate) params.push(startDate, endDate);
+      });
+
     return this.userRepository.query(
       `SELECT 
         c.id  as consumerId,
@@ -230,12 +312,14 @@ export class StatisticsService {
             LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
               where c.id = um.consumer_id
               ${providerId ? ' AND um.provider_id = ? ' : ''}
+              ${startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''}
         ) as totalCount,
         (
           select count(*) from event e 
             LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
               where c.id = um.consumer_id
               ${providerId ? ' AND um.provider_id = ? ' : ''}
+              ${startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''}
               and e.event_type = 'normal'
         ) as normalCount,
         (
@@ -243,6 +327,7 @@ export class StatisticsService {
             LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
               where c.id = um.consumer_id
               ${providerId ? ' AND um.provider_id = ? ' : ''}
+              ${startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''}
               and e.event_type = 'important'
         ) as importantCount,
         (
@@ -250,13 +335,14 @@ export class StatisticsService {
             LEFT JOIN \`user-mapping\` AS um on um.id = e.user_mapping_id
               where c.id = um.consumer_id
               ${providerId ? ' AND um.provider_id = ? ' : ''}
+              ${startDate && endDate ? ' AND e.issued_at BETWEEN ? AND ? ' : ''}
               and e.event_type = 'advertise'
         ) as advertiseCount
       from consumer c
         WHERE 1=1     
       order by totalCount desc
       limit 10`,
-      [providerId, providerId, providerId, providerId],
+      params,
     );
   }
 
