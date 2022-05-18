@@ -19,6 +19,7 @@ import { SystemLog } from './systemLog.entity';
 import { Event, EventLog, FcmToken, Provider } from '.';
 import { Role } from './role.entity';
 import { KeyStores } from './keyStores.entity';
+import { baseStatus, userStatus } from 'modules/common/constants/status';
 
 @Entity('users', { schema: 'mycar' })
 export class User {
@@ -46,18 +47,9 @@ export class User {
   @Column('varchar', { name: 'name', nullable: true, length: 255 })
   name: string | null;
 
-  // @ApiProperty()
-  // @Column({
-  //   type: 'enum',
-  //   name: 'role',
-  //   enum: Roles,
-  //   default: Roles.USER,
-  // })
-  // role: Roles;
-
   @ApiProperty()
   @Column('varchar', { name: 'status', length: 255, default: 'ACTIVE' })
-  status: string;
+  status: userStatus;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -71,6 +63,25 @@ export class User {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   public updated_at: Date;
+
+  @ApiProperty()
+  @Column('timestamp', {
+    name: 'last_logined_at',
+    nullable: true,
+    comment: '마지막 로그인일',
+  })
+  lastLoginedAt: Date | null;
+
+  @ApiProperty()
+  @Column('timestamp', {
+    name: 'last_pw_modified_at',
+    default: () => 'CURRENT_TIMESTAMP',
+    comment: '마지막 비밀번호 수정일',
+  })
+  lastPwModifiedAt: Date | null;
+
+  @Column('int', { name: 'fail_count', default: 0 })
+  failCount: number;
 
   @ManyToOne(() => Role, (role) => role.users)
   @JoinColumn({ name: 'role_id' })

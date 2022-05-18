@@ -1,4 +1,9 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
@@ -8,6 +13,7 @@ import { UserMappingFillableFields } from '.';
 import { Roles } from 'modules/common/constants/roles';
 import { Consumer, Provider, User, UserMapping } from 'modules/entities';
 import { UserAuthorityMapping } from 'modules/entities/userAuthorityMapping.entity';
+import { baseStatus } from 'modules/common/constants/status';
 
 @Injectable()
 export class UsersService extends TypeOrmCrudService<User> {
@@ -60,7 +66,7 @@ export class UsersService extends TypeOrmCrudService<User> {
     payload: Partial<UserFillableFields> & {
       // tvCertCode: string;
       roleId: number;
-      status: string;
+      status: baseStatus;
       providerId: number;
       userKey: string;
     },
@@ -77,5 +83,10 @@ export class UsersService extends TypeOrmCrudService<User> {
 
   async createUserMapping(payload: UserMappingFillableFields) {
     return await this.userMappingRepository.save(payload);
+  }
+
+  throwBadRequestException(msg?: any): BadRequestException {
+    console.log(msg);
+    throw new HttpException('Error', 400);
   }
 }

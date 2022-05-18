@@ -7,6 +7,7 @@ import { UserFillableFields } from './user.interface';
 import { UserMappingFillableFields } from '.';
 import { Roles } from 'modules/common/constants/roles';
 import { Consumer, Provider, User, UserMapping } from 'modules/entities';
+import { baseStatus } from 'modules/common/constants/status';
 
 @Injectable()
 export class UsersService extends TypeOrmCrudService<User> {
@@ -35,7 +36,7 @@ export class UsersService extends TypeOrmCrudService<User> {
     });
   }
 
-  async updateUser(criteria, payload) {
+  async updateUser(criteria: Partial<User>, payload: Partial<User>) {
     return await this.userRepository.update(criteria, payload);
   }
 
@@ -59,7 +60,7 @@ export class UsersService extends TypeOrmCrudService<User> {
     payload: Partial<UserFillableFields> & {
       // tvCertCode: string;
       roleId: number;
-      status: string;
+      status: baseStatus;
       providerId: number;
       userKey: string;
     },

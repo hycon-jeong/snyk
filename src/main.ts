@@ -3,35 +3,20 @@ import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 import { TrimStringsPipe } from './modules/common/transformer/trim-strings.pipe';
 import { AppModule } from './modules/main/app.module';
-import {
-  setupProviderSwagger,
-  setupAdminSwagger,
-  setupTvAppSwagger,
-  setupMobileSwagger,
-} from './swagger';
+import { SwaggerHelper } from './swagger';
 import * as dotenv from 'dotenv';
 import { WinstonModule } from 'nest-winston';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
 import * as rateLimit from 'express-rate-limit';
 import { winstonOptions } from 'modules/main/app-logging';
-import { TvAuthModule } from 'modules/api.tvapp/v1/auth/tv.auth.module';
-import { ProviderApiModule } from 'modules/api.provider/v1/provider.module';
-
-import { AllExceptionsFilter } from 'modules/common/HttpExeption';
-import { I18nModule, I18nService } from 'nestjs-i18n';
 import * as morgan from 'morgan';
-import winston from 'winston';
-import { ProviderAuthModule } from 'modules/api.provider/v1/auth/provider.auth.module';
-import { ProviderEventModule } from 'modules/api.provider/v1/event/provider.event.module';
-import { TvDeviceModule } from 'modules/api.tvapp/v1/device/tv.device.module';
-import { TvTestModule } from 'modules/api.tvapp/v1/test/tv.test.module';
+import { loadPackage } from '@nestjs/common/utils/load-package.util';
+import { ProviderApiModule } from 'modules/api.provider/v1/provider.module';
 import { TvAppV1ApiModule } from 'modules/api.tvapp/v1/tvapp.v1.module';
-import { AdminV1Module } from 'modules/api.admin/v1/admin.v1.module';
 import { MobileV1Module } from 'modules/api.mobile/v1/mobile.v1.module';
-import { SWAGGER_ADMIN_API_ROOT } from 'swagger/constants';
-import * as basicAuth from 'express-basic-auth';
-import { ExpressBasicAuthMiddleware } from 'modules/common/middleware/ExpressBasicAuth.middleware';
+import { AdminV1Module } from 'modules/api.admin/v1/admin.v1.module';
+
 dotenv.config();
 
 const { APP_PORT, APP_ENV } = process.env;
@@ -45,35 +30,36 @@ async function bootstrap() {
     logger: logger,
   };
   const app = await NestFactory.create(AppModule, nestAppOptions);
+  const swaggerHelper = new SwaggerHelper();
+  swaggerHelper.setApp(app);
 
-  // app.use(
-  //   SWAGGER_ADMIN_API_ROOT + '/',
-  //   basicAuth({
-  //     challenge: true,
-  //     users: { jason: '1234' },
-  //   }),
-  // );
-
-  setupAdminSwagger(app, {
+  const { document: adminDoc } = swaggerHelper.getAdminSwaggerDocument({
     include: [AdminV1Module],
     deepScanRoutes: true,
   });
-
-  setupMobileSwagger(app, {
-    include: [MobileV1Module],
-    deepScanRoutes: true,
-  });
-
-  // provider api docs
-  setupProviderSwagger(app, {
+  const { document: providerDoc } = swaggerHelper.getProviderSwaggerDocument({
     include: [ProviderApiModule],
     deepScanRoutes: true,
   });
-  // tvapp api docs
-  setupTvAppSwagger(app, {
+  const { document: mobileDoc } = swaggerHelper.getMobileSwaggerDocument({
+    include: [MobileV1Module],
+    deepScanRoutes: true,
+  });
+  const { document: tvAppDoc } = swaggerHelper.getTvAppSwaggerDocument({
     include: [TvAppV1ApiModule],
     deepScanRoutes: true,
   });
+  const swaggerUi = loadPackage('swagger-ui-express', 'SwaggerModule', () =>
+    require('swagger-ui-express'),
+  );
+  // set swagger static file
+  app.use(swaggerHelper.getAdminApi(), swaggerUi.serveFiles(adminDoc, {}));
+  app.use(
+    swaggerHelper.getProviderApi(),
+    swaggerUi.serveFiles(providerDoc, {}),
+  );
+  app.use(swaggerHelper.getMobileApi(), swaggerUi.serveFiles(mobileDoc, {}));
+  app.use(swaggerHelper.getTvAppApi(), swaggerUi.serveFiles(tvAppDoc, {}));
 
   app.use(morgan('combined'));
 

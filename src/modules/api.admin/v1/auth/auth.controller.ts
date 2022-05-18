@@ -43,7 +43,7 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async login(@Body() payload: LoginPayload): Promise<any> {
-    const user = await this.authService.validateUser(payload);
+    const user = await this.authService.validateLoginUser(payload);
 
     const accessTokenKey = randomBytes(64).toString('hex');
     const refreshTokenKey = randomBytes(64).toString('hex');
@@ -99,7 +99,11 @@ export class AuthController {
     if (user) {
       await this.userService.updateUser(
         { id: user.id },
-        { password: payload.newPassword },
+        {
+          password: payload.newPassword,
+          lastPwModifiedAt: new Date(),
+          status: 'ACTIVE',
+        },
       );
     }
 

@@ -47,13 +47,12 @@ import { MobileV1Module } from 'modules/api.mobile/v1/mobile.v1.module';
 import { AuthModule } from 'modules/api.mobile/v1/auth';
 import { PassportModule } from '@nestjs/passport';
 import { BatchModule } from 'modules/batch/batch.module';
-import { ExpressBasicAuthMiddleware } from 'modules/common/middleware/ExpressBasicAuth.middleware';
-import {
-  SWAGGER_ADMIN_API_ROOT,
-  SWAGGER_MOBILE_API_ROOT,
-  SWAGGER_PROVIDER_API_ROOT,
-  SWAGGER_TVAPP_API_ROOT,
-} from '../../swagger/constants';
+import { SwaggerAdminBasicAuthMiddleware } from 'modules/common/middleware/SwaggerAdminBasicAuth.middleware';
+import { SwaggerProviderBasicAuthMiddleware } from 'modules/common/middleware/SwaggerProviderBasicAuth.middleware';
+import { SwaggerHelper } from 'swagger';
+import { SwaggerMobileBasicAuthMiddleware } from 'modules/common/middleware/SwaggerMobileBasicAuth.middleware';
+import { SwaggerTvAppBasicAuthMiddleware } from 'modules/common/middleware/SwaggerTvAppBasicAuth.middleware';
+import { UserModule, UsersService } from 'modules/user';
 
 var serviceAccount = require('../../../firebase.json');
 
@@ -85,6 +84,7 @@ config();
       },
     }),
     ConfigModule,
+    UserModule,
     // SentryModule.forRoot({
     //   dsn: process.env.SENTRY_DNS,
     //   tracesSampleRate: 1.0,
@@ -120,6 +120,7 @@ config();
         new CookieResolver(['lang', 'locale', 'l']),
       ],
     }),
+
     HealthModule,
     CommonModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -149,28 +150,22 @@ config();
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    console.log(SWAGGER_ADMIN_API_ROOT);
-    consumer.apply(ExpressBasicAuthMiddleware).forRoutes(
-      {
-        path: 'test',
-        method: RequestMethod.ALL,
-      },
-      {
-        path: 'api/admin/v1/docs',
-        method: RequestMethod.ALL,
-      },
-      {
-        path: SWAGGER_MOBILE_API_ROOT + '/',
-        method: RequestMethod.GET,
-      },
-      {
-        path: SWAGGER_PROVIDER_API_ROOT + '/',
-        method: RequestMethod.GET,
-      },
-      {
-        path: SWAGGER_TVAPP_API_ROOT + '/',
-        method: RequestMethod.GET,
-      },
-    );
+    const swaggerHelper = new SwaggerHelper();
+    consumer.apply(SwaggerAdminBasicAuthMiddleware).forRoutes({
+      path: swaggerHelper.getAdminApi(),
+      method: RequestMethod.ALL,
+    });
+    consumer.apply(SwaggerProviderBasicAuthMiddleware).forRoutes({
+      path: swaggerHelper.getProviderApi(),
+      method: RequestMethod.GET,
+    });
+    consumer.apply(SwaggerMobileBasicAuthMiddleware).forRoutes({
+      path: swaggerHelper.getMobileApi(),
+      method: RequestMethod.GET,
+    });
+    consumer.apply(SwaggerTvAppBasicAuthMiddleware).forRoutes({
+      path: swaggerHelper.getTvAppApi(),
+      method: RequestMethod.GET,
+    });
   }
 }

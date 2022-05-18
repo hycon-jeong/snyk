@@ -1,5 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
+import { loadPackage } from '@nestjs/common/utils/load-package.util';
 const YAML = require('yaml');
 import * as fs from 'fs';
 import {
@@ -21,67 +23,130 @@ import {
   SWAGGER_TVAPP_API_ROOT,
 } from './constants';
 
-export const setupAdminSwagger = (app: INestApplication, config?) => {
-  const options = new DocumentBuilder()
-    .setTitle(SWAGGER_ADMIN_API_NAME)
-    .setDescription(SWAGGER_ADMIN_API_DESCRIPTION)
-    .setVersion(SWAGGER_ADMIN_API_CURRENT_VERSION)
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, options, config);
-  const yamlString: string = YAML.stringify(document);
-  // fs.writeFileSync('./swagger-admin.yaml', yamlString);
+export class SwaggerHelper {
+  static singleton;
+  private app: INestApplication;
+  private adminApi = '/' + SWAGGER_ADMIN_API_ROOT + '/';
+  private providerApi = '/' + SWAGGER_PROVIDER_API_ROOT + '/';
+  private tvAppApi = '/' + SWAGGER_TVAPP_API_ROOT + '/';
+  private mobileApi = '/' + SWAGGER_MOBILE_API_ROOT + '/';
 
-  return () =>
-    SwaggerModule.setup(SWAGGER_ADMIN_API_ROOT, app, document, {
-      swaggerOptions: { defaultModelsExpandDepth: -1 },
-    });
-};
+  constructor() {
+    if (SwaggerHelper.singleton) return SwaggerHelper.singleton;
+    SwaggerHelper.singleton = this;
+  }
+  setApp(app) {
+    this.app = app;
+  }
 
-export const setupProviderSwagger = (app: INestApplication, config?) => {
-  const options = new DocumentBuilder()
-    .setTitle(SWAGGER_PROVIDER_API_NAME)
-    .setDescription(SWAGGER_PROVIDER_API_DESCRIPTION)
-    .setVersion(SWAGGER_PROVIDER_API_CURRENT_VERSION)
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, options, config);
-  const yamlString: string = YAML.stringify(document);
-  // fs.writeFileSync('./swagger-provider.yaml', yamlString);
+  getApp() {
+    return this.app;
+  }
 
-  SwaggerModule.setup(SWAGGER_PROVIDER_API_ROOT, app, document, {
-    swaggerOptions: { defaultModelsExpandDepth: -1 },
-  });
-};
+  getAdminApi() {
+    return this.adminApi;
+  }
 
-export const setupTvAppSwagger = (app: INestApplication, config?) => {
-  const options = new DocumentBuilder()
-    .setTitle(SWAGGER_TVAPP_API_NAME)
-    .setDescription(SWAGGER_TVAPP_API_DESCRIPTION)
-    .setVersion(SWAGGER_TVAPP_API_CURRENT_VERSION)
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, options, config);
-  const yamlString: string = YAML.stringify(document);
-  // fs.writeFileSync('./swagger-tvapp.yaml', yamlString);
+  getProviderApi() {
+    return this.providerApi;
+  }
 
-  SwaggerModule.setup(SWAGGER_TVAPP_API_ROOT, app, document, {
-    swaggerOptions: { defaultModelsExpandDepth: -1 },
-  });
-};
+  getTvAppApi() {
+    return this.tvAppApi;
+  }
 
-export const setupMobileSwagger = (app: INestApplication, config?) => {
-  const options = new DocumentBuilder()
-    .setTitle(SWAGGER_MOBILE_API_NAME)
-    .setDescription(SWAGGER_MOBILE_API_DESCRIPTION)
-    .setVersion(SWAGGER_MOBILE_API_CURRENT_VERSION)
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, options, config);
-  const yamlString: string = YAML.stringify(document);
-  // fs.writeFileSync('./swagger-tvapp.yaml', yamlString);
+  getMobileApi() {
+    return this.mobileApi;
+  }
 
-  SwaggerModule.setup(SWAGGER_MOBILE_API_ROOT, app, document, {
-    swaggerOptions: { defaultModelsExpandDepth: -1 },
-  });
-};
+  /**Admin Swagger */
+  getAdminSwaggerHtml = (config?) => {
+    const { document, options } = this.getAdminSwaggerDocument(config);
+    const swaggerUi = loadPackage('swagger-ui-express', 'SwaggerModule', () =>
+      require('swagger-ui-express'),
+    );
+    const swaggerHtml = swaggerUi.generateHTML(document, options);
+    const yamlString: string = YAML.stringify(document);
+    // fs.writeFileSync('./swagger-admin.yaml', yamlString);
+    return swaggerHtml;
+  };
+  getAdminSwaggerDocument = (config?) => {
+    const options = new DocumentBuilder()
+      .setTitle(SWAGGER_ADMIN_API_NAME)
+      .setDescription(SWAGGER_ADMIN_API_DESCRIPTION)
+      .setVersion(SWAGGER_ADMIN_API_CURRENT_VERSION)
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(this.app, options, config);
+    return { options, document };
+  };
+
+  /** Provider Swagger */
+  getProviderSwaggerHtml = (config?) => {
+    const { document, options } = this.getProviderSwaggerDocument(config);
+    const swaggerUi = loadPackage('swagger-ui-express', 'SwaggerModule', () =>
+      require('swagger-ui-express'),
+    );
+    const swaggerHtml = swaggerUi.generateHTML(document, options);
+    const yamlString: string = YAML.stringify(document);
+    // fs.writeFileSync('./swagger-admin.yaml', yamlString);
+    return swaggerHtml;
+  };
+  getProviderSwaggerDocument = (config?) => {
+    const options = new DocumentBuilder()
+      .setTitle(SWAGGER_PROVIDER_API_NAME)
+      .setDescription(SWAGGER_PROVIDER_API_DESCRIPTION)
+      .setVersion(SWAGGER_PROVIDER_API_CURRENT_VERSION)
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(this.app, options, config);
+    return { options, document };
+  };
+
+  /**TvApp Swagger */
+  getTvAppSwaggerHtml = (config?) => {
+    const { document, options } = this.getTvAppSwaggerDocument(config);
+    const swaggerUi = loadPackage('swagger-ui-express', 'SwaggerModule', () =>
+      require('swagger-ui-express'),
+    );
+    const swaggerHtml = swaggerUi.generateHTML(document, options);
+    const yamlString: string = YAML.stringify(document);
+    // fs.writeFileSync('./swagger-admin.yaml', yamlString);
+    return swaggerHtml;
+  };
+  getTvAppSwaggerDocument = (config?) => {
+    const options = new DocumentBuilder()
+      .setTitle(SWAGGER_TVAPP_API_NAME)
+      .setDescription(SWAGGER_TVAPP_API_DESCRIPTION)
+      .setVersion(SWAGGER_TVAPP_API_CURRENT_VERSION)
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(this.app, options, config);
+    return { options, document };
+  };
+
+  /**Mobile Swagger */
+  getMobileSwaggerHtml = (config?) => {
+    const { document, options } = this.getMobileSwaggerDocument(config);
+    const swaggerUi = loadPackage('swagger-ui-express', 'SwaggerModule', () =>
+      require('swagger-ui-express'),
+    );
+    const swaggerHtml = swaggerUi.generateHTML(document, options);
+    const yamlString: string = YAML.stringify(document);
+    // fs.writeFileSync('./swagger-admin.yaml', yamlString);
+    return swaggerHtml;
+  };
+  getMobileSwaggerDocument = (config?) => {
+    const options = new DocumentBuilder()
+      .setTitle(SWAGGER_MOBILE_API_NAME)
+      .setDescription(SWAGGER_MOBILE_API_DESCRIPTION)
+      .setVersion(SWAGGER_MOBILE_API_CURRENT_VERSION)
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(this.app, options, config);
+    return { options, document };
+  };
+}

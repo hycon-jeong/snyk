@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Provider } from 'modules/entities';
@@ -11,5 +11,9 @@ export default class CrudsProviderService extends TypeOrmCrudService<Provider> {
     providersRepository: Repository<Provider>,
   ) {
     super(providersRepository);
+  }
+
+  throwBadRequestException(msg?: any): BadRequestException {
+    throw new HttpException('Error', 400);
   }
 }

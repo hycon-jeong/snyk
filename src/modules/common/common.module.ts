@@ -14,6 +14,7 @@ import { UniqueValidator } from './validator/unique.validator';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigModule, ConfigService } from 'modules/config';
 import { LogActionType } from 'modules/entities/logActionType.entity';
+import { UserModule, UsersService } from 'modules/user';
 
 @Global()
 @Module({
