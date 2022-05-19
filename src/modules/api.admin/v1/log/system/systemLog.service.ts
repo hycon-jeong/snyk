@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { UserLog, UserMappingLog } from 'modules/entities';
@@ -12,5 +12,10 @@ export class CrudSystemLogService extends TypeOrmCrudService<SystemLog> {
     systemLogRepository: Repository<SystemLog>,
   ) {
     super(systemLogRepository);
+  }
+
+  throwBadRequestException(msg?: any): BadRequestException {
+    console.log(msg);
+    throw new HttpException('Exception has occurred.', 400);
   }
 }

@@ -33,7 +33,7 @@ import { CrudAuthorityService } from './authority.service';
   },
 })
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
-@RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+@RolesAllowed(Roles.ADMIN)
 @Controller('api/admin/v1/authority')
 @ApiTags('authority')
 export class CrudBlockerController implements CrudController<Authority> {

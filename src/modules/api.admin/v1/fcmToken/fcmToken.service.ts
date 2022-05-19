@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { RequestQueryBuilder } from '@nestjsx/crud-request';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
@@ -33,5 +33,10 @@ export default class CrudsFcmTokenService extends TypeOrmCrudService<FcmToken> {
     }).query();
 
     return token;
+  }
+
+  throwBadRequestException(msg?: any): BadRequestException {
+    console.log(msg);
+    throw new HttpException('Exception has occurred.', 400);
   }
 }

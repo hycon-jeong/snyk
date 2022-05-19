@@ -24,6 +24,7 @@ import { RolesGuard } from 'modules/common/guard/roles.guard';
 import { LogService } from 'modules/common/services/LogService';
 import { Provider, User } from 'modules/entities';
 import { Not } from 'typeorm';
+import { isPermission } from 'utils/Permission';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { UpdateProviderDto } from './dto/update-provider.dto';
 import CrudsProviderService from './provider.service';
@@ -34,13 +35,7 @@ import CrudsProviderService from './provider.service';
     type: Provider,
   },
   routes: {
-    only: [
-      'getOneBase',
-      'getManyBase',
-      'createOneBase',
-      'updateOneBase',
-      'deleteOneBase',
-    ],
+    only: ['getOneBase', 'getManyBase', 'createOneBase', 'updateOneBase'],
   },
 })
 @Controller('api/admin/v1/provider')
@@ -65,21 +60,20 @@ export class CrudProviderController implements CrudController<Provider> {
     return this;
   }
 
-  @Get('/code')
-  async getProviderByCode(@ParsedRequest() req: CrudRequest, @Query() query) {
-    const { providerId } = query;
-    const provider = await this.service.findOne({
-      providerCode: providerId,
-      status: 'ACTIVE',
-    });
-    if (!provider) {
-      throw new BadRequestException('Provider not found');
+  @Override()
+  async getMany(@ParsedRequest() req: CrudRequest) {
+    const {
+      authPersist: { user },
+    } = req.parsed;
+    const isAdmin = isPermission(user, [Roles.ADMIN]);
+    if (!isAdmin) {
+      req.parsed.search.$and.push({ id: user.providerId });
     }
-    return provider;
+    return this.service.getMany(req);
   }
 
   @Override()
-  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+  @RolesAllowed(Roles.ADMIN)
   async createOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: CreateProviderDto,
@@ -116,7 +110,7 @@ export class CrudProviderController implements CrudController<Provider> {
   }
 
   @Override()
-  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+  @RolesAllowed(Roles.ADMIN)
   async updateOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: UpdateProviderDto,

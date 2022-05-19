@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Override } from '@nestjsx/crud';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Event } from 'modules/entities';
 import { Repository } from 'typeorm';
@@ -108,5 +109,10 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
 
   async update(criteria, payload) {
     return this.eventRepository.update(criteria, payload);
+  }
+
+  throwBadRequestException(msg?: any): BadRequestException {
+    console.log(msg);
+    throw new HttpException('Exception has occurred.', 400);
   }
 }

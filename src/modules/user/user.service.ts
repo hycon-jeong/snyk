@@ -1,4 +1,9 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
@@ -71,5 +76,10 @@ export class UsersService extends TypeOrmCrudService<User> {
 
   async createUserMapping(payload: UserMappingFillableFields) {
     return await this.userMappingRepository.save(payload);
+  }
+
+  throwBadRequestException(msg?: any): BadRequestException {
+    console.log(msg);
+    throw new HttpException('Exception has occurred.', 400);
   }
 }

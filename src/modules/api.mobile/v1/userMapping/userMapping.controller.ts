@@ -191,27 +191,8 @@ export class UserMappingController implements CrudController<UserMapping> {
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: UserMapping,
     @Param('id') id,
+    @Query() query,
   ) {
-    if (dto.providerId) {
-      const providerData = await this.providerService.findOne({
-        id: dto.providerId,
-      });
-      if (!providerData || !providerData.id) {
-        throw new BadRequestException('Provider not found');
-      } else {
-        dto.provider = providerData;
-      }
-    }
-    if (dto.consumerId) {
-      const consumerData = await this.consumerService.findOne({
-        id: dto.consumerId,
-      });
-      if (!consumerData || !consumerData.id) {
-        throw new BadRequestException('consumer not found');
-      } else {
-        dto.consumer = consumerData;
-      }
-    }
     if (dto.userId) {
       const userData = await this.userService.findOne({
         id: dto.userId,
@@ -222,14 +203,32 @@ export class UserMappingController implements CrudController<UserMapping> {
         dto.user = userData;
       }
     }
+    const { userKey, providerId } = query;
+
+    const provider = await this.providerService.findOne({
+      providerCode: providerId,
+      status: 'ACTIVE',
+    });
+    if (!provider) {
+      throw new BadRequestException('Provider not found');
+    }
 
     const userMapping = await this.service.findOne({
-      where: { id },
+      where: {
+        id,
+        providerId: provider.id,
+        mappingStatus: 'ACTIVE',
+        key: userKey,
+      },
       join: {
         leftJoinAndSelect: { tvDevice: 'mapping.tvDevice' },
         alias: 'mapping',
       },
     });
+
+    if (!userMapping) {
+      throw new BadRequestException('user not found');
+    }
 
     if (dto.mappingStatus === 'INACTIVE') {
       // 맵핑 삭제

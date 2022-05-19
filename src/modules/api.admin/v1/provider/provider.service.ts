@@ -14,6 +14,7 @@ export default class CrudsProviderService extends TypeOrmCrudService<Provider> {
   }
 
   throwBadRequestException(msg?: any): BadRequestException {
-    throw new HttpException('Error', 400);
+    console.log(msg);
+    throw new HttpException('Exception has occurred.', 400);
   }
 }

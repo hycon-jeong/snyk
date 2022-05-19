@@ -2,11 +2,13 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Param,
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -38,13 +40,7 @@ import { isPermission } from 'utils/Permission';
     type: UserMapping,
   },
   routes: {
-    only: [
-      'getOneBase',
-      'getManyBase',
-      'createOneBase',
-      'updateOneBase',
-      'deleteOneBase',
-    ],
+    only: ['getManyBase', 'updateOneBase'],
   },
   params: {
     id: {
@@ -108,34 +104,6 @@ export class UserMappingController implements CrudController<UserMapping> {
     return this.service.getMany(req);
   }
 
-  @Override()
-  async createOne(
-    @ParsedRequest() req: CrudRequest,
-    @ParsedBody() dto: UserMapping,
-  ) {
-    const providerData = await this.providerService.findOne({
-      id: dto.providerId,
-    });
-    if (!providerData || !providerData.id) {
-      throw new BadRequestException('Provider not found');
-    }
-    const consumerData = await this.consumerService.findOne({
-      id: dto.consumerId,
-    });
-    if (!consumerData || !consumerData.id) {
-      throw new BadRequestException('consumer not found');
-    }
-    const userData = await this.userService.findOne({
-      id: dto.userId,
-    });
-    if (!userData || !userData.id) {
-      throw new BadRequestException('user not found');
-    }
-    return this.base.createOneBase(req, {
-      ...dto,
-    } as UserMapping);
-  }
-
   @Patch('multi')
   @ApiResponse({ status: 201, description: 'Successful Registration' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
@@ -143,7 +111,16 @@ export class UserMappingController implements CrudController<UserMapping> {
   async updateUserMappingsByUserId(
     @Body() payload: Partial<UserMapping>,
     @Query('user_id') user_id,
+    @Req() req,
   ): Promise<any> {
+    const { user } = req;
+    const isAdmin = isPermission(user, [Roles.ADMIN]);
+    if (!isAdmin) {
+      const u = await this.service.findOne({ id: user_id });
+      if (u.providerId !== user.providerId) {
+        throw new ForbiddenException();
+      }
+    }
     return this.service.updateUserMappings(payload, { userId: user_id });
   }
 
@@ -167,16 +144,6 @@ export class UserMappingController implements CrudController<UserMapping> {
         dto.provider = providerData;
       }
     }
-    if (dto.consumerId) {
-      const consumerData = await this.consumerService.findOne({
-        id: dto.consumerId,
-      });
-      if (!consumerData || !consumerData.id) {
-        throw new BadRequestException('consumer not found');
-      } else {
-        dto.consumer = consumerData;
-      }
-    }
     if (dto.userId) {
       const userData = await this.userService.findOne({
         id: dto.userId,
@@ -195,6 +162,19 @@ export class UserMappingController implements CrudController<UserMapping> {
         alias: 'mapping',
       },
     });
+
+    if (!userMapping) {
+      throw new BadRequestException('User not found');
+    }
+
+    const isAdmin = isPermission(user, [Roles.ADMIN]);
+
+    if (!isAdmin) {
+      const u = await this.service.findOne({ id: userMapping.userId });
+      if (u.providerId !== user.providerId) {
+        throw new ForbiddenException();
+      }
+    }
 
     if (dto.mappingStatus === 'INACTIVE') {
       // 연결된 tv 삭제 노티

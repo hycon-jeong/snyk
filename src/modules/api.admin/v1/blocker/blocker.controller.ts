@@ -51,7 +51,7 @@ import { CrudBlockerService } from './blocker.service';
   },
 })
 @UseGuards(AuthGuard(), IpBlockerGuard, RolesGuard)
-@RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+@RolesAllowed(Roles.ADMIN)
 @Controller('api/admin/v1/blocker')
 @ApiTags('blocker')
 @CrudAuth({

@@ -87,6 +87,6 @@ export class UsersService extends TypeOrmCrudService<User> {
 
   throwBadRequestException(msg?: any): BadRequestException {
     console.log(msg);
-    throw new HttpException('Error', 400);
+    throw new HttpException('Exception has occurred.', 400);
   }
 }

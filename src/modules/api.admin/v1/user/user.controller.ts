@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpException,
   HttpStatus,
@@ -118,6 +119,7 @@ export class CrudUserController implements CrudController<User> {
   }
 
   @UseInterceptors(CrudRequestInterceptor)
+  @RolesAllowed(Roles.ADMIN)
   @Get('/admin')
   async getAdminList(@ParsedRequest() req: CrudRequest) {
     const {
@@ -133,8 +135,25 @@ export class CrudUserController implements CrudController<User> {
     return await this.service.getMany(req);
   }
 
+  @Override()
+  async getOne(@ParsedRequest() req: CrudRequest, @Param() param) {
+    const {
+      authPersist: { user },
+    } = req.parsed;
+    const isAdmin = isPermission(user, [Roles.ADMIN]);
+
+    if (!isAdmin) {
+      const { id } = param;
+      const u = await this.service.findOne({ id });
+      if (u.providerId !== user.providerId) {
+        throw new ForbiddenException();
+      }
+    }
+    return this.service.getOne(req);
+  }
+
   @Post('register')
-  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+  @RolesAllowed(Roles.ADMIN)
   @ApiResponse({ status: 201, description: 'Successful Registration' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -181,7 +200,7 @@ export class CrudUserController implements CrudController<User> {
   }
 
   @Patch('update/:id')
-  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+  @RolesAllowed(Roles.ADMIN)
   async updateUserWithAuthority(
     @Body() payload: UpdatePayload,
     @Req() req,
@@ -253,7 +272,7 @@ export class CrudUserController implements CrudController<User> {
   }
 
   @Override()
-  @RolesAllowed(Roles.ADMIN, Roles.PROVIDER)
+  @RolesAllowed(Roles.ADMIN)
   async deleteOne(@ParsedRequest() req: CrudRequest, @Param('id') id) {
     const {
       authPersist: { user },

@@ -65,6 +65,7 @@ export class CrudConsumerController implements CrudController<Consumer> {
   }
 
   @Override()
+  @RolesAllowed(Roles.ADMIN)
   async createOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: CreateConsumerDto,
@@ -97,6 +98,7 @@ export class CrudConsumerController implements CrudController<Consumer> {
   }
 
   @Override()
+  @RolesAllowed(Roles.ADMIN)
   async updateOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: UpdateConsumerDto,

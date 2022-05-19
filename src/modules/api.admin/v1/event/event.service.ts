@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Event } from 'modules/entities';
@@ -116,5 +116,10 @@ export default class CrudsEventService extends TypeOrmCrudService<Event> {
       })
       .groupBy('category_id')
       .getRawMany();
+  }
+
+  throwBadRequestException(msg?: any): BadRequestException {
+    console.log(msg);
+    throw new HttpException('Exception has occurred.', 400);
   }
 }
